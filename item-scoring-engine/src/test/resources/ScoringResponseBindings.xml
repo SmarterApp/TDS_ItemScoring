@@ -1,0 +1,34 @@
+<ItemScoreResponse>
+	<Score>
+		<ScoreInfo scorePoint="0" maxScore="1" scoreDimension="overall" scoreStatus="Scored">
+			<ScoreRationale>
+				<Propositions>
+					<Proposition name="Full" description="The student correctly constructed the graph." state="NotAsserted" />
+				</Propositions>
+				<Bindings>
+					<Binding name="AllLines" type="OBJECTSET" value="ScoringEngine.GridObjectSet" />
+					<Binding name="Correct" type="OBJECTSET" value="ScoringEngine.GridObjectSet" />
+					<Binding name="Alternate" type="OBJECTSET" value="ScoringEngine.GridObjectSet" />
+					<Binding name="AllLinesCount" type="INT" value="0" />
+					<Binding name="CorrectCount" type="INT" value="0" />
+					<Binding name="CorrectFirstObject" type="OBJECT" value="Object: null" />
+					<Binding name="CorrectSides" type="BOOL" value="False" />
+					<Binding name="y1" type="INT" value="-2147483648" />
+					<Binding name="y2" type="INT" value="-2147483648" />
+					<Binding name="y3" type="INT" value="-2147483648" />
+					<Binding name="y4" type="INT" value="-2147483648" />
+					<Binding name="y5" type="INT" value="-2147483648" />
+					<Binding name="CDRy" type="INT" value="0" />
+					<Binding name="x4" type="INT" value="-2147483648" />
+					<Binding name="x5" type="INT" value="-2147483648" />
+					<Binding name="AlternateCount" type="INT" value="0" />
+					<Binding name="AlternateFirstObject" type="OBJECT" value="Object: null" />
+				</Bindings>
+				<Message>
+									  <![CDATA[Your response earned a score of 0. Full credit requires: Correct]]>
+				</Message>
+			</ScoreRationale>
+		</ScoreInfo>
+		<ScoreLatency>0</ScoreLatency>
+	</Score>
+</ItemScoreResponse>

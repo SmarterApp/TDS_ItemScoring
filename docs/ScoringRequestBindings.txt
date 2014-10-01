@@ -1,0 +1,9 @@
+<ItemScoreRequest>
+	      <ResponseInfo itemIdentifier="1010" itemFormat="GI">
+			     <StudentResponse><![CDATA[ Student Response ]]></StudentResponse>
+			     <Rubric type="Uri" cancache="false">Rubric Path</Rubric>
+			     <OutgoingBindings>
+					    <Binding name="*" type="" value=""/>
+			     </OutgoingBindings>
+	      </ResponseInfo>
+</ItemScoreRequest>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><ItemScoreRequest callbackUrl="http://localhost:8082/ui/callback/458753.xml"><ResponseInfo itemFormat="EQ" itemIdentifier="100-42870"><StudentResponse><![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mstyle displaystyle="true">
+    <mrow class="MJX-TeXAtom-ORD">
+      <mi>x</mi>
+      <mo>=</mo>
+      <msup>
+        <mi>x</mi>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>2</mn>
+          </mrow>
+        </mfenced>
+      </msup>
+      <mo>&#x2212;<!-- − --></mo>
+      <mn>6</mn>
+      <mi>x</mi>
+    </mrow>
+  </mstyle>
+</math>]]></StudentResponse>
+<Rubric cancache="false" type="Data"><![CDATA[<Question id="100-42870" ITSVer="0" ScoreEngineVer="1">
+       <QuestionPart id="1">
+              <Answer>
+                     <SelectObjectSet Type="OBJECTSET" Tag="setx" Description="a">
+                           <And>
+                                  <Assert Function="ISEQUIVALENT">
+                                         <Doc>"isx"</Doc>
+                                         <Param Name="Object" Value="@" />
+                                         <Param Name="Exemplar" Value="17" />
+                                         <Param Name="Simplify" Value="true" />
+                                  </Assert>
+                           </And>
+                     </SelectObjectSet>
+                     <Bind Type="INT" Tag="setxCount" Auto="Yes" Description="Get count from set setx">
+                           <Function Name="GETCOUNT">
+                                  <Param Name="Set" Value="$setx" />
+                           </Function>
+                     </Bind>
+                     <Bind Type="OBJECT" Tag="setxFirstObject" Auto="Yes" Description="The first object from set setx">
+                           <Function Name="GETFROMSET">
+                                  <Param Name="Set" Value="$setx" />
+                                  <Param Name="Order" Value="0" />
+                           </Function>
+                     </Bind>
+                     <And Name="x">
+                           <Explanation Order="0">a</Explanation>
+                           <And>
+                                  <Assert Function="COMPAREINT" BindMethod="FUNCTION">
+                                         <Doc>"x"</Doc>
+                                         <Param Name="P1" Value="$setxCount" />
+                                         <Param Name="P2" Value="0" />
+                                         <Param Name="Compare" Value="GT" />
+                                  </Assert>
+                           </And>
+                     </And>
+              </Answer>
+              <Scoring>
+                     <Score Value="1" Description="At least one x">
+                           <And>
+                                  <IsTrue Assertion="x" />
+                           </And>
+                     </Score>
+              </Scoring>
+       </QuestionPart>
+</Question>]]></Rubric>
+<ContextToken><![CDATA[73ecb7d8-3bfd-4553-99c1-7e3873cc056c]]></ContextToken></ResponseInfo></ItemScoreRequest>

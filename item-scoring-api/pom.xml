@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>item-scoring-api</artifactId>
+	<name>Item Scoring API</name>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>org.opentestsystem.delivery</groupId>
+		<artifactId>item-scoring-master</artifactId>
+		<version>1.1.0</version>
+	</parent>
+
+	<licenses>
+		<license>
+			<name>AIR-License-1.0</name>
+			<url>http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf</url>
+			<distribution>repo</distribution>
+			<comments>Educational Online Test Delivery System Copyright (c) 2013 American Institutes for Research</comments>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.opentestsystem.shared</groupId>
+			<artifactId>shared-web</artifactId>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<artifactId>jsp-api</artifactId>
+					<groupId>javax.servlet.jsp</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-osgi</artifactId>
+			<version>2.2.10-b140310.1920</version>
+		</dependency>
+	</dependencies>
+	<build>
+
+	</build>
+	<reporting>
+		<plugins>
+			<!-- jxr creates cross a reference of the projects source, required by surefire-reports, pmd, etc. to avoid "Unable to locate Source XRef to link to" message -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>${maven-jxr-plugin-version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin-version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>${maven-project-info-plugin-version}</version>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

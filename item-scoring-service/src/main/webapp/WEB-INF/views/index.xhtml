@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>Item Scoring Engine Stats</title>
+</head>
+<body>
+	<h2>General Info</h2>
+	<table id="GeneralStats" border="1" cellspacing="5" cellpadding="10">
+		<thead>
+			<tr>
+				<th scope="col">Property</th>
+				<th scope="col">Value</th>
+			</tr>
+		</thead>
+
+		<tr>
+			<td>App Up Time</td>
+			<td><h:outputText name="status" value="#{appStats.upTime}" /></td>
+		</tr>
+		<tr>
+			<td>Number of Processors</td>
+			<td><h:outputText name="status" value="#{numberOfProcessors}" /></td>
+		</tr>
+		<tr>
+			<td>Max Number of Rubrics Cacheable</td>
+			<td><h:outputText name="status"
+					value="#{rubricCache.maxRubricsCacheable}" /></td>
+		</tr>
+		<tr>
+			<td>Current Number of Rubrics Cached</td>
+			<td><h:outputText name="status"
+					value="#{rubricCache.numberOfRubricsCached}" /></td>
+		</tr>
+		<tr>
+			<td>Number of Score Requests (total/valid)</td>
+			<td><h:outputText
+					value="#{appStats.getTotalScoreRequests()}" /> / <h:outputText
+					value="#{appStats.getTotalValidScoreRequests()}" /></td>
+		</tr>
+		<tr>
+			<td>Number of Score Responses (total/valid)</td>
+			<td><h:outputText
+					value="#{appStats.getTotalScoreResponses()}" /> / <h:outputText
+					value="#{appStats.getTotalSuccessfulScoreResponses()}" /></td>
+		</tr>
+
+		<c:set var="threadPoolStats" value="#{appStats.stats}" />
+		<c:if test="#{threadPoolStats != null}">
+			<tr>
+				<td>Number of Tasks executed/inQueue</td>
+				<td><h:outputText value="#{threadPoolStats.tasksExecuted}" />
+					/ <h:outputText value="#{threadPoolStats.tasksInQCount}" /></td>
+			</tr>
+			<tr>
+				<td>Current Thread Count</td>
+				<td><h:outputText value="#{threadPoolStats.currentThreadCount}" /></td>
+			</tr>
+			<tr>
+				<td>Queuing Delay (min/ave/max)</td>
+				<td>
+					<h:outputText value="#{threadPoolStats.minQDelay.getDuration( 'MILLISECONDS' )}" /> /
+					<h:outputText value="#{threadPoolStats.aveQDelay.getDuration( 'MILLISECONDS' )}" /> /
+					<h:outputText value="#{threadPoolStats.maxQDelay.getDuration( 'MILLISECONDS' )}" />
+				</td>
+			</tr>
+			<tr>
+				<td>Task Execution Times (min/ave/max)</td>
+				<td>
+					<h:outputText value="#{threadPoolStats.minTaskExecutionTime.getDuration( 'MILLISECONDS' )}" /> /
+					<h:outputText value="#{threadPoolStats.aveTaskExecutionTime.getDuration( 'MILLISECONDS' )}" /> /
+					<h:outputText value="#{threadPoolStats.maxTaskExecutionTime.getDuration( 'MILLISECONDS' )}" />
+				</td>
+			</tr>
+		</c:if>
+	</table>
+
+
+	<h2>Callback Info</h2>
+	<h:dataTable value="#{successStats}" var="successStat" id="callback"
+		border="1" cellspacing="5" cellpadding="10">
+		<h:column>
+			<f:facet name="header">Callback URL</f:facet>
+			<h:outputText value="#{successStat.url}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Success/Failure</f:facet>
+			<h:outputText value="#{successStat.successCount}" />/
+			<h:outputText value="#{successStat.failureCount}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Last Msg</f:facet>
+			<h:outputText value="#{successStat.lastMsg}" rendered="#{successStat.lastMsg!=null}"/>
+			<h:outputText value="Null." rendered="#{successStat.lastMsg==null}"/>
+		</h:column>
+	</h:dataTable>
+
+	<h2>Rubric Info</h2>
+	<h:dataTable value="#{rubricCache.cachedRubrics}"
+		border="1" cellspacing="5" cellpadding="10">
+		<c:set var="rubricStats" value="#{rowData.stats}" />
+		<h:column>
+			<f:facet name="header">Rubric ID</f:facet>
+			<h:outputText value="#{rowData.itemID}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Type</f:facet>
+			<h:outputText value="#{rowData.type}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Load Time</f:facet>
+			<h:outputText value="#{rubricStats.loadTime}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Num Uses (total/successful/unsuccessful)</f:facet>
+			<h:outputText value="#{rubricStats.numUses}" />/
+			<h:outputText value="#{rubricStats.numSuccessfulScores}" />/
+			<h:outputText value="#{rubricStats.numUnsuccessfulScores}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Score Times<br />(min/ave/max)</f:facet>
+			<h:outputText value="#{rubricStats.minScoreTime.seconds*1000}" />/
+			<h:outputText value="#{rubricStats.aveScoreTimeNanos/1000000.0}" />/
+			<h:outputText value="#{rubricStats.maxScoreTime.seconds*1000}" />
+		</h:column>
+	</h:dataTable>
+
+	<h2>Memory Pools</h2>
+	<h:dataTable value="#{memoryPoolMXBeans}" var="bean"
+		border="1" cellspacing="5" cellpadding="10">
+		<c:set var="usage" value="#{bean.usage}" />
+		<h:column>
+			<f:facet name="header">Pool Name</f:facet>
+			<h:outputText value="#{bean.name}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Type</f:facet>
+			<h:outputText value="#{bean.type}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Init</f:facet>
+			<h:outputText value="#{usage.init}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Used</f:facet>
+			<h:outputText value="#{usage.used}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Committed</f:facet>
+			<h:outputText value="#{usage.committed}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Max</f:facet>
+			<h:outputText value="#{usage.max}" />
+		</h:column>
+	</h:dataTable>
+		
+	<h2>Threads</h2>
+	<h:dataTable value="#{threadInfo}" var="thread"
+		border="1" cellspacing="5" cellpadding="10">
+		<h:column>
+			<f:facet name="header">ID</f:facet>
+			<h:outputText value="#{thread.threadId}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">Name</f:facet>
+			<h:outputText value="#{thread.threadName}" />
+		</h:column>
+		<h:column>
+			<f:facet name="header">State</f:facet>
+			<h:outputText value="#{thread.threadState}" />
+		</h:column>
+	</h:dataTable>
+
+</body>
+</html>

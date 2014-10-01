@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<!-- Do not put in unit test configuration settings here. They should go 
+		into settings-unitTests.xml. -->
+	<entry key="org.air.essayscorer.application.role">SCORER</entry>
+	<!-- There is a more modern format given here http://www.javadocexamples.com/org/apache/commons/configuration/org.apache.commons.configuration.XMLConfiguration.html -->
+	<entry key="org.air.essayscorer.sspace.lsa.dimensions">50</entry>
+	<entry key="org.air.essayscorer.regression.type">PROBIT</entry>
+	
+	<entry key="org.air.org.essayscorer.opennlp.datapath">C:/AIROSE Trainer Deployments/tmp/Datafiles/OpenNLPData</entry>
+	<entry key="wordnet.database.dir">C:/AIROSE Trainer Deployments/tmp/Datafiles/WordNetData/dict</entry>
+	<entry key="org.air.essayscorer.config.termWeights">Frequency</entry>
+
+	<!-- Scratch pad -->
+	<entry key="org.air.essayscorer.config.output.dir">C:/AIROSE Trainer Deployments/tmp/Datafiles/logs</entry>
+
+	<!-- The following logger parameters are only applicable to standalone code 
+		and not to webapplication -->
+	<entry key="logger.proctorDevLogPath">C:/AIROSE Trainer Deployments/tmp/Datafiles/logs/</entry>
+	<entry key="rootLogPath">C:/AIROSE Trainer Deployments/tmp/Datafiles/logs/</entry>
+	<entry key="logger.debuglevel">WARN</entry>
+
+	<!-- hibernate settings -->
+	<entry key="org.air.org.essayscorer.db.url">jdbc:mysql://localhost:3306/airose</entry>
+	<entry key="org.air.org.essayscorer.db.user">root</entry>
+	<entry key="org.air.org.essayscorer.db.password">password</entry>
+	<entry key="org.air.org.essayscorer.db.explicitShutdownURL" />
+
+	<!-- training db url settings: HI EOC DOR specific -->
+	<entry key="org.air.org.essayscorer.training.hieocdor.db.url">jdbc:sqlserver://127.0.0.1:20010;databaseName=DoR_HI_Staging_2012;user=sbehera;password=RHUzq8Lnqd;</entry>
+
+</properties>

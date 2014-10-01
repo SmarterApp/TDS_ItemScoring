@@ -1,0 +1,70 @@
+<ui:composition template="/masterpage.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:define name="title">Score Request</ui:define>
+	<ui:define name="header">
+		<link rel="stylesheet" type="text/css"
+			href="css/bootstrap.simplex.css" />
+		<link rel="stylesheet" type="text/css" href="css/restclient.css" />
+		<link rel="stylesheet" type="text/css" href="css/XMLPrettyPrint.css" />
+		<link rel="stylesheet" type="text/css" href="css/prettify.css" />
+		<link rel="stylesheet" type="text/css" href="css/KelpJSONView.css" />
+		<link rel="stylesheet" type="text/css" href="css/animate.css" />
+		<script type="text/javascript" src="js/scorerequest.js"></script>
+	</ui:define>
+
+	<ui:define name="content">
+		<div style="display: block;" class="container hide showForStartup"
+			id="request">
+			<div class="row-fluid">
+				<h3 style="color: #999;">Score Request</h3>
+				<div id="request-container"
+					style="margin-bottom: 10px; display: block;">
+					<div id="request-error"></div>
+					<div class="well" id="request-form">
+						<h:form onsubmit="return false;" method="POST"
+							style="margin-bottom: 0px" class="form-inline" action="">
+							<label style="margin: 0 5px; width: 45px;">Method</label>
+							<h:selectOneMenu id="request-method" value="GET"
+								style="magin: 0; width: 80px;">
+								<f:selectItem itemLabel="GET" itemValue="GET" />
+								<f:selectItem itemLabel="POST" itemValue="POST" />
+								<f:selectItem itemLabel="PUT" itemValue="PUT" />
+								<f:selectItem itemLabel="DELETE" itemValue="DELETE" />
+								<f:selectItem itemLabel="HEAD" itemValue="HEAD" />
+								<f:selectItem itemLabel="TRACE" itemValue="TRACE" />
+								<f:selectItem itemLabel="CONNECT" itemValue="CONNECT" />
+							</h:selectOneMenu>
+							<label style="margin: 0 5px 0 15px; width: 25px;">URL</label>
+							<h:inputText id="request-url"
+								style="margin: 0 auto; width: 400px;"
+								value="http://localhost:8080/item-scoring-service/Scoring/ItemScoring" />
+							<h:commandButton id="request-button"
+								style="margin: 0 0 0 15px; padding: 4px 15px;"
+								styleClass="btn btn-danger" type="submit" value="SEND"
+								onclick="request();" />
+						</h:form>
+					</div>
+					<div style="margin-bottom: 0px;" class="well">
+						<h4 style="margin-left: 6px;">Request Body</h4>
+						<h:inputTextarea id="request-body"
+							style="width: 99%; margin: 0; height: 100px;" />
+					</div>
+					<div style="margin-top: 10px; margin-bottom: 0px;" class="well">
+						<h4 style="margin-left: 6px;">Response Body</h4>
+						<h:inputTextarea id="response-body"
+							style="width: 99%; margin: 0; height: 100px;" />
+					</div>
+					<div style="margin-top: 10px; margin-bottom: 0px;" class="well">
+						<h4 style="margin-left: 6px;">Score Response</h4>
+						<h:inputTextarea id="score-response"
+							style="width: 99%; margin: 0; height: 100px;" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

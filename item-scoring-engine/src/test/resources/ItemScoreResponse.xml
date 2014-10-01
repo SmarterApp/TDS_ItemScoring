@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ItemScoreResponse>
+<Score><ScoreInfo scorePoint="0" scoreStatus="Scored" scoreDimension="" />
+<ScoreRationale><![CDATA[<?xml version="1.0"?><CRScore><ScoreInfo type="GI" score="0" maxScore="1" scoreRationale="Your response earned a score of 0. Full credit requires: At least one x"><Proposition description="a" asserted="NotAsserted" /></ScoreInfo></CRScore>]]>
+</ScoreRationale>
+<SubScoreList />
+<ContextToken><![CDATA[19626151-3a54-4d16-b067-f4e630a20c51]]></ContextToken>
+</Score>
+</ItemScoreResponse>

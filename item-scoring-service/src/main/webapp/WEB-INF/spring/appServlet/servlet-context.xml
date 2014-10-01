@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+	<beans:bean id="rubricCache"
+		class="tds.itemscoringengine.complexitemscorers.RubricCache" scope="singleton" />
+
+	<beans:bean id="scoringMaster"
+		class="tds.itemscoringengine.web.server.ScoringMaster" scope="singleton"
+		destroy-method="shutdown">
+		<beans:constructor-arg index="0">
+			<util:map>
+				<beans:entry key="MC">
+					<beans:bean class="tds.itemscoringengine.itemscorers.MCItemScorer"
+						scope="prototype" />
+				</beans:entry>
+				<beans:entry key="MI">
+					<beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer"
+						scope="prototype" />
+				</beans:entry>
+				<beans:entry key="QTI">
+					<beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer"
+						scope="prototype" />
+				</beans:entry>
+				<beans:entry key="EBSR">
+					<beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer"
+						scope="prototype" />
+				</beans:entry>
+				<beans:entry key="HTQ">
+					<beans:bean class="tds.itemscoringengine.itemscorers.QTIItemScorer"
+						scope="prototype" />
+				</beans:entry>
+
+				<!-- beans:entry key="ER"> <beans:ref bean="essay-item-scorer" /> </beans:entry -->
+				<!-- <entry key="ER"> -->
+				<!-- <bean class="tds.itemscoringengine.complexitemscorers.RubricScorer" 
+					scope="prototype"> -->
+				<!-- <constructor-arg> -->
+				<!-- <bean class="tds.itemscoringengine.essayitemscorer.EssayItemScorerFactory" 
+					scope="prototype"/> -->
+				<!-- </constructor-arg> -->
+				<!-- </bean> -->
+				<!-- </entry> -->
+			</util:map>
+		</beans:constructor-arg>
+		<beans:constructor-arg ref="appStatsRecorder"
+			index="1" />
+		<beans:property name="rubricUrlRewriter" ref="rubric-url-rewriter" />
+	</beans:bean>
+
+
+	<!-- beans:bean id="essay-item-scorer" class="tds.itemscoringengine.complexitemscorers.RubricScorer" 
+		scope="prototype"> <beans:constructor-arg> <beans:bean class="tds.itemscoringengine.essayitemscorer.EssayItemScorerFactory" 
+		scope="prototype"/> </beans:constructor-arg> </beans:bean -->
+
+	<beans:bean id="rubric-url-rewriter" class="AIR.Common.Web.PatternUrlRewriter">
+		<beans:property name="pattern"
+			value="${tds.itemscoringengine.rubricurlrewriter.pattern}" />
+		<beans:property name="replacement"
+			value="${tds.itemscoringengine.rubricurlrewriter.replacement}" />
+	</beans:bean>
+
+	<beans:bean id="faceletsViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<beans:property name="viewClass"
+			value="org.springframework.faces.mvc.JsfView" />
+		<beans:property name="prefix" value="WEB-INF/views/" />
+		<beans:property name="suffix" value=".xhtml" />
+	</beans:bean>
+	<annotation-driven />
+	<context:component-scan base-package="tds.itemscoringengine" />
+	<context:component-scan base-package="tds.itemscoringengine.web.server" />
+	<context:property-placeholder />
+</beans:beans>
