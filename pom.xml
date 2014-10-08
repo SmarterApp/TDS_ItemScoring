@@ -14,9 +14,9 @@
 	</parent>
 	
 	<scm>
-        <connection>scm:hg:https://bitbucket.org/sbacoss/itemscoringdev</connection>
-        <developerConnection>scm:hg:https://bitbucket.org/sbacoss/itemscoringdev</developerConnection>
-        <url>https://bitbucket.org/sbacoss/itemscoringdev</url>
+        <connection>scm:hg:https://bitbucket.org/sbacoss/itemscoring_release</connection>
+        <developerConnection>scm:hg:https://bitbucket.org/sbacoss/itemscoring_release</developerConnection>
+        <url>https://bitbucket.org/sbacoss/itemscoring_release</url>
     </scm>
 
 	<modules>
@@ -35,12 +35,5 @@
 		</license>
 	</licenses>
 	
-	<distributionManagement>
-       <repository>
-            <id>central</id>
-            <name>libs-releases</name>
-            <url>http://airdev.artifactoryonline.com/airdev/libs-releases-local</url>
-        </repository>
-    </distributionManagement>
 	
 </project>

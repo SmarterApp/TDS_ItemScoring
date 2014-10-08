@@ -5,6 +5,7 @@
 	<artifactId>item-scoring-service</artifactId>
 	<name>Item Scoring Web Service</name>
 	<packaging>war</packaging>
+	<version>R01.00.01</version>
 
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
