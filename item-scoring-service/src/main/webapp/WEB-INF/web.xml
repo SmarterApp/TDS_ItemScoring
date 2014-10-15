@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 	<!-- Start: Do not modify unless you are modifying code behaviour -->
-	<!-- The definition of the Root Spring Container shared by all Servlets 
-		and Filters -->
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>classpath:root-context.xml</param-value>
@@ -21,20 +18,26 @@
 		<param-value>com.sun.el.ExpressionFactoryImpl</param-value>
 	</context-param>
 
-	<context-param>
-		<param-name>tds.itemscoringengine.rubricurlrewriter.pattern</param-name>
-		<param-value>^file:///D:/DataFiles/BB_Files/tds2_airws_org/TDSCore_2013-2014/Bank-179/Items/([^/]*)/</param-value>
-	</context-param>
+<context-param>
+			<param-name>tds.itemscoringengine.rubricurlrewriter.pattern</param-name>
+			<param-value>^https://tds2\.airws\.org/Test_Student_[^/]*/V[^/]*/ItemScoringRubric\.axd\?itembank=([^/]*)&amp;itemid=([^/]*)</param-value>
+		</context-param>
+
+
+
 
 	<context-param>
 		<param-name>tds.itemscoringengine.rubricurlrewriter.replacement</param-name>
-		<param-value>file:///C:/AIROSE Trainer Deployments/tmp/Datafiles/$1/</param-value>
+		<param-value>file:///C:/AIROSE Trainer Deployments/tmp/Datafiles/Item-$1-$2/Item_$2_v5_rubric.xml</param-value>
 	</context-param>
 
 	<context-param>
 		<param-name>org.air.org.essayscorer.opennlp.datapath</param-name>
 		<param-value>C:/AIROSE Trainer Deployments/tmp/Datafiles/OpenNLPData</param-value>
 	</context-param>
+
+
+
 
 	<context-param>
 		<param-name>wordnet.database.dir</param-name>
@@ -125,8 +128,7 @@
 	</servlet-mapping>
 
 	<!-- Start: Application config settings. Modify as necessary. -->
-	<!-- These are settings from settings.config. Overwrite any of the ones 
-		mentioned in <settings.config> in context.xml -->
+	<!-- These are settings from settings.config. Overwrite any of the ones mentioned in <settings.config> in context.xml -->
 	<context-param>
 		<param-name>settings.config</param-name>
 		<param-value>settings.xml</param-value>

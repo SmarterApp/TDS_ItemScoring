@@ -1,16 +1,19 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tds.itemscoringengine.web.server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -75,9 +78,29 @@ public class ItemScoringHandler extends HttpHandlerBase
     XmlReader xmlReader = null;
     try {
       inputstream = request.getInputStream ();
-      xmlReader = new XmlReader (inputstream);
+
+      // SB:Start Hack! In the incoming request from .NET sites there is some
+      // extraneous character that shows up in hexpad as "3F".
+      BufferedReader bfr = new BufferedReader (new InputStreamReader (inputstream));
+      StringBuffer stringBuffer = new StringBuffer ();
+      String line = null;
+      while ((line = bfr.readLine ()) != null)
+        stringBuffer.append (line);
+      // I am going to strip anything before the first "<".
+      System.out.println ("==========Original Request============\n" + stringBuffer.toString ());
+      String originalRequest = stringBuffer.toString ();
+      
+      int indexOfBegin = originalRequest.indexOf ('<');
+      if (indexOfBegin > 0)
+        originalRequest = originalRequest.substring (indexOfBegin);
+      System.out.println ("==========Modified Request============\n" + originalRequest);
+
+      // SB:End Hack!
+
+      xmlReader = new XmlReader (new StringReader (originalRequest));
     } catch (IOException | JDOMException e) {
       logger.error ("Unreadable XML in request", e);
+      e.printStackTrace (System.out);
       throw new FailedReturnStatusException ("400 Invalid request");
     }
     scoreRequest.readXML (xmlReader);
@@ -106,19 +129,6 @@ public class ItemScoringHandler extends HttpHandlerBase
       appStats.incrementSuccessfulScoreResponses ();
   }
 
-  // Shiva: I am not sure why this was written like this instead of using JAXB.
-  /*
-   * // this is the response to the initial request private void SendResponse
-   * (ServletResponse response, ItemScoreResponse itemScoreResponse) throws
-   * FailedReturnStatusException { response.setContentType ("text/xml");
-   * OutputStream outputstream = null; try { outputstream =
-   * response.getOutputStream (); XMLOutputFactory factory =
-   * TdsXmlOutputFactory.newInstance (); XMLStreamWriter writer =
-   * factory.createXMLStreamWriter (outputstream); itemScoreResponse.writeXML
-   * (writer); } catch (IOException | XMLStreamException e) { logger.error
-   * ("Failure writing xml to response", e); throw new
-   * FailedReturnStatusException ("500 Internal Server Error"); } }
-   */
   private void SendResponse (ServletResponse response, ItemScoreResponse itemScoreResponse) throws FailedReturnStatusException {
     response.setContentType ("text/xml");
     OutputStream outputstream = null;
