@@ -26,6 +26,8 @@ import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import qtiscoringengine.BaseType;
 import qtiscoringengine.Cardinality;
@@ -39,6 +41,7 @@ import qtiscoringengine.VariableBindings;
 import tds.itemscoringengine.IItemScorer;
 import tds.itemscoringengine.IItemScorerCallback;
 import tds.itemscoringengine.ItemScoreInfo;
+import tds.itemscoringengine.ItemScorerManagerImpl;
 import tds.itemscoringengine.Proposition;
 import tds.itemscoringengine.PropositionState;
 import tds.itemscoringengine.ResponseInfo;
@@ -58,6 +61,7 @@ import AIR.Common.xml.XmlReaderException;
 
 public class QTIItemScorer implements IItemScorer
 {
+  private static final Logger            _logger            = LoggerFactory.getLogger (QTIItemScorer.class);
 
   public QTIItemScorer () {
 
@@ -285,14 +289,22 @@ public class QTIItemScorer implements IItemScorer
   }
 
   private XmlReader getReader (ResponseInfo ri) throws JDOMException, IOException, XmlReaderException, URISyntaxException {
-    if (ri.getContentType () == RubricContentType.Uri) {
-      // rubric is a Uri
-      // return
-      // XmlReader.create(ItemScorerUtil.GetContentStream((Uri)ri.Rubric), new
-      // XmlReaderSettings(){CloseInput = true});
-      return XmlReader.create (new URI (ri.getRubric ().toString ()));
-    } else {// rubric is a string
-      return new XmlReader (new StringReader (ri.getRubric ().toString ()));
+    try {
+      if (ri.getContentType () == RubricContentType.Uri) {
+        // rubric is a Uri
+        // return
+        // XmlReader.create(ItemScorerUtil.GetContentStream((Uri)ri.Rubric), new
+        // XmlReaderSettings(){CloseInput = true});
+        return XmlReader.create (new URI (ri.getRubric ().toString ()));
+      } else {// rubric is a string
+        return new XmlReader (new StringReader (ri.getRubric ().toString ()));
+      }
+    } catch (XmlReaderException xe) {
+      String theStr = "<null>";
+      if (ri.getRubric () != null)
+         theStr = ri.getRubric ().toString ();
+      _logger.error (String.format("Exception: %s, input string: '%s'", xe.getMessage(), theStr),xe);
+      throw xe;
     }
   }
 
