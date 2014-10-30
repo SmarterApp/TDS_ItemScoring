@@ -10,12 +10,16 @@ package tds.itemscoringengine.itemscorers;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -311,6 +315,36 @@ public class QTIItemScorer implements IItemScorer
   @Override
   public void shutdown () {
   }
+  
+  public static void main (String[] args) {
+    try {
+      // String response =
+      // "<itemResponse><response id=\"1\"><value>1</value></response></itemResponse>";
+      // URI rubricUri = new URI
+      // ("file:///C:/tmp/Bank-187/Items/Item-187-2620/Item_2620_v4.qrx");
+      // ResponseInfo responseInfo = new ResponseInfo ("htq", "2620", response,
+      // rubricUri, RubricContentType.Uri, "abc", false);
+
+      String response = "<itemResponse><response id=\"1\"><value>4</value><value>1</value><value>2</value><value>5</value><value>3</value></response></itemResponse>";
+      URI rubricUri = new URI ("file:///C:/tmp/Bank-187/Items/Item-187-2564/Item_2564_v1.qrx");
+      ResponseInfo responseInfo = new ResponseInfo ("htq", "2564", response, rubricUri, RubricContentType.Uri, "abc", false);
+
+      QTIItemScorer qtiScorer = new QTIItemScorer ();
+      ItemScore score = qtiScorer.ScoreItem (responseInfo, null);
+      
+      StringWriter strnWriter = new StringWriter ();
+      JAXBContext jaxbContext = JAXBContext.newInstance (ItemScore.class);
+      Marshaller jaxbMarshaller = jaxbContext.createMarshaller ();
+      // output pretty printed
+      jaxbMarshaller.setProperty (Marshaller.JAXB_FORMATTED_OUTPUT, true);
+      jaxbMarshaller.marshal(score, strnWriter);
+      
+      System.err.println (strnWriter.toString ());
+    } catch (Exception exp) {
+      exp.printStackTrace ();
+    }
+  }
+
 }
 
 class ISECustomOperator implements ICustomOperatorFactory

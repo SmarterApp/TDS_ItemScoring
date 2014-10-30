@@ -1,2 +1,2 @@
-https://tds2\.airws\.org/Test_Student_[^/]*/V[^/]*/ItemScoringRubric\.axd\?itembank=(?<bankid>[^/]*)&itemid=(?<itemid>[^/]*)	file:///C:/AIROSE Trainer Deployments/tmp/Datafiles/Item-${bankid}-${itemid}/Item_${itemid}_v5_rubric.xml
-file:///D:/DataFiles/BB_Files/tds2_airws_org/TDSCore_2013-2014/Bank-([^/]*)/Items/Item-(?<bankid>[^/]*)-(?<itemid>[^/]*)/([^/]*)	file:///C:/AIROSE Trainer Deployments/tmp/Datafiles/Item-${bankid}-${itemid}/Item_${itemid}_v5_rubric.xml
+https://(?:[^/]*)\.airast\.org/[sS]tudent/V[^/]*/ItemScoringRubric\.axd\?itembank=(?<bankid>[^/]*)&itemid=(?<itemid>[^/]*)	file:///C:/Datafiles/Item-${bankid}-${itemid}/Item_${itemid}_v5_rubric.xml
+file:[/]*C:/DataFiles/ContentXMLs/Bank-([^/]*)/Items/Item-(?<bankid>[^/]*)-(?<itemid>[^/]*)/([^/]*)	file:///C:/Datafiles/Item-${bankid}-${itemid}/Item_${itemid}_v5_rubric.xml
