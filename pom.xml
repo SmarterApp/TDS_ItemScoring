@@ -6,7 +6,7 @@
 	<artifactId>item-scoring-master</artifactId>
 	<name>Item Scoring Master</name>
 	<packaging>pom</packaging>
-	<version>R01.00.04</version>
+	<version>R01.00.05</version>
 	<parent>
 		<groupId>org.opentestsystem.shared</groupId>
 		<artifactId>shared-master</artifactId>
@@ -34,6 +34,5 @@
 			<comments>Educational Online Test Delivery System Copyright (c) 2013 American Institutes for Research</comments>
 		</license>
 	</licenses>
-	
-	
+
 </project>
