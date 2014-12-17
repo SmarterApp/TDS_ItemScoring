@@ -28,7 +28,7 @@ public class ExpressionParameterConstraint
   private boolean                  _requireSameCardinality = false;
   private boolean                  _requireSameType        = false;
 
-  ExpressionParameterConstraint (int applyTo, List<Cardinality> cardConstraint, List<BaseType> typeConstraint, boolean requireSameCard, boolean requireSameType)
+ public ExpressionParameterConstraint (int applyTo, List<Cardinality> cardConstraint, List<BaseType> typeConstraint, boolean requireSameCard, boolean requireSameType)
   {
     _appyToParameter = applyTo;
     _cardinaltyConstraint = cardConstraint;
@@ -37,7 +37,7 @@ public class ExpressionParameterConstraint
     _requireSameType = requireSameType;
   }
 
-  ExpressionParameterConstraint (int applyTo, Cardinality cardConstraint, BaseType typeConstraint, boolean requireSameCard,
+  public ExpressionParameterConstraint (int applyTo, Cardinality cardConstraint, BaseType typeConstraint, boolean requireSameCard,
       boolean requireSameType)
   {
     // this(applyTo,new List<Cardinality>() { cardConstraint },new
@@ -45,7 +45,7 @@ public class ExpressionParameterConstraint
     this (applyTo, Arrays.asList (cardConstraint), Arrays.asList (typeConstraint), requireSameCard, requireSameType);
   }
 
-  ExpressionParameterConstraint (int applyTo, Cardinality cardConstraint, List<BaseType> typeConstraint,
+  public ExpressionParameterConstraint (int applyTo, Cardinality cardConstraint, List<BaseType> typeConstraint,
       boolean requireSameCard, boolean requireSameType)
   // :this(applyTo,new List<Cardinality>() { cardConstraint
   // },typeConstraint,requireSameCard,requireSameType)
@@ -53,7 +53,7 @@ public class ExpressionParameterConstraint
     this (applyTo, Arrays.asList (cardConstraint), typeConstraint, requireSameCard, requireSameType);
   }
 
-  ExpressionParameterConstraint (int applyTo, Cardinality cardConstraint, BaseType typeConstraint)
+  public ExpressionParameterConstraint (int applyTo, Cardinality cardConstraint, BaseType typeConstraint)
   // :this(applyTo,new List<Cardinality>() { cardConstraint },new
   // List<BaseType>() { typeConstraint },false,false)
   {
@@ -135,7 +135,8 @@ public class ExpressionParameterConstraint
 
     if (_requireSameType)
     {
-      if (exp.getReturnType () != requiredType)
+//      if (exp.getReturnType () != requiredType)
+    	if (!matchType(exp.getReturnType(), requiredType, log.getValidationRigor())) //jdc. December 11 2014 Changed from (exp.ReturnType != requiredType). Allowing confirmable types under less validation rigor
       {
         message += "The parameters of this expression must all have the same BaseType and they do not\n";
         ok = false;
@@ -145,7 +146,25 @@ public class ExpressionParameterConstraint
       log.addMessage (node, message);
     return ok;
   }
-
+  
+  private boolean matchType (BaseType bt, BaseType requiredType, ValidationLog.Rigor rigor)
+  {
+	  switch (rigor)
+	  {
+	case None:
+		return true;
+	case Some:
+		if(DataElement.isConformable(bt, requiredType)) 
+			return true; 
+	break;
+	case Strict:
+		if(bt.equals(requiredType))
+			return true;
+			break;
+	}
+	  return false;
+	  
+  }
   private boolean matchType (Expression exp, ValidationLog log)
   {
     switch (log.getValidationRigor ())

@@ -10,11 +10,11 @@ package qtiscoringengine;
 
 import AIR.Common.Utilities.TDSStringUtils;
 
-class DEPoint extends DataElement {
+public class DEPoint extends DataElement {
 	private int _x;
 	private int _y;
 
-	DEPoint(int x, int y) {
+	public DEPoint(int x, int y) {
 		_baseType = BaseType.Point;
 		_x = x;
 		_y = y;

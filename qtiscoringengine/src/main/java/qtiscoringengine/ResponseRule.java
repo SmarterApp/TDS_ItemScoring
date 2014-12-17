@@ -53,12 +53,12 @@ public class ResponseRule
   }
 
   // todo: write more robust validation code
-  boolean validate (ValidationLog log, QTIRubric rubric)
+  public boolean validate (ValidationLog log, QTIRubric rubric)
   {
     return true;
   }
 
-  DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
+  public DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
   {
     throw new NotImplementedException ();
   }

@@ -12,7 +12,7 @@ public class DEInteger extends _DEFloat<Integer>
 {
   private int _value;
 
-  DEInteger (int id) {
+  public DEInteger (int id) {
     _baseType = BaseType.Integer;
     _value = id;
   }
@@ -23,7 +23,8 @@ public class DEInteger extends _DEFloat<Integer>
 
   @Override
   public boolean equals (DataElement d) {
-    if (d.getType () == this.getType ()) {
+    if (d.getType () == this.getType ())
+    {
       return (_value == ((DEInteger) d).getValue ());
     }
     return false;

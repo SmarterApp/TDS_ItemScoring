@@ -9,15 +9,15 @@
 package qtiscoringengine;
 
 
-class DEBoolean extends DataElement {
+public class DEBoolean extends DataElement {
 	private boolean _value;
 
-	DEBoolean(boolean id) {
+	public DEBoolean(boolean id) {
 		_baseType = BaseType.Boolean;
 		_value = id;
 	}
 
-	boolean getValue() {
+	public boolean getValue() {
 
 		return _value;
 	}

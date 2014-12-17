@@ -259,7 +259,7 @@ public abstract class Expression extends ResponseRule
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+ public boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = true;
     ok = validateParameterCount (log, ok);
     if (!validateAttributes (log, ok))
@@ -314,7 +314,7 @@ public abstract class Expression extends ResponseRule
     return ok;
   }
 
-  DataElement getAttributeValue (String attName) {
+  protected DataElement getAttributeValue (String attName) {
     if (_attributeValues.containsKey (attName))
       return _attributeValues.get (attName);
     return null;
@@ -352,7 +352,7 @@ public abstract class Expression extends ResponseRule
   // }
 
   @Override
-  DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception {
+  public final DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception {
     List<DataElement> paramValues = new ArrayList<DataElement> ();
     for (Expression param : _parameters) {
       DataElement result = param.evaluate (vb, rubric);

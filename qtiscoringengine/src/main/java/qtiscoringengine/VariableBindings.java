@@ -26,6 +26,13 @@ public class VariableBindings
     // }
     // else _variableBindings.Add(identifier, value);
   }
+  public void Remove(String identifier)
+  {
+	  if (_variableBindings.containsKey(identifier))
+	  {
+		 _variableBindings.remove(identifier);
+	  }
+  }
 
   public DataElement getVariable (String identifier) {
     // if (_variableBindings.ContainsKey(identifier))

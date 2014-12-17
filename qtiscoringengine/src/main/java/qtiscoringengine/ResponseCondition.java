@@ -70,7 +70,7 @@ public class ResponseCondition extends ResponseRule
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric)
+ public boolean validate (ValidationLog log, QTIRubric rubric)
   {
     boolean ok = true;
     if (_if != null)
@@ -96,7 +96,7 @@ public class ResponseCondition extends ResponseRule
   }
 
   @Override
-  DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
+ public DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
   {
     DEBoolean resp = null;
     if (_if != null)

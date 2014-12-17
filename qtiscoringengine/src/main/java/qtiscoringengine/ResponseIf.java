@@ -75,7 +75,7 @@ public class ResponseIf extends ResponseRule
 
   // todo: extend the validation
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric)
+ public boolean validate (ValidationLog log, QTIRubric rubric)
   {
     boolean ok = true;
 
@@ -117,7 +117,7 @@ public class ResponseIf extends ResponseRule
   }
 
   @Override
-  DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
+ public DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
   {
     switch (_ifType)
     {

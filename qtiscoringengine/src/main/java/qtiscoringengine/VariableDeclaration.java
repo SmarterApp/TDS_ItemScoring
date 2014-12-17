@@ -16,7 +16,7 @@ enum VariableRole {
 	None, Response, Outcome
 };
 
-class VariableDeclaration {
+public class VariableDeclaration {
 	protected VariableRole _role = VariableRole.None;
 	protected DEIdentifier _identifier;
 	protected Cardinality _cardinality;
@@ -44,7 +44,7 @@ class VariableDeclaration {
 		return _baseType;
 	}
 
-	Cardinality getCardinality() {
+	public Cardinality getCardinality() {
 		return _cardinality;
 	}
 

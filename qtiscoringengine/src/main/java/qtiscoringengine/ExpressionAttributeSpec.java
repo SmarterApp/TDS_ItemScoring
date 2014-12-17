@@ -17,12 +17,12 @@ public class ExpressionAttributeSpec
   private List<String> _allowableIdentifiers = null;
   private boolean      _optional             = false;
 
-  ExpressionAttributeSpec (String name, BaseType bt)
+  public ExpressionAttributeSpec (String name, BaseType bt)
   {
     this (name, bt, false);
   }
 
-  ExpressionAttributeSpec (String name, List<String> allowableIDs)
+  public ExpressionAttributeSpec (String name, List<String> allowableIDs)
   {
     this (name, allowableIDs, false);
   }
@@ -35,34 +35,34 @@ public class ExpressionAttributeSpec
     _optional = isOptional;
   }
 
-  ExpressionAttributeSpec (String name, BaseType bt, boolean isOptional)
+  public ExpressionAttributeSpec (String name, BaseType bt, boolean isOptional)
   {
     _name = name;
     _valueType = bt;
     _optional = isOptional;
   }
 
-  boolean getIsOptional ()
+  public boolean getIsOptional ()
   {
     return _optional;
   }
 
-  String getName ()
+  public String getName ()
   {
     return _name;
   }
 
-  BaseType getValueType ()
+  public BaseType getValueType ()
   {
     return _valueType;
   }
 
-  List<String> getAllowableIdentifiers ()
+  public List<String> getAllowableIdentifiers ()
   {
     return _allowableIdentifiers;
   }
 
-  boolean ValidateIdentifierValue (DEIdentifier identifier)
+  public boolean ValidateIdentifierValue (DEIdentifier identifier)
   {
     if (_allowableIdentifiers == null)
       return true;

@@ -15,13 +15,13 @@ public class AreaRect extends Area {
     AreaRect(String coords) throws Exception
     {
     	super(Shape.Rect);
-        //todo errorcheck
+        //to do error check
         DataElement dec = DataElement.createContainer(coords, BaseType.Point, Cardinality.Ordered);
         if (dec.getIsError())
             throw new Exception(dec.getErrorMessage());
         DEContainer container = (DEContainer)dec;
         _topLeft = (DEPoint)container.getMember(0);
-        _bottomRight = (DEPoint)container.getMember(0);
+        _bottomRight = (DEPoint)container.getMember(1); //December 10 2014. Fixed bug. Changed getMember(0) to getMember(1)
     }
 
 	@Override

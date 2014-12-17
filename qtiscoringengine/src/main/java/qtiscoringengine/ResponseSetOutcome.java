@@ -40,7 +40,7 @@ public class ResponseSetOutcome extends ResponseRule
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric)
+  public boolean validate (ValidationLog log, QTIRubric rubric)
   {
     String message = "";
     boolean ok = true;
@@ -78,7 +78,7 @@ public class ResponseSetOutcome extends ResponseRule
         ok = false;
       }
     }
-    else
+    else if(!(_expression.equals(null)))
     {
       boolean bad = false;
       BaseType valueType = rubric.getOutcomeVariableBaseType (_identifier);
@@ -108,7 +108,7 @@ public class ResponseSetOutcome extends ResponseRule
   }
 
   @Override
-  DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
+  public DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
   {
     DataElement value = _expression.evaluate (vb, rubric);
     vb.setVariable (this._identifier, value);

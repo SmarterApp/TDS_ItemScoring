@@ -224,7 +224,7 @@ public class QTIRubric
     return null;
   }
 
-  VariableDeclaration getVariableDeclaration (String identifier) {
+  public VariableDeclaration getVariableDeclaration (String identifier) {
     if (identifier == null)
       return null;
     ResponseDeclaration rd = getResponseDeclaration (identifier);

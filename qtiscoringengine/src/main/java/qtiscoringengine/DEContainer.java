@@ -14,12 +14,12 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 
-class DEContainer extends DataElement
+public class DEContainer extends DataElement
 {
   private List<DataElement> _members = new ArrayList<DataElement> ();
   private Cardinality       _cardinality;
 
-  DEContainer (BaseType baseType, Cardinality card) {
+  public DEContainer (BaseType baseType, Cardinality card) {
     _baseType = baseType;
     _cardinality = card;
     _isContainer = true;
@@ -152,8 +152,13 @@ class DEContainer extends DataElement
     return true;
   }
 
-  DataElement getMember (int i) {
-    return _members.get (i);
+  public DataElement getMember (int i) 
+  {
+	  if (i < _members.size())
+	  {
+		return getMember(i);
+	  }
+    return null;
   }
 
   @Override

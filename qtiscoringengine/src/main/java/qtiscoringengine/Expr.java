@@ -87,7 +87,7 @@ class ExprBaseValue extends Expression
   // todo: should probably move processing of the constant value to the
   // validation section
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+ public boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = super.validate (log, rubric);
 
     resolveType (rubric);
@@ -187,7 +187,7 @@ class ExprCorrect extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) {
     ResolveIdentifierCardinality (rubric);
     ResolveIdentifierType (rubric);
     return super.validate (log, rubric);
@@ -209,7 +209,7 @@ class ExprDefault extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) {
     ResolveIdentifierCardinality (rubric);
     ResolveIdentifierType (rubric);
     return super.validate (log, rubric);
@@ -235,7 +235,7 @@ class ExprDelete extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) {
     return (resolveType (super.validate (log, rubric)));
   }
 
@@ -301,31 +301,17 @@ class ExprEqual extends Expression
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
     ExpressionAttributeSpec eac = new ExpressionAttributeSpec ("toleranceMode", Arrays.asList ("exact", "absolute", "relative"), true);
     addAttribute (eac);
-    eac = new ExpressionAttributeSpec ("tolerance", BaseType.String, true);// they
-                                                                           // stuff
-                                                                           // to
-                                                                           // floats
-                                                                           // into
-                                                                           // this
-                                                                           // attribute.
-                                                                           // Does
-                                                                           // not
-                                                                           // implement
-                                                                           // template
-                                                                           // processing--this
-                                                                           // is
-                                                                           // spec'd
-                                                                           // as
-                                                                           // floatOrTemplateRef
+    eac = new ExpressionAttributeSpec ("tolerance", BaseType.String, true);  //they stuff to floats into this attribute. Does not implement template processing--this is spec'd as floatOrTemplateRef
+                                                                           
     addAttribute (eac);
     eac = new ExpressionAttributeSpec ("includeUpperBound", BaseType.Boolean, true);
     addAttribute (eac);
     eac = new ExpressionAttributeSpec ("includeLowerBound", BaseType.Boolean, true);
     addAttribute (eac);
   }
-
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) 
+  {
     boolean ok = super.validate (log, rubric);
     DEIdentifier toleranceMode = (DEIdentifier) getAttributeValue ("toleranceMode");
     DEString tolerance = (DEString) getAttributeValue ("tolerance");
@@ -431,7 +417,7 @@ class ExprEqualRounded extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+ public boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = super.validate (log, rubric);
     DEIdentifier roundingMode = (DEIdentifier) getAttributeValue ("roundingMode");
     DEInteger figures = (DEInteger) getAttributeValue ("figures");
@@ -470,7 +456,7 @@ class ExprGt extends Expression
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () > ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () > ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());  //December. 11 JDC bug fix. paramValues[0]-> paramValues[1].
   }
 }// end class ExprGt
 
@@ -484,7 +470,7 @@ class ExprGte extends Expression
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () >= ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () >= ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());  //December. 11 JDC bug fix. paramValues[0]-> paramValues[1].
   }
 }// end class ExprGte
 
@@ -493,6 +479,7 @@ class ExprIndex extends Expression
   ExprIndex (Element node) {
     super (node, 1, 1, BaseType.Null, Cardinality.Single);
     addParameterConstraint (new ExpressionParameterConstraint (0, Cardinality.Ordered, BaseType.Null, false, false));
+    addAttribute(new ExpressionAttributeSpec("n", BaseType.Integer, false)); //jdc. December 11 2014. Changed to "n" which matches spec. made it mandatory.
   }
 
   @Override
@@ -523,27 +510,12 @@ class ExprInside extends Expression
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, BaseType.Point));
     ExpressionAttributeSpec eac = new ExpressionAttributeSpec ("shape", Arrays.asList ("default", "rect", "circle", "poly"));
     addAttribute (eac);
-    eac = new ExpressionAttributeSpec ("coords", BaseType.String);// this string
-                                                                  // contains a
-                                                                  // comma-separated
-                                                                  // list of
-                                                                  // integers.
-                                                                  // This is how
-                                                                  // the
-                                                                  // examples
-                                                                  // read,
-                                                                  // despite the
-                                                                  // spec that
-                                                                  // calls this
-                                                                  // out as an
-                                                                  // XTML
-                                                                  // ordered
-                                                                  // list.
+    eac = new ExpressionAttributeSpec ("coords", BaseType.String);//this string contains a comma-separated list of integers.  This is how the examples read, despite the spec that calls this out as an XTML ordered list. 
     addAttribute (eac);
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+ public boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = super.validate (log, rubric);
     DEIdentifier shapeName = (DEIdentifier) getAttributeValue ("shape");
     DEString coords = (DEString) getAttributeValue ("coords");
@@ -581,7 +553,7 @@ class ExprInside extends Expression
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
     if (paramValues.get (0) == null)
-      return null;
+      return new DEBoolean(false); //jdc. December 11 2014. changed null to false here. if there is no thing, it is not inside anywhere.
     return _area.getIsInside ((DEPoint) paramValues.get (0));
   }
 }// end class ExprInside
@@ -662,7 +634,7 @@ class ExprLt extends Expression
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () < ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () < ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ()); //December. 11 JDC bug fix. paramValues[0]-> paramValues[1].
   }
 
 }// end class ExprLt
@@ -677,7 +649,7 @@ class ExprLte extends Expression
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () <= ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () <= ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());  //December. 11 JDC bug fix. paramValues[0]-> paramValues[1].
   }
 }// end class ExprLte
 
@@ -766,7 +738,7 @@ class ExprMultiple extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) {
     return ResolveType (super.validate (log, rubric));
   }
 
@@ -860,7 +832,7 @@ class ExprOrdered extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+ public boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = super.validate (log, rubric);
 
     return resolveType (ok);
@@ -982,7 +954,7 @@ class ExprRandom extends Expression
   }
 
   @Override
-  protected boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = super.validate (log, rubric);
     for (Expression exp : _parameters) {
       if (exp != null) {
@@ -1091,8 +1063,9 @@ class ExprStringMatch extends Expression
       caseSensitive = cs.getValue ();
     // handle when paramValues.count == 0?
     String string1 = ((DEString) paramValues.get (0)).getValue ();
-    String string2 = ((DEString) paramValues.get (0)).getValue ();
-    if (caseSensitive) {
+    String string2 = ((DEString) paramValues.get (1)).getValue (); //jdc. December 11, 2014. This was paramValues[0]. fixed to paramValues[1]
+    if (!caseSensitive) ////jdc. December 11, 2014. Changed (caseSensitive) to (!caseSensitive). bad bug.
+    {
       string1 = string1.toLowerCase ();
       string2 = string2.toLowerCase ();
     }
@@ -1201,7 +1174,7 @@ class ExprVariable extends Expression
   }
 
   @Override
-  boolean validate (ValidationLog log, QTIRubric rubric) {
+  public boolean validate (ValidationLog log, QTIRubric rubric) {
     ResolveIdentifierCardinality (rubric);
     ResolveIdentifierType (rubric);
     return super.validate (log, rubric);

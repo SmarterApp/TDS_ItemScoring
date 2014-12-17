@@ -12,7 +12,7 @@ package qtiscoringengine;
 public class DEString extends DataElement {
 	private String _value;
 
-	DEString(String id) {
+	public DEString(String id) {
 		_baseType = BaseType.String;
 		_value = id;
 	}

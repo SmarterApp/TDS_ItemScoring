@@ -21,6 +21,8 @@ bin/
 .settings/
 .cache/
 .springBeans
+.metadata/
+Servers/
 
 # Mac finder
 .DS_Store
