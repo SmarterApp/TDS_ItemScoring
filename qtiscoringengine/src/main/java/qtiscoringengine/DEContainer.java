@@ -156,7 +156,7 @@ public class DEContainer extends DataElement
   {
 	  if (i < _members.size())
 	  {
-		return getMember(i);
+		return _members.get(i);
 	  }
     return null;
   }
