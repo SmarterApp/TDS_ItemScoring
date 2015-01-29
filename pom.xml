@@ -6,7 +6,7 @@
 	<artifactId>item-scoring-master</artifactId>
 	<name>Item Scoring Master</name>
 	<packaging>pom</packaging>
-	<version>R01.00.17</version>
+	<version>R01.00.18</version>
 	<parent>
 		<groupId>org.opentestsystem.shared</groupId>
 		<artifactId>shared-master</artifactId>
