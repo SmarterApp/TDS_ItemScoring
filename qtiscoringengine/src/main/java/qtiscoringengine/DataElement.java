@@ -1,15 +1,16 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,10 +23,11 @@ import AIR.Common.Utilities.JavaPrimitiveUtils;
 
 public abstract class DataElement
 {
-
-  protected BaseType _baseType     = BaseType.Null;
-  protected String   _errorMessage = "No message";
-  protected boolean  _isContainer  = false;
+  private static final Pattern Whitespace    = Pattern.compile ("[{} \t\n\r]{1,}");
+  private static final Pattern Pairs         = Pattern.compile ("[^ ^,]{1,}[, ][^ ^,]{1,}");
+  protected BaseType           _baseType     = BaseType.Null;
+  protected String             _errorMessage = "No message";
+  protected boolean            _isContainer  = false;
 
   public boolean getIsNumber () {
     switch (_baseType) {
@@ -53,7 +55,6 @@ public abstract class DataElement
 
   public boolean getIsError () {
     // check if the type is DEError
-    // return this.getType() == typeof(DEError);
     return this instanceof DEError;
   }
 
@@ -71,47 +72,35 @@ public abstract class DataElement
 
   public abstract boolean equals (DataElement d);
 
-  public static DataElement create (Element node, BaseType bt)
-  {
-    BaseType valType = bt;
+  public static DataElement create (Element node, BaseType bt) {
+    _Ref<BaseType> valType = new _Ref<BaseType> (bt);
     if (node == null)
       return new DEError ("Null node passed"); // maybe this should return null
 
     String typeString = node.getAttributeValue ("baseType"); // node.GetAttribute("baseType");
-    if (!StringUtils.isEmpty (typeString))
-    {
-      // if (!Enum.TryParse(typeString, true, out valType))
-      _Ref<BaseType> out = new _Ref<BaseType> ();
-      if (!JavaPrimitiveUtils.enumTryParse (BaseType.class, typeString, true, out)) {
+    if (!StringUtils.isEmpty (typeString)) {
+      if (!JavaPrimitiveUtils.enumTryParse (BaseType.class, typeString, true, valType)) {
         return new DEError ("Could not parse BaseType from string: '" + typeString + "'");
       }
-      else
-        valType = out.get ();
     }
 
     String val = node.getText (); // node.InnerText;
 
-    return create (val, valType);
+    return create (val, valType.get ());
   }
 
-  public static DataElement create (String val, BaseType valType)
-  {
+  public static DataElement create (String val, BaseType valType) {
     String v1;
     int idx;
 
     if (val == null || StringUtils.isEmpty (val.trim ()))
       return null;
 
-    switch (valType)
-    {
+    switch (valType) {
     case BaseType:
-      BaseType bt = BaseType.Null;
-
-      // Enum.TryParse<BaseType>(val, true, out bt);
-      _Ref<BaseType> out = new _Ref<BaseType> ();
-      JavaPrimitiveUtils.enumTryParse (BaseType.class, val, true, out);
-      bt = out.get ();
-      return new DEBaseType (bt);
+      _Ref<BaseType> bt = new _Ref<> (BaseType.Null);
+      JavaPrimitiveUtils.enumTryParse (BaseType.class, val, true, bt);
+      return new DEBaseType (bt.get ());
     case String:
       return new DEString (val);
     case Identifier:
@@ -123,12 +112,10 @@ public abstract class DataElement
         return new DEError ("Could not parse int from value '" + val + "'");
       return new DEInteger (num.get ());
     case Float:
-      try
-      {
+      try {
         double f = Double.parseDouble (val);
         return new DEFloat (f);
-      } catch (Exception e)
-      {
+      } catch (Exception e) {
         return new DEError (e.getMessage ());
       }
     case Pair:
@@ -136,8 +123,7 @@ public abstract class DataElement
         v1 = val.trim ();
         idx = v1.indexOf (" ");
         return new DEPair (v1.substring (0, idx), v1.substring (idx + 1));
-      } catch (Exception e)
-      {
+      } catch (Exception e) {
         return new DEError (e.getMessage ());
       }
     case DirectedPair:
@@ -145,8 +131,7 @@ public abstract class DataElement
         v1 = val.trim ();
         idx = v1.indexOf (" ");
         return new DEDirectedPair (v1.substring (0, idx), v1.substring (idx + 1));
-      } catch (Exception e)
-      {
+      } catch (Exception e) {
         return new DEError (e.getMessage ());
       }
     case Boolean:
@@ -158,14 +143,12 @@ public abstract class DataElement
       }
       return new DEBoolean (b.get ());
     case Point:
-      try
-      {
+      try {
         v1 = val.trim ();
         v1 = v1.replace (',', ' ');
         idx = v1.indexOf (" ");
         return new DEPoint (Integer.parseInt (v1.substring (0, idx)), Integer.parseInt (v1.substring (idx + 1)));
-      } catch (Exception e)
-      {
+      } catch (Exception e) {
         return new DEError (e.getMessage ());
       }
     default:
@@ -173,34 +156,28 @@ public abstract class DataElement
     }
   }
 
-  public static DataElement createContainer (String vals, BaseType baseType, Cardinality card)
-  {
-    // clearing out the curly brackets which are sometimes used to separate
-    // pairs, but not always. Kludge.
-    // Regex whitespace = new Regex("[{} \t\n\r]{1,}");
-    // Regex pairs = new Regex("[^ ^,]{1,}[, ][^ ^,]{1,}");
-
-    // start by replacing all sequences of whitespace, }, or { with a single
-    // space
-    // vals = whitespace.Replace(vals, " ");
-    vals = vals.replaceAll ("[{} \t\n\r]{1,}", " ");
+  // Shiva: Review this method again. I do not have sample strings to test the
+  // Pairs regex
+  // and from email from Balaji it seemed a similar code block in AreaCircle is
+  // buggy in .NET
+  public static DataElement createContainer (String vals, BaseType baseType, Cardinality card) {
+    vals = Whitespace.matcher (vals).replaceAll (" ");
 
     // the use regex.matches to separate the string in singles or pairs
     // (depending on the base type)
     String[] strings = null;
 
-    switch (baseType)
-    {
+    switch (baseType) {
     case DirectedPair:
     case Pair:
     case Point:
-      Pattern pattern = Pattern.compile ("[^ ^,]{1,}[, ][^ ^,]{1,}");
-      Matcher matcher = pattern.matcher (vals);
+
+      Matcher matcher = Pairs.matcher (vals);
       ArrayList<String> al = new ArrayList<> ();
       while (matcher.find ()) {
         al.add (matcher.group ());
       }
-      strings = al.toArray (new String[0]);
+      strings = al.toArray (new String[al.size ()]);
       break;
     default:
       // strings = vals.Split(QTIXmlConstants.TokenDelimiters,
@@ -212,8 +189,7 @@ public abstract class DataElement
     // then create the data elements
     DEContainer dec = new DEContainer (baseType, card);
 
-    for (String val : strings)
-    {
+    for (String val : strings) {
       DataElement de = DataElement.create (val, baseType);
       dec.add (de);
     }
@@ -221,43 +197,36 @@ public abstract class DataElement
   }
 
   public static boolean isConformable (BaseType bt1, BaseType bt2) {
+    List<BaseType> confTypes = null;
+    if (bt2 == BaseType.Null)
+      return true;
+
     switch (bt1) {
     case Null:
       return true;
     case Identifier:
-      return Arrays.asList (
-          new BaseType[] { BaseType.Identifier, BaseType.String })
-          .contains (bt2);
+      return Arrays.asList (new BaseType[] { BaseType.Identifier, BaseType.String }).contains (bt2);
     case Boolean:
       return (bt2 == BaseType.Boolean);
     case Integer:
-      return Arrays.asList (
-          new BaseType[] { BaseType.Integer, BaseType.Float })
-          .contains (bt2);
+      // This is a correction over the .NET code.
+      return Arrays.asList (new BaseType[] { BaseType.Integer, BaseType.Float, BaseType.String }).contains (bt2);
     case Float:
-      return Arrays.asList (
-          new BaseType[] { BaseType.Integer, BaseType.Float })
-          .contains (bt2);
+      return Arrays.asList (new BaseType[] { BaseType.Integer, BaseType.Float, BaseType.String }).contains (bt2);
     case String:
       return true;
     case Point:
       return (bt2 == BaseType.Point);
     case Pair:
-      return Arrays.asList (
-          new BaseType[] { BaseType.Pair, BaseType.DirectedPair,
-              BaseType.Point }).contains (bt2);
+      return Arrays.asList (new BaseType[] { BaseType.Pair, BaseType.DirectedPair, BaseType.Point }).contains (bt2);
     case DirectedPair:
-      return Arrays.asList (
-          new BaseType[] { BaseType.Pair, BaseType.DirectedPair,
-              BaseType.Point }).contains (bt2);
+      return Arrays.asList (new BaseType[] { BaseType.Pair, BaseType.DirectedPair, BaseType.Point }).contains (bt2);
     case Duration:
       return (bt2 == BaseType.Duration);
     case File:
       return (bt2 == BaseType.File);
     case URI:
-      return Arrays
-          .asList (new BaseType[] { BaseType.URI, BaseType.File })
-          .contains (bt2);
+      return Arrays.asList (new BaseType[] { BaseType.URI, BaseType.File }).contains (bt2);
     case BaseType:
       return (bt2 == BaseType.BaseType);
     default:
@@ -265,8 +234,7 @@ public abstract class DataElement
     }
   }
 
-  public static boolean isConformableCardinality (Cardinality c1,
-      Cardinality c2) {
+  public static boolean isConformableCardinality (Cardinality c1, Cardinality c2) {
     if (c2 == Cardinality.None)
       return true;
     switch (c1) {
@@ -286,10 +254,9 @@ public abstract class DataElement
   }
 
   @Override
-  public String toString()
-  {
-      return getStringValue();
+  public String toString () {
+    return getStringValue ();
   }
-  
+
   public abstract String getStringValue ();
 }

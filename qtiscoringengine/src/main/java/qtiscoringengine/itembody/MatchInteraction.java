@@ -54,7 +54,6 @@ public class MatchInteraction extends MatchingInteraction
       }
 
       //go through the first simpleMatchSet node and get the simpleAssociableChoice nodes
-      //XmlNodeList assocChoiceNodes = simpleMatchSetNodes[0].SelectNodes(ItemBodyConstants.SimpleAssociableChoice, nsmgr);
       List<Element> assocChoiceNodes = new XmlElement(simpleMatchSetNodes.get (0)).selectNodes(ItemBodyConstants.SimpleAssociableChoice, nsmgr);
       for (Element elem : assocChoiceNodes)
       {
@@ -63,7 +62,6 @@ public class MatchInteraction extends MatchingInteraction
       }
 
       //go through the second simpleMatchSet node and get the simpleAssociableChoice nodes
-      //assocChoiceNodes = simpleMatchSetNodes[1].SelectNodes(ItemBodyConstants.SimpleAssociableChoice, nsmgr);
       assocChoiceNodes = new XmlElement(simpleMatchSetNodes.get (1)).selectNodes(ItemBodyConstants.SimpleAssociableChoice, nsmgr);
       for (Element elem : assocChoiceNodes)
       {

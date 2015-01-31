@@ -42,17 +42,12 @@ public class ResponseCondition extends ResponseRule
 
   static/* new */ResponseCondition fromXml (Element node, XmlNamespaceManager nsmgr, ValidationLog log)
   {
-    // XmlNode n = node.SelectSingleNode(QTIXmlConstants.ResponseIf, nsmgr);
-    // XmlElement responseIf = (XmlElement)n;
     XmlElement e = new XmlElement (node);
+   
     Element responseIf = e.selectSingleNode (QTIXmlConstants.ResponseIf, nsmgr);
 
-    // XmlNode n2 = node.SelectSingleNode(QTIXmlConstants.ResponseElse, nsmgr);
-    // XmlElement responseElse = (XmlElement)n2;
     Element responseElse = e.selectSingleNode (QTIXmlConstants.ResponseElse, nsmgr);
 
-    // XmlNodeList responseElseIf =
-    // node.SelectNodes(QTIXmlConstants.ResponseElseIf, nsmgr);
     List<Element> responseElseIf = e.selectNodes (QTIXmlConstants.ResponseElseIf, nsmgr);
 
     ResponseIf respIf = ResponseIf.fromXml (responseIf, nsmgr, log);
@@ -70,7 +65,7 @@ public class ResponseCondition extends ResponseRule
   }
 
   @Override
- public boolean validate (ValidationLog log, QTIRubric rubric)
+  boolean validate (ValidationLog log, QTIRubric rubric)
   {
     boolean ok = true;
     if (_if != null)
@@ -96,21 +91,21 @@ public class ResponseCondition extends ResponseRule
   }
 
   @Override
- public DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception
+  DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws QTIScoringException
   {
     DEBoolean resp = null;
     if (_if != null)
     {
       resp = (DEBoolean) _if.evaluate (vb, rubric);
-      if ((resp != null) && (resp.getValue () == true))
+      if ((resp != null) && (resp.getBooleanValue () == true))
         return resp;
     }
-    if ((resp == null) || resp.getValue () == false)
+    if ((resp == null) || resp.getBooleanValue () == false)
     {
       for (ResponseIf rif : _elseIf)
       {
         resp = (DEBoolean) rif.evaluate (vb, rubric);
-        if ((resp != null) && (resp.getValue () == true))
+        if ((resp != null) && (resp.getBooleanValue () == true))
           return resp;
       }
     }

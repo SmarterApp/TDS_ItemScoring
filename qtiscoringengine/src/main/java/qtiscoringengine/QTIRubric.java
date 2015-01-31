@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 
+import qtiscoringengine.cs2java.StringHelper;
 import AIR.Common.xml.XmlElement;
 import AIR.Common.xml.XmlNamespaceManager;
 import AIR.Common.xml.XmlReader;
@@ -34,6 +35,17 @@ public class QTIRubric
   private String                    _source               = "";
 
   private Set<Object>               _responseProcessingState;
+
+  private QTIRubric (String source, List<ResponseDeclaration> rdList, List<OutcomeDeclaration> odList, ResponseProcessing responseProcessor) {
+    _source = source;
+    _responseDeclarations = rdList;
+    _outcomeDeclarations = odList;
+    _responseProcessor = responseProcessor;
+    _responseProcessingState = new HashSet<Object> ();
+
+    _responseDeclarations.addAll (ResponseDeclaration.getBuiltInResponseDeclarations ());
+    _outcomeDeclarations.addAll (OutcomeDeclaration.getBuiltInOutcomeDeclarations ());
+  }
 
   public Set<Object> getResponseProcessingState () {
     return _responseProcessingState;
@@ -48,17 +60,6 @@ public class QTIRubric
         return ((OutcomeDeclaration) arg0).getIdentifier ();
       }
     }, new ArrayList<String> ());
-  }
-
-  private QTIRubric (String source, List<ResponseDeclaration> rdList, List<OutcomeDeclaration> odList, ResponseProcessing responseProcessor) {
-    _source = source;
-    _responseDeclarations = rdList;
-    _outcomeDeclarations = odList;
-    _responseProcessor = responseProcessor;
-    _responseProcessingState = new HashSet<Object> ();
-
-    _responseDeclarations.addAll (ResponseDeclaration.getBuiltInResponseDeclarations ());
-    _outcomeDeclarations.addAll (OutcomeDeclaration.getBuiltInOutcomeDeclarations ());
   }
 
   public static QTIRubric fromXML (String source, XmlReader reader, ValidationLog log) {
@@ -85,15 +86,16 @@ public class QTIRubric
     boolean foundNamespace = false;
     // add a default value for the namespace
     nsmgr.addNamespace ("qti", QTIXmlConstants.NameSpaces[0]);
-    // String xmlns = foo.getAttributeValue ("xmlns");
-    String xmlns = foo.getNamespace ().getURI ();
-    // if (QTIXmlConstants.NameSpaces.Contains(xmlns))
-    if (QTIXmlConstants.containsSchemaLocation (xmlns)) {/* contains */
+
+    String xmlns = foo.getNamespaceURI ();
+    XmlElement fooAsXml = new XmlElement (foo);
+    
+    if (StringHelper.contains (QTIXmlConstants.NameSpaces, xmlns)) {/* contains */
       nsmgr.addNamespace ("qti", xmlns);
       foundNamespace = true;
     } else {
       // XmlNodeList namespaceNodes = foo.SelectNodes("//*[@xmlns]");
-      List<Element> namespaceNodes = new XmlElement (foo).selectNodes ("//*[@xmlns]");
+      List<Element> namespaceNodes = fooAsXml.selectNodes ("//*[@xmlns]");
       for (Element elem : namespaceNodes)
         // if
         // (QTIXmlConstants.NameSpaces.Contains(elem.getAttributeValue("xmlns")))
@@ -104,10 +106,10 @@ public class QTIRubric
         }
     }
 
-    List<Element> responseDeclarations = new XmlElement (foo).selectNodes (QTIXmlConstants.ResponseDeclaration, nsmgr);
-    List<Element> outcomeDeclarations = new XmlElement (foo).selectNodes (QTIXmlConstants.OutcomeDeclaration, nsmgr);
+    List<Element> responseDeclarations = fooAsXml.selectNodes (QTIXmlConstants.ResponseDeclaration, nsmgr);
+    List<Element> outcomeDeclarations = fooAsXml.selectNodes (QTIXmlConstants.OutcomeDeclaration, nsmgr);
 
-    Element responseProcessing = new XmlElement (foo).selectSingleNode (QTIXmlConstants.ResponseProcessing, nsmgr);
+    Element responseProcessing = fooAsXml.selectSingleNode (QTIXmlConstants.ResponseProcessing, nsmgr);
     if (responseProcessing != null) {
       String url = responseProcessing.getAttributeValue ("template");
       if (!StringUtils.isEmpty (url)) {
@@ -148,6 +150,7 @@ public class QTIRubric
     try {
       responseProcessor = ResponseProcessing.fromXml (responseProcessing, nsmgr, log);
     } catch (Exception e) {
+      e.printStackTrace ();
       log.addMessage (responseProcessing, e.getMessage ());
     }
 
@@ -214,7 +217,7 @@ public class QTIRubric
     return null;
   }
 
-  OutcomeDeclaration getOutcomeDeclaration (String identifier) {
+  public OutcomeDeclaration getOutcomeDeclaration (String identifier) {
     if (identifier == null)
       return null;
     for (OutcomeDeclaration od : _outcomeDeclarations) {
@@ -277,7 +280,7 @@ public class QTIRubric
   }
 
   // / <summary>
-  // / TODO: this does not yet support getting the correct value from a
+  // / Original.NET: this does not yet support getting the correct value from a
   // responseProcessing node
   // / </summary>
   // / <param name="identifier"></param>
@@ -379,17 +382,17 @@ public class QTIRubric
     return list;
   }
 
-  public List<String[]> evaluate (String response, String identifier) throws Exception {
+  public List<String[]> evaluate (String response, String identifier) throws QTIScoringException {
     Map<String, String> dict = new HashMap<String, String> ();
     dict.put (identifier, response);
     return evaluate (QTIUtility.getResponse (this, dict));
   }
 
-  public List<String[]> evaluate (Map<String, String> IdentifiersAndResponses) throws Exception {
+  public List<String[]> evaluate (Map<String, String> IdentifiersAndResponses) throws QTIScoringException {
     return evaluate (QTIUtility.getResponse (this, IdentifiersAndResponses));
   }
 
-  public List<String[]> evaluate (Response response) throws Exception {
+  public List<String[]> evaluate (Response response) throws QTIScoringException {
     VariableBindings vb = new VariableBindings ();
     bindResponseVariables (response);
     transferValues (vb);
@@ -410,9 +413,9 @@ public class QTIRubric
     }
   }
 
-  void transferValues (VariableBindings bindings) throws Exception {
+  void transferValues (VariableBindings bindings) throws QTIScoringException {
     if (bindings == null || bindings.getCount () > 0) {
-      throw new Exception ("Programmer: you must call QTIRubric.TransferValues before you call Response.TransferBindings");
+      throw new QTIScoringException ("Programmer: you must call QTIRubric.TransferValues before you call Response.TransferBindings");
     }
     for (ResponseDeclaration rd : _responseDeclarations) {
       bindings.setVariable (rd.getIdentifier (), rd.getDefaultValue ());
@@ -438,5 +441,26 @@ public class QTIRubric
     if (rd == null)
       return null;
     return rd.getAreaMapping ();
+  }
+
+  public static void main (String[] args) {
+    try {
+      String source = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/ERX/Item_73_v8.qrx";
+      String logFile = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/logs/Item_73_v8.qrx.log";
+
+      ValidationLog log = new ValidationLog (logFile);
+      QTIRubric rubric = QTIRubric.fromXML (source, XmlReader.create (source), log);
+
+      // check if there were any problems with the rubric
+      if (rubric == null || !rubric.validate (log)) {
+        StringBuilder rationaleString = new StringBuilder ();
+        for (int i = 0; i < log.getCount (); i++)
+          rationaleString.append (log.Message (i) + "\n");
+        System.err.println (rationaleString);
+      }
+
+    } catch (Exception exp) {
+      exp.printStackTrace ();
+    }
   }
 }

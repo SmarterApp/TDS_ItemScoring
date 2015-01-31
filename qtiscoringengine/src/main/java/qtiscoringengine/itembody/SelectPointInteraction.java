@@ -47,7 +47,6 @@ class SelectPointInteraction extends Interaction
           String respIdentifier = element.getAttributeValue(ItemBodyConstants.ResponseIdentifier);
           String maxChoices = element.getAttributeValue(ItemBodyConstants.MaxChoices);
 
-          //XmlElement objectNode = (XmlElement)element.SelectSingleNode(ItemBodyConstants.Object, nsmgr);
           Element objectNode = new XmlElement(element).selectSingleNode(ItemBodyConstants.Object, nsmgr);
           if (objectNode == null)
           {

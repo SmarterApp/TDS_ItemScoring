@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -20,24 +20,16 @@ public class VariableBindings
   }
 
   public void setVariable (String identifier, DataElement value) {
-    // if (_variableBindings.containsKey(identifier))
-    // {
+    // Shiva: the .NET code here does not make sense.
     _variableBindings.put (identifier, value);
-    // }
-    // else _variableBindings.Add(identifier, value);
   }
-  public void Remove(String identifier)
-  {
-	  if (_variableBindings.containsKey(identifier))
-	  {
-		 _variableBindings.remove(identifier);
-	  }
+
+  public void remove (String identifier) {
+    if (_variableBindings.containsKey (identifier))
+      _variableBindings.remove (identifier);
   }
 
   public DataElement getVariable (String identifier) {
-    // if (_variableBindings.ContainsKey(identifier))
-    // return _variableBindings[identifier];
-    // return null;
     return _variableBindings.get (identifier);
   }
 

@@ -37,7 +37,6 @@ public class HotspotInteraction extends Interaction
       String respIdentifier = element.getAttributeValue(ItemBodyConstants.ResponseIdentifier);
       String maxChoices = element.getAttributeValue(ItemBodyConstants.MaxChoices);
 
-      //XmlNodeList hotspotChoiceNodes = element.SelectNodes(ItemBodyConstants.HotspotChoice, nsmgr);
       List<Element> hotspotChoiceNodes = new XmlElement(element).selectNodes(ItemBodyConstants.HotspotChoice, nsmgr);
       List<HotspotChoice> hscList = new ArrayList<HotspotChoice>();
       for (Element elem : hotspotChoiceNodes)

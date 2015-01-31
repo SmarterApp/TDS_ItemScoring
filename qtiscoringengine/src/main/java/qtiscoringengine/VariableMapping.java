@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -23,17 +23,14 @@ public class VariableMapping extends Mapping
 {
   private List<VariableMapEntry> _entries = new ArrayList<VariableMapEntry> ();
 
-  private VariableMapping (List<VariableMapEntry> entryList, double fDefault, double fUpper, double fLower, Element node)
-  {
+  private VariableMapping (List<VariableMapEntry> entryList, double fDefault, double fUpper, double fLower, Element node) {
     super (fDefault, fUpper, fLower, node);
     _entries = entryList;
   }
 
   @Override
-  MapEntry findEntry (DataElement value)
-  {
-    for (VariableMapEntry entry : _entries)
-    {
+  MapEntry findEntry (DataElement value) {
+    for (VariableMapEntry entry : _entries) {
       if (entry.getKey ().equals (value))
         return entry;
     }
@@ -46,23 +43,18 @@ public class VariableMapping extends Mapping
   // / <param name="identifier"></param>
   // / <param name="ignoreCase"></param>
   // / <returns></returns>
-  MapEntry findEntry (String identifier, boolean ignoreCase)
-  {
-    for (VariableMapEntry entry : _entries)
-    {
-      if (ignoreCase)
-      {
-        if (identifier.equalsIgnoreCase ((entry.getKey ().getStringValue ())))
+  MapEntry findEntry (String identifier, boolean ignoreCase) {
+    for (VariableMapEntry entry : _entries) {
+      if (ignoreCase) {
+        if (StringUtils.equalsIgnoreCase (identifier, (entry.getKey ().getStringValue ())))
           return entry;
-      }
-      else if (identifier.equals (entry.getKey ().getStringValue ()))
+      } else if (identifier.equals (entry.getKey ().getStringValue ()))
         return entry;
     }
     return null;
   }
 
-  static VariableMapping fromXML (Element node, BaseType bt, XmlNamespaceManager nsmgr, ValidationLog log)
-  {
+  static VariableMapping fromXML (Element node, BaseType bt, XmlNamespaceManager nsmgr, ValidationLog log) {
     if (node == null)
       return null;
 
@@ -70,16 +62,16 @@ public class VariableMapping extends Mapping
     String upper = node.getAttributeValue ("upperBound");
     String lower = node.getAttributeValue ("lowerBound");
 
-    _Ref<Float> fDefault = new _Ref<> (-Float.MAX_VALUE);
+    _Ref<Float> fDefault = new _Ref<> (Float.MIN_VALUE);
     _Ref<Float> fUpper = new _Ref<> (Float.MAX_VALUE);
-    _Ref<Float> fLower = new _Ref<> (-Float.MAX_VALUE);
+    _Ref<Float> fLower = new _Ref<> (Float.MIN_VALUE);
 
     if (!JavaPrimitiveUtils.floatTryParse (defVal, fDefault))// this is required
                                                              // so return null
                                                              // if it fails
     {
       log.addMessage (node, "Could not parse float value for defaultValue. Value attempted: '" + defVal + "'");
-      fDefault.set (-Float.MAX_VALUE);
+      fDefault.set (Float.MIN_VALUE);
     }
     if (!StringUtils.isEmpty (upper))
       if (!JavaPrimitiveUtils.floatTryParse (upper, fUpper))
@@ -92,8 +84,7 @@ public class VariableMapping extends Mapping
     List<Element> entries = new XmlElement (node).selectNodes ("qti:mapEntry", nsmgr);
     List<VariableMapEntry> entryList = new ArrayList<VariableMapEntry> ();
 
-    for (Element me : entries)
-    {
+    for (Element me : entries) {
       VariableMapEntry e = VariableMapEntry.FromXML (me, bt, log);
       if (e != null)
         entryList.add (e);
@@ -103,14 +94,11 @@ public class VariableMapping extends Mapping
   }
 
   @Override
-  boolean validate (QTIRubric rubric, ValidationLog log)
-  {
+  boolean validate (QTIRubric rubric, ValidationLog log) {
     boolean ok = true;
-    if (_entries.size () == 0)
-    {
+    if (_entries.size () == 0) {
       log.addMessage (_node, "Area Mapping did not contain any entries, at least 1 is required");
-      switch (log.getValidationRigor ())
-      {
+      switch (log.getValidationRigor ()) {
       case None:
         break;
       default:
@@ -118,35 +106,27 @@ public class VariableMapping extends Mapping
         break;
       }
     }
-    if (_defaultValue == null)
-    {
+    if (_defaultValue == null) {
       log.addMessage (_node, "Required node defaultValue was not specified");
-      switch (log.getValidationRigor ())
-      {
+      switch (log.getValidationRigor ()) {
       case None:
         break;
       default:
         ok = false;
         break;
       }
-    }
-    else if (_defaultValue.getIsError ())
-    {
+    } else if (_defaultValue.getIsError ()) {
       log.addMessage (_node, _defaultValue.getErrorMessage ());
-      switch (log.getValidationRigor ())
-      {
+      switch (log.getValidationRigor ()) {
       case None:
         break;
       default:
         ok = false;
         break;
       }
-    }
-    else if (_defaultValue.getValue () == -Float.MAX_VALUE)
-    {
+    } else if (_defaultValue.getValue () == Float.MIN_VALUE) {
       log.addMessage (_node, "Could not parse defaultValue");
-      switch (log.getValidationRigor ())
-      {
+      switch (log.getValidationRigor ()) {
       case None:
         break;
       default:

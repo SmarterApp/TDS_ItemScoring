@@ -30,11 +30,11 @@ public class DEContainer extends DataElement
     return _cardinality;
   }
 
-  int getMemberCount () {
+  public int getMemberCount () {
     return _members.size ();
   }
 
-  void add (DataElement de) {
+  public void add (DataElement de) {
     _members.add (de);
   }
 
@@ -152,13 +152,8 @@ public class DEContainer extends DataElement
     return true;
   }
 
-  public DataElement getMember (int i) 
-  {
-	  if (i < _members.size())
-	  {
-		return _members.get(i);
-	  }
-    return null;
+  public DataElement getMember (int i) {
+    return _members.get (i);
   }
 
   @Override

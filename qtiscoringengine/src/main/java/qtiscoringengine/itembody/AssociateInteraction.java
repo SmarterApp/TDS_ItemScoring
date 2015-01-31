@@ -39,8 +39,6 @@ public class AssociateInteraction extends Interaction
     String maxAssociations = element.getAttributeValue (ItemBodyConstants.MaxAssociations);
     String shuffle = element.getAttributeValue (ItemBodyConstants.Shuffle);
 
-    // XmlNodeList simpleAssocChoices =
-    // element.SelectNodes(ItemBodyConstants.SimpleAssociableChoice, nsmgr);
     List<Element> simpleAssocChoices = new XmlElement (element).selectNodes (ItemBodyConstants.SimpleAssociableChoice, nsmgr);
     List<SimpleAssociableChoice> sacList = new ArrayList<SimpleAssociableChoice> ();
     for (Element scElem : simpleAssocChoices)

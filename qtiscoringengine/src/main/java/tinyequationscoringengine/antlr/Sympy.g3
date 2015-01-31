@@ -1,0 +1,110 @@
+grammar Sympy;
+
+options {
+    language=Java;
+    TokenLabelType=CommonToken;
+    output=AST;
+    ASTLabelType=CommonTree;
+	  backtrack=true;
+}
+
+tokens {
+ASSIGN	= '=' ;
+MULT='*';
+PLUS='+';
+UNARY_MINUS;
+POW;
+DIV;
+ELIST;       // expr list
+EXPR;        // root of an expr
+REL;
+CALL;
+SUB;
+}
+
+@lexer::namespace{TinyEquationScoringEngine.ANTLR}
+@parser::namespace{TinyEquationScoringEngine.ANTLR}
+
+@members {
+private int _depth = 0;
+}
+
+/*
+ * Parser Rules
+ */
+
+rel
+	:	'Eq'
+	|	'Le'
+	|	'Lt'
+	|	'Ge'
+	|	'Gt'
+	|	'Ne'
+	;	
+
+exprList
+    :   expr (',' expr)* -> ^(ELIST expr+)
+    |   -> ELIST
+    ;
+
+public
+expression
+    :   expr WS -> ^(EXPR expr)
+    ;
+
+expr:   relExpr
+    ;
+relExpr:   rel '(' addExpr ',' addExpr ')' -> ^(rel addExpr+)
+	|	addExpr
+	;
+
+addExpr
+    :   mulExpr (('+'^ | '-'^) mulExpr)*
+    ;
+
+mulExpr
+    :   unrExpr (('*'^ | '/'^) unrExpr)*
+    ;
+
+unrExpr
+    :   op='-' unrExpr -> ^(UNARY_MINUS[$op] unrExpr)	
+    |   supExpr
+    ;
+
+supExpr
+	:	(pstExpr->pstExpr) 
+		(
+			('*' '*'  pstExpr -> ^(POW["**"] $supExpr pstExpr))
+		)*
+	;
+
+pstExpr
+    :   (subExpr->subExpr)
+        (
+            (   '(' exprList ')' -> ^(CALL $pstExpr exprList))  
+        )*
+	;
+
+subExpr
+	:	(atom->atom) (('_' atom) -> ^(SUB $subExpr atom))* 
+	;
+
+atom
+    :   ID
+    |   INT
+    |   FLOAT
+    |   '(' expr ')' -> expr
+    ;
+
+/*
+ * Lexer Rules
+ */
+
+ID 	:	('a'..'z'|'A'..'Z')+;
+FLOAT
+    :   INT '.' INT*
+    |   '.' INT+
+    ;
+INT	:	'0'..'9'+;
+NEWLINE	:	'\r'?'\n';
+WS	:	(' '|'\t'|'\n'|'\r')+ {Skip();};

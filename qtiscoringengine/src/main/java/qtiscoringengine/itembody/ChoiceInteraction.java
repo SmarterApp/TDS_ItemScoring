@@ -39,8 +39,6 @@ public class ChoiceInteraction extends Interaction
     String maxChoices = element.getAttributeValue (ItemBodyConstants.MaxChoices);
     String shuffle = element.getAttributeValue (ItemBodyConstants.Shuffle);
 
-    // XmlNodeList simpleChoices =
-    // element.SelectNodes(ItemBodyConstants.SimpleChoice, nsmgr);
     List<Element> simpleChoices = new XmlElement (element).selectNodes (ItemBodyConstants.SimpleChoice, nsmgr);
     List<SimpleChoice> scList = new ArrayList<SimpleChoice> ();
     for (Element scElem : simpleChoices)

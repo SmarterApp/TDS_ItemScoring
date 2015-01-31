@@ -37,7 +37,6 @@ public class GraphicAssociateInteraction extends Interaction
       String respIdentifier = element.getAttributeValue(ItemBodyConstants.ResponseIdentifier);
       String maxAssociations = element.getAttributeValue(ItemBodyConstants.MaxAssociations);
 
-      //XmlNodeList assocHotspotNodes = element.SelectNodes(ItemBodyConstants.AssociableHotspot, nsmgr);
       List<Element> assocHotspotNodes = new XmlElement(element).selectNodes(ItemBodyConstants.AssociableHotspot, nsmgr);
       List<AssociableHotspot> ahsList = new ArrayList<AssociableHotspot>();
       for (Element scElem : assocHotspotNodes)

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -15,6 +15,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,16 +41,12 @@ public class QTIUtility
   // / </summary>
   // / <param name="basetype"></param>
   // / <returns></returns>
-  static BaseType basetypeFromXML (String basetype)
-  {
+  static BaseType basetypeFromXML (String basetype) {
     _Ref<BaseType> out = new _Ref<> (BaseType.Null);
     if (basetype == null)
       basetype = ""; // so we can call trim below
 
-    if (!StringUtils.isEmpty (basetype.trim ()))
-    {
-      // if (!Enum.TryParse(basetype, true, out bt))
-      // bt = BaseType.Null;
+    if (!StringUtils.isEmpty (basetype.trim ())) {
       if (!JavaPrimitiveUtils.enumTryParse (BaseType.class, basetype.trim (), true, out))
         out.set (BaseType.Null);
     }
@@ -61,30 +58,26 @@ public class QTIUtility
   // / </summary>
   // / <param name="cardinality">value to parse</param>
   // / <returns></returns>
-  static Cardinality cardinalityFromXML (String cardinality)
-  {
+  static Cardinality cardinalityFromXML (String cardinality) {
     _Ref<Cardinality> card = new _Ref<> (Cardinality.None);
     if (cardinality == null)
       cardinality = ""; // so we can call trim below
 
-    if (!StringUtils.isEmpty (cardinality.trim ()))
-    {
+    if (!StringUtils.isEmpty (cardinality.trim ())) {
       if (!JavaPrimitiveUtils.enumTryParse (Cardinality.class, cardinality.trim (), true, card))
         return Cardinality.None;
     }
     return card.get ();
   }
 
-  static List<DataElement> getValueListFromXML (Element defaultVal, BaseType bt, XmlNamespaceManager nsmgr)
-  {
+  static List<DataElement> getValueListFromXML (Element defaultVal, BaseType bt, XmlNamespaceManager nsmgr) {
     List<DataElement> values = new ArrayList<DataElement> ();
     if (defaultVal == null)
       return values;
     // XmlNodeList defaultValues = defaultVal.SelectNodes(QTIXmlConstants.Value,
     // nsmgr);
     List<Element> defaultValues = new XmlElement (defaultVal).selectNodes (QTIXmlConstants.Value, nsmgr);
-    for (Element node : defaultValues)
-    {
+    for (Element node : defaultValues) {
       DataElement de = DataElement.create (node, bt);
       // todo: add error checking for if de.IsError
       // Zach: adding checks where this is called instead
@@ -93,16 +86,14 @@ public class QTIUtility
     return values;
   }
 
-  static DataElement getSingleValueFromXML (Element defaultVal, BaseType bt, XmlNamespaceManager nsmgr)
-  {
+  static DataElement getSingleValueFromXML (Element defaultVal, BaseType bt, XmlNamespaceManager nsmgr) {
     DataElement de = null;
     if (defaultVal == null)
       return null;
     // XmlElement node =
     // (XmlElement)defaultVal.SelectSingleNode(QTIXmlConstants.Value, nsmgr);
     Element node = new XmlElement (defaultVal).selectSingleNode (QTIXmlConstants.Value, nsmgr);
-    if (node != null)
-    {
+    if (node != null) {
       de = DataElement.create (node, bt);
     }
     return de;
@@ -125,8 +116,7 @@ public class QTIUtility
   // return null;
   // }
 
-  static Element getXMLFromURL (String url, XmlNamespaceManager nsmgr) throws MalformedURLException
-  {
+  static Element getXMLFromURL (String url, XmlNamespaceManager nsmgr) throws MalformedURLException, QTIScoringException {
     // C:\Projects\QTISpec\qtiv2p1pd2\rptemplates
     // Uri uri = new Uri(url);
     // string[] chunks = uri.
@@ -138,18 +128,18 @@ public class QTIUtility
     // string.Format("file:///C:\\Projects\\QTISpec\\qtiv2p1pd2\\rptemplates\\{0}.xml",
     // filename);
     Document doc = new Document ();
-    
-    URL _url = new URL(url);
+
+    URL _url = new URL (url);
     try (InputStream is = _url.openStream ()) {
       doc = new SAXBuilder ().build (is);
     } catch (JDOMException | IOException e) {
       e.printStackTrace ();
+      throw new QTIScoringException (e);
     }
     // return XPathFactory.instance ().compile
     // (QTIXmlConstants.ResponseProcessing, Filters.element (), null,
     // nsmgr).evaluateFirst (doc);
-    //return new XmlElement (doc.getRootElement ()).selectSingleNode (QTIXmlConstants.ResponseProcessing, nsmgr);
-    return doc.getRootElement ();
+    return new XmlElement (doc.getRootElement ()).selectSingleNode (QTIXmlConstants.ResponseProcessing, nsmgr);
   }
 
   // / <summary>
@@ -159,8 +149,7 @@ public class QTIUtility
   // / </summary>
   // / <param name="node"></param>
   // / <returns></returns>
-  static String nodeToString (Element node)
-  {
+  static String nodeToString (Element node) {
     if (node == null)
       return "";
     XMLOutputter out = new XMLOutputter (Format.getPrettyFormat ());
@@ -173,11 +162,8 @@ public class QTIUtility
   // / </summary>
   // / <param name="delimitedString"></param>
   // / <returns></returns>
-  public static List<String> ParseDelimitedString (String delimitedString)
-  {
-    // return delimitedString.Split(new char[] { ',', ' ' },
-    // StringSplitOptions.RemoveEmptyEntries).ToList<string>();
-    return Arrays.asList (delimitedString.split ("[, ]+"));
+  public static List<String> parseDelimitedString (String delimitedString) {
+    return Arrays.asList (StringUtils.split (delimitedString, "[, ]+"));
   }
 
   // / <summary>
@@ -195,29 +181,19 @@ public class QTIUtility
   // / <param name="IdentifiersAndResponses">key is identifier, value is
   // response</param>
   // / <returns></returns>
-  static Response getResponse (QTIRubric rubric, Map<String, String> IdentifiersAndResponses)
-  {
+  static Response getResponse (QTIRubric rubric, Map<String, String> identifiersAndResponses) {
     Map<String, String> _responseValues = new HashMap<String, String> ();
-    for (String[] info : rubric.getPublicVariableDeclarations ())
-    {
+    for (String[] info : rubric.getPublicVariableDeclarations ()) {
       _responseValues.put (info[0], _responseValues.containsKey (info[0]) ? _responseValues.get (info[0]) : null);
     }
     // get the key for the response and set the value to the response parameter
-    // foreach (KeyValuePair<string, string> kvp in IdentifiersAndResponses)
-    // {
-    // if (_responseValues.ContainsKey(kvp.Key))
-    // _responseValues[kvp.Key] = kvp.Value;
-    // //throw error if the identifier doesn't exist??
-    // }
-
-    for (String key : IdentifiersAndResponses.keySet ()) {
-      if (_responseValues.containsKey (key))
-        _responseValues.put (key, IdentifiersAndResponses.get (key));
+    for (Map.Entry<String, String> entry : identifiersAndResponses.entrySet ()) {
+      if (_responseValues.containsKey (entry.getKey ()))
+        _responseValues.put (entry.getKey (), entry.getValue ());
     }
 
     List<ResponseBinding> responses = new ArrayList<ResponseBinding> ();
-    for (String varname : _responseValues.keySet ())
-    {
+    for (String varname : _responseValues.keySet ()) {
       String val = _responseValues.get (varname);
       ResponseBinding binding = new ResponseBinding (varname, val);
       responses.add (binding);
@@ -230,15 +206,10 @@ public class QTIUtility
   // and time
   // / </summary>
   // / <returns></returns>
-  public static String getUniqueFileName (String fileNamePrefix, String fileExtension)
-  {
-    // DateTime now = DateTime.Now;
+  public static String getUniqueFileName (String fileNamePrefix, String fileExtension) {
+    Date d = Calendar.getInstance ().getTime ();
     long now = System.currentTimeMillis ();
-    // return "QTIScoringEngine_" + fileNamePrefix + "_" +
-    // now.ToShortDateString().Replace("/", "-") + "_" +
-    // now.ToLongTimeString().Replace(" ", "").Replace(":", "_") +
-    // fileExtension;
-    return "QTIScoringEngine_" + fileNamePrefix + "_" + DateFormat.getDateInstance (DateFormat.SHORT).format (new Date (now)).replace ("/", "-") + "_"
-        + DateFormat.getTimeInstance (DateFormat.LONG).format (new Date (now)).replace (" ", "").replace (":", "_") + fileExtension;
+    return "QTIScoringEngine_" + fileNamePrefix + "_" + DateFormat.getDateInstance (DateFormat.SHORT).format (d).replace ("/", "-") + "_"
+        + DateFormat.getTimeInstance (DateFormat.LONG).format (d).replace (" ", "").replace (":", "_") + fileExtension;
   }
 }

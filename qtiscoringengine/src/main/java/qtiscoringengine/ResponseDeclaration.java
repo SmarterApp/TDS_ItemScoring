@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -54,14 +54,6 @@ public class ResponseDeclaration extends VariableDeclaration
     String cardinality = element.getAttributeValue ("cardinality");
     String basetype = element.getAttributeValue ("baseType");
 
-    // XmlNode defaultVal =
-    // element.SelectSingleNode(QTIXmlConstants.DefaultValue,nsmgr);
-    // XmlNode correctResponse =
-    // element.SelectSingleNode(QTIXmlConstants.CorrectResponse, nsmgr);
-    // XmlElement mappingNode =
-    // (XmlElement)element.SelectSingleNode(QTIXmlConstants.Mapping, nsmgr);
-    // XmlElement areaMappingNode =
-    // (XmlElement)element.SelectSingleNode(QTIXmlConstants.AreaMapping, nsmgr);
     XmlElement ele = new XmlElement (element);
     Element defaultVal = ele.selectSingleNode (QTIXmlConstants.DefaultValue, nsmgr);
     Element correctResponse = ele.selectSingleNode (QTIXmlConstants.CorrectResponse, nsmgr);
@@ -137,7 +129,7 @@ public class ResponseDeclaration extends VariableDeclaration
       return returnVal;
     MapEntry entry = _mapping.findEntry (answer, ignoreCase);
     if (entry != null)
-      returnVal = entry.getValue ().getValue ();
+      returnVal = entry.getValue ().getValue ().doubleValue ();
     return returnVal;
   }
 
@@ -147,7 +139,7 @@ public class ResponseDeclaration extends VariableDeclaration
       return returnVal;
     MapEntry entry = _mapping.findEntry (de);
     if (entry != null)
-      returnVal = entry.getValue ().getValue ();
+      returnVal = entry.getValue ().getValue ().doubleValue ();
     return returnVal;
   }
 

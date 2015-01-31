@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math.util.MathUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -25,6 +26,17 @@ import AIR.Common.xml.XmlReader;
 
 public class Test
 {
+
+  public static void main (String[] args) {
+
+    try {
+      URI uri = new URI ("http://38.118.82.183:8080/abc");
+      System.err.println(uri.toString ());
+
+    } catch (Exception e) {
+      e.printStackTrace ();
+    }
+  }
 
   public static void mainz (String[] args) {
 
@@ -41,7 +53,6 @@ public class Test
 
       System.err.println (strn.toString ());
     } catch (IOException | JDOMException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace ();
     }
   }
@@ -50,7 +61,7 @@ public class Test
     System.err.println ("a".compareTo (new String ("a")));
   }
 
-  public static void main (String[] args) {
+  public static void mainm (String[] args) {
     String rationale = "";
     try {
       String source = "file:///C:/tmp/Bank-187/Items/Item-187-2564/Item_2564_v1Copy.xml";

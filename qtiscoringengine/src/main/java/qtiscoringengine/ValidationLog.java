@@ -63,15 +63,15 @@ public class ValidationLog
     return _log.get (i).getMessage ();
   }
 
-  public String GetLogHTML ()
+  public String getLogHTML ()
   {
     String returnString = "";
     try (StringWriter writer = new StringWriter ())
     {
-      writer.append (GetHTMLHeader ()).append ("\n");
+      writer.append (getHTMLHeader ()).append ("\n");
       for (ValidationLogEntry entry : _log)
         writer.append (entry.writeHtmlTableRow ()).append ("\n");
-      writer.append (GetHTMLClosing ()).append ("\n");
+      writer.append (getHTMLClosing ()).append ("\n");
       returnString = writer.toString ();
     } catch (IOException e) {
       e.printStackTrace ();
@@ -79,7 +79,7 @@ public class ValidationLog
     return returnString;
   }
 
-  private String GetHTMLHeader ()
+  private String getHTMLHeader ()
   {
     // This has room for future improvements for formatting
     StringBuilder sb = new StringBuilder ();
@@ -96,7 +96,7 @@ public class ValidationLog
     return sb.toString ();
   }
 
-  private String GetHTMLClosing ()
+  private String getHTMLClosing ()
   {
     // This has room for future improvements for formatting
     StringBuilder sb = new StringBuilder ();

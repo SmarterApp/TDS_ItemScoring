@@ -1,0 +1,136 @@
+grammar Corrective;
+
+options {
+    language=Java;
+    TokenLabelType=CommonToken;
+    output=AST;
+    ASTLabelType=CommonTree;
+	backtrack=true;
+}
+
+tokens {
+	MUL;
+}
+
+@lexer::namespace{TinyEquationScoringEngine.ANTLR}
+@parser::namespace{TinyEquationScoringEngine.ANTLR}
+
+@rulecatch {
+catch (RecognitionException e) {
+throw e;
+}
+}
+
+@parser::header { 
+	package tinyequationscoringengine; 
+}
+
+@parser::members {
+private Stopwatch _stopWatch = null;
+private int _depth = 0;
+// override it to disable recovery
+public override object RecoverFromMismatchedSet(IIntStream input, RecognitionException e, BitSet follow) 
+{
+	throw e;
+}
+// override it to disable recovery
+protected override object RecoverFromMismatchedToken(IIntStream input, int ttype, BitSet follow)
+{ 
+    MismatchedTokenException mte = new MismatchedTokenException(ttype, input);
+    throw mte;
+}
+}
+
+/*
+ * Parser Rules
+ */
+
+relation
+	:	'Eq'
+	|	'Le'
+	|	'Lt'
+	|	'Ge'
+	|	'Gt'
+	|	'Ne'
+	;	
+
+expressionList
+    :   expr (',' expr)* 
+    |   
+    ;
+
+public
+expression
+    :   expr EOF -> expr
+    ;
+
+expr:   relationalExpression
+    ;
+
+relationalExpression
+    :	relation '(' additiveExpression ',' additiveExpression ')' 
+	|	additiveExpression
+	;
+
+additiveExpression
+    :   multiplicativeExpression (('+' | '-') multiplicativeExpression)*
+    ;
+
+multiplicativeExpression
+    :	preceedingMultExpression superExpression (('*' | '/') multiplicativeExpression)*  //*9->x*9 but not *-18->x*-18
+	|	unaryExpression (('*' | '/') multiplicativeExpression)*	
+    |	unaryExpression (('*' | '/') multiplicativeExpression)* trailingMultExpression 
+    ;
+
+preceedingMultExpression
+	:	'*' -> ID["x"] '*'
+	;
+
+trailingMultExpression
+	:	'*' -> '*' ID["x"]
+	;
+
+unaryExpression
+    :   '-' unaryExpression 
+    |   superExpression
+    ;
+
+
+superExpression
+	:	postfixExpression
+		(
+			('*' '*' postfixExpression) 
+		)*
+	;
+
+postfixExpression
+    :   subscriptExpression 
+        (
+            '(' expressionList ')'
+        )*
+	;
+
+subscriptExpression
+	:	atom ('_' atom)* 
+	;
+
+atom
+    :   ID
+    |   INT
+    |   FLOAT
+    |   '(' expr ')' 
+	|	'*' -> ID["x"]
+    ;
+
+/*
+ * Lexer Rules
+ */
+
+ID 	:	('a'..'z'|'A'..'Z')+;
+FLOAT
+    :   INT '.' INT*
+    |   '.' INT+
+    ;
+INT	:	'0'..'9'+;
+NEWLINE	:	'\r'?'\n';
+WS	:	(' '|'\t'|'\n'|'\r')+ {Skip();};

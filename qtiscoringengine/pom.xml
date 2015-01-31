@@ -4,13 +4,22 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>R01.00.18</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>qtiscoringengine</artifactId>
+	<properties>
+		<servlet-api.version>2.5</servlet-api.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.opentestsystem.shared</groupId>
-			<artifactId>shared-common</artifactId>
+			<artifactId>shared-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.opentestsystem.shared</groupId>
@@ -25,5 +34,57 @@
 			<artifactId>jaxen</artifactId>
 			<version>1.1.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>3.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cassandra</groupId>
+			<artifactId>cassandra-all</artifactId>
+			<version>2.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-integration</artifactId>
+			<version>1.1.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-cypher-compiler-2.1</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+			<version>5.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-batch</artifactId>
+			<version>1.1.4.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>1.1.4.RELEASE</version>
+		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<!-- <plugin> <groupId>org.antlr</groupId> <artifactId>antlr3-maven-plugin</artifactId> 
+				<version>3.5.2</version> <executions> <execution> <goals> <goal>antlr</goal> 
+				</goals> <configuration> <conversionTimeout>10000</conversionTimeout> <debug>false</debug> 
+				<dfa>false</dfa> <nfa>false</nfa> <libDirectory>src/main/antlr</libDirectory> 
+				<messageFormat>antlr</messageFormat> <outputDirectory>src/main/gen</outputDirectory> 
+				<printGrammar>false</printGrammar> <profile>false</profile> <report>false</report> 
+				<sourceDirectory>src/main/antlr</sourceDirectory> <trace>false</trace> <verbose>true</verbose> 
+				</configuration> </execution> </executions> </plugin> -->
+		</plugins>
+	</build>
 </project>

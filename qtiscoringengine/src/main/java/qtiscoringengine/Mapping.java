@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -27,23 +27,24 @@ abstract class Mapping
     _node = node;
   }
 
-  double MapResponse (DataElement de) {
-    
-    if (de == null) return Double.NaN;
-    
+  double mapResponse (DataElement de) {
+
+    if (de == null)
+      return Double.NaN;
+
     if (de.getIsContainer ()) {
-      return MapContainerResponse (de);
+      return mapContainerResponse (de);
     } else {
       MapEntry entry = findEntry (de);
       if (entry != null) {
-        return applyLimits (entry.getValue ().getValue ());
+        return applyLimits (entry.getValue ().getValue ().doubleValue ());
       } else {
         return applyLimits (_defaultValue.getValue ());
       }
     }
   }
 
-  protected double MapContainerResponse (DataElement de) {
+  protected double mapContainerResponse (DataElement de) {
     double rtnVal = 0.0;
     DEContainer container = (DEContainer) de;
     List<MapEntry> used = new ArrayList<MapEntry> ();
@@ -54,7 +55,7 @@ abstract class Mapping
         if (used.contains (entry))
           continue;
         else {
-          rtnVal += entry.getValue ().getValue ();
+          rtnVal += entry.getValue ().getValue ().doubleValue ();
           used.add (entry);
         }
       }

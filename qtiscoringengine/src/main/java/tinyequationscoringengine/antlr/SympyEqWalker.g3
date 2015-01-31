@@ -1,0 +1,41 @@
+tree grammar SympyEqWalker;
+
+options {
+    language=Java;
+    tokenVocab=Sympy;
+    ASTLabelType=CommonTree;
+	output=AST;              // build new ASTs from input AST
+    filter=true;
+    backtrack=true;
+}
+
+@namespace{TinyEquationScoringEngine.ANTLR}
+
+bottomup // match these rules bottom-up
+    :  divToMult
+	|  minusToPlus
+    |  combinePluses
+	|  combineMults
+	|  changeGe
+    ;
+
+// notation UNARY_MINUS["-"] creates an UNARY_MINUS node with text "-"
+minusToPlus: ^('-' x=. y=.) -> ^(PLUS["+"] $x ^(UNARY_MINUS["-"] $y)) ;
+
+// ^(/ x y) to ^(* x ^(/ 1 y))
+divToMult: ^('/' x=. y=.) -> ^(MULT["*"] $x ^(DIV["/"] INT["1"] $y)) ;
+
+combinePluses // ^(+ ^(+ x y) z) or ^(+ x ^(+ y z)) to be ^(+ x y z)  
+	:  ^('+' ^('+' (e+=.)+) z=.) -> ^('+' $e+ $z)
+	|  ^('+' x=. ^('+' (e+=.)+)) -> ^('+' $x $e+)
+	;
+
+combineMults // ^(* ^(* x y) z) or ^(* x ^(* y z)) to be ^(* x y z)  
+	:  ^('*' ^('*' (e+=.)+) z=.) -> ^('*' $e+ $z)
+	|  ^('*' x=. ^('*' (e+=.)+)) -> ^('*' $x $e+)
+	;
+
+changeGe // ^(Ge x y) to ^(Le y x)
+	:	^('Ge' x=. y=.) -> ^(REL["Le"] $y $x)
+	|	^('Gt' x=. y=.) -> ^(REL["Lt"] $y $x) 
+	;

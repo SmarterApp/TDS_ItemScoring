@@ -36,7 +36,6 @@ public class HottextInteraction extends Interaction
       String respIdentifier = element.getAttributeValue(ItemBodyConstants.ResponseIdentifier);
       String maxChoices = element.getAttributeValue(ItemBodyConstants.MaxChoices);
 
-      //XmlNodeList hotTextNodes = element.SelectNodes(ItemBodyConstants.Hottext, nsmgr);
       List<Element> hotTextNodes = new XmlElement(element).selectNodes(ItemBodyConstants.Hottext, nsmgr);
       List<Hottext> htList = new ArrayList<Hottext>();
       for (Element htElem : hotTextNodes)

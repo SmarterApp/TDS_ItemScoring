@@ -1,7 +1,6 @@
-# Welcome to the ItemScoringDev Application
+# Welcome to the Item Scoring Engine
 
-The ItemScoringDev project is a group of modules that can be used for scoring student responses for different item types.
-
+The ItemScoring project is a group of modules that can be used for scoring student responses for different item types.
 
 ## License ##
 This project is licensed under the [AIR Open Source License v1.0](http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf).
@@ -35,8 +34,6 @@ We would be happy to receive feedback on its capabilities, problems, or future e
 
    qtiscoringengine contains qti scorer module.
 
-
-
 ## Setup
 In general, build the code and deploy the JAR file.
 
@@ -53,7 +50,7 @@ If building all components from scratch the following build order is needed:
 
 
 ## Dependencies
-ItemScoringDev has a number of direct dependencies that are necessary for it to function.  These dependencies are already built into the Maven POM files.
+ItemScoring has a number of direct dependencies that are necessary for it to function.  These dependencies are already built into the Maven POM files.
 
 ### Compile Time Dependencies
 

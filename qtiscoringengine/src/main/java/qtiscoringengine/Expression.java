@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package qtiscoringengine;
 
@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.jdom2.Element;
+import org.springframework.util.StringUtils;
 
 import AIR.Common.Utilities.TDSStringUtils;
 import AIR.Common.xml.XmlElement;
@@ -59,7 +60,7 @@ public abstract class Expression extends ResponseRule
     return _returnCardinality;
   }
 
-  /* new */static Expression fromXml (Element node, XmlNamespaceManager nsmgr, ValidationLog log) {
+  public static Expression fromXml (Element node, XmlNamespaceManager nsmgr, ValidationLog log) {
     if (node == null)
       return null;
     Expression exp = null;
@@ -229,8 +230,6 @@ public abstract class Expression extends ResponseRule
   }
 
   private void processParameters (Element node, XmlNamespaceManager nsmgr, ValidationLog log) {
-    // XmlNodeList paramNodes =
-    // node.SelectNodes(QTIXmlConstants.ExpressionElementGroup,nsmgr);
     List<Element> paramNodes = new XmlElement (node).selectNodes (QTIXmlConstants.ExpressionElementGroup, nsmgr);
     for (Element el : paramNodes) {
       Expression ex = Expression.fromXml (el, nsmgr, log);
@@ -243,23 +242,24 @@ public abstract class Expression extends ResponseRule
   private void processAttributes (Element node, XmlNamespaceManager nsmgr) throws Exception {
     for (ExpressionAttributeSpec eas : _attributes) {
       String val = node.getAttributeValue (eas.getName ());
-      if (val != "") // should throw exception if attribute doesn't exist?
+      if (!StringUtils.isEmpty (val)) // should throw exception if attribute
+                                      // doesn't exist?
       {
         DataElement de = DataElement.create (val, eas.getValueType ());
         if (de.getIsError ())
           throw new Exception (de.getErrorMessage ());
-        this.SetAttributeValue (eas.getName (), de);
+        this.setAttributeValue (eas.getName (), de);
       }
     }
     return;
   }
 
-  private void SetAttributeValue (String name, DataElement de) {
+  private void setAttributeValue (String name, DataElement de) {
     _attributeValues.put (name, de);
   }
 
   @Override
- public boolean validate (ValidationLog log, QTIRubric rubric) {
+  protected boolean validate (ValidationLog log, QTIRubric rubric) {
     boolean ok = true;
     ok = validateParameterCount (log, ok);
     if (!validateAttributes (log, ok))
@@ -287,7 +287,7 @@ public abstract class Expression extends ResponseRule
       }
       if (eas.getValueType () == BaseType.Identifier) {
         if (val != null) {
-          if (!eas.ValidateIdentifierValue ((DEIdentifier) val)) {
+          if (!eas.validateIdentifierValue ((DEIdentifier) val)) {
             log.addMessage (_node, TDSStringUtils.format ("Trying to set attribute {0} to an unallowable value {1}", eas.getName (), ((DEIdentifier) val).getValue ()));
             ok = false;
           }
@@ -320,7 +320,7 @@ public abstract class Expression extends ResponseRule
     return null;
   }
 
-  void ResolveIdentifierType (QTIRubric rubric) {
+  void resolveIdentifierType (QTIRubric rubric) {
     DEIdentifier id = (DEIdentifier) getAttributeValue ("identifier");
     if (id != null) {
       VariableDeclaration rd = rubric.getVariableDeclaration (id.getValue ());
@@ -331,7 +331,7 @@ public abstract class Expression extends ResponseRule
     }
   }
 
-  void ResolveIdentifierCardinality (QTIRubric rubric) {
+  void resolveIdentifierCardinality (QTIRubric rubric) {
     DEIdentifier id = (DEIdentifier) getAttributeValue ("identifier");
     if (id != null) {
       ResponseDeclaration rd = rubric.getResponseDeclaration (id.getValue ());
@@ -342,7 +342,7 @@ public abstract class Expression extends ResponseRule
     }
   }
 
-  protected abstract DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) throws Exception;
+  protected abstract DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) throws QTIScoringException;
 
   // {
   // DataElement de =
@@ -352,7 +352,7 @@ public abstract class Expression extends ResponseRule
   // }
 
   @Override
-  public final DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws Exception {
+  public DataElement evaluate (VariableBindings vb, QTIRubric rubric) throws QTIScoringException {
     List<DataElement> paramValues = new ArrayList<DataElement> ();
     for (Expression param : _parameters) {
       DataElement result = param.evaluate (vb, rubric);
