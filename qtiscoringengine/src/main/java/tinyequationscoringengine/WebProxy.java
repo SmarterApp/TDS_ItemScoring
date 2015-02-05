@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.lang3.StringUtils;
 
 import qtiscoringengine.QTIScoringException;
@@ -24,8 +24,8 @@ import AIR.Common.Web.UrlHelper;
 public class WebProxy
 {
   private static final HttpWebHelper HttpWebHelper = new HttpWebHelper ();
-  private int _maxRetries;
-  private URI _serverUri;
+  private int                        _maxRetries;
+  private URI                        _serverUri;
 
   public int getMaxTries () {
     return _maxRetries;
@@ -68,7 +68,7 @@ public class WebProxy
     _Ref<Integer> httpStatusCode = new _Ref<Integer> (HttpServletResponse.SC_OK);
     String httpResponse = "";
     try {
-      httpResponse = HttpWebHelper.submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
+      httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
       throw new QTIScoringException ("Web Proxy returned an exception", e);
     }
@@ -79,7 +79,11 @@ public class WebProxy
       } catch (IOException exp) {
         throw new QTIScoringException (exp);
       }
-      return scoreResponse.getResult () != null && StringUtils.equalsIgnoreCase (scoreResponse.getResult (), "TRUE");
+      
+      //TODO Shiva: We will never return null from deserialize above for scoreResponse.
+      //Make sure we have ported this faithfull from .NET.
+      if (scoreResponse != null)
+        return scoreResponse.getResult () != null && StringUtils.equalsIgnoreCase (scoreResponse.getResult (), "TRUE");
     }
     return false;
   }
@@ -107,7 +111,7 @@ public class WebProxy
     _Ref<Integer> httpStatusCode = new _Ref<Integer> (HttpServletResponse.SC_OK);
     String httpResponse = "";
     try {
-      httpResponse = HttpWebHelper.submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
+      httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
       throw new QTIScoringException ("Web Proxy returned an exception", e);
     }
@@ -151,7 +155,7 @@ public class WebProxy
     _Ref<Integer> httpStatusCode = new _Ref<Integer> (HttpServletResponse.SC_OK);
     String httpResponse = "";
     try {
-      httpResponse = HttpWebHelper.submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
+      httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
       throw new QTIScoringException ("Web Proxy returned an exception", e);
     }
@@ -173,7 +177,7 @@ public class WebProxy
     return new ArrayList<Double> ();
   }
 
-  public List<Double> matchExpression (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
+  public List<String> matchExpression (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
     String studentResponse = StringHelper.trim (studentResponseStr, new char[] { '[', ' ', ']' }); // remove
                                                                                                    // the
                                                                                                    // []
@@ -199,7 +203,7 @@ public class WebProxy
     _Ref<Integer> httpStatusCode = new _Ref<Integer> (HttpServletResponse.SC_OK);
     String httpResponse = "";
     try {
-      httpResponse = HttpWebHelper.submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
+      httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
       throw new QTIScoringException ("Web Proxy returned an exception", e);
     }
@@ -213,20 +217,11 @@ public class WebProxy
 
       if (scorerResponse != null && !StringUtils.isEmpty (scorerResponse.getResult ())) {
         String[] values = StringUtils.split (scorerResponse.getResult (), '|');
-        // Lets convert each return into a double list
-        List<Double> parsedValues = new ArrayList<Double> ();
-        for (String value : values) {
-          _Ref<Double> parsedValue = new _Ref<Double> ();
-          if (JavaPrimitiveUtils.doubleTryParse (value, parsedValue))
-            parsedValues.add (parsedValue.get ());
-          else
-            parsedValues.add (evaluateExpression (value));
-        }
-        return parsedValues;
+        return Arrays.asList (values);
       }
-      return new ArrayList<Double> ();
+      return new ArrayList<String> ();
     }
-    return new ArrayList<Double> ();
+    return new ArrayList<String> ();
 
   }
 
@@ -239,6 +234,8 @@ public class WebProxy
                                                                                                    // the
                                                                                                    // math
                                                                                                    // expressiontry
+    if (StringUtils.isEmpty (studentResponse))
+      return Double.NaN;
 
     URI serviceUri = null;
     try {
@@ -253,7 +250,7 @@ public class WebProxy
     _Ref<Integer> httpStatusCode = new _Ref<Integer> (HttpServletResponse.SC_OK);
     String httpResponse = "";
     try {
-      httpResponse = HttpWebHelper.submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
+      httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
       throw new QTIScoringException ("Web Proxy returned an exception", e);
     }
@@ -265,11 +262,33 @@ public class WebProxy
       } catch (IOException exp) {
         throw new QTIScoringException (exp);
       }
+      // TODO Shiva: The deserialize above is never going to return null. Check
+      // that this logic has been
+      // ported faithfull from .NET.
       if (scorerResponse != null) {
         _Ref<Double> value = new _Ref<Double> (Double.NaN);
         JavaPrimitiveUtils.doubleTryParse (scorerResponse.getResult (), value);
+        return value.get ();
       }
     }
     return Double.NaN;
   }
+
+  /*
+   * TODO Shiva: this is hack. Read the comment below. The to String for boolean
+   * in Java comes to as "true" and "false". For .NET it is "True" and "False".
+   */
+  private String submitForm (String url, Map<String, Object> formParameters, int maxTries, _Ref<Integer> httpStatusCode) throws IOException {
+    Map<String, Object> formParametersToString = new HashMap<String, Object> ();
+    if (formParameters != null)
+      for (Map.Entry<String, Object> entry : formParameters.entrySet ()) {
+        Object entryValue = entry.getValue ();
+        if (entryValue instanceof Boolean)
+          entryValue = ((Boolean) entryValue).booleanValue () ? "True" : "False";
+        formParametersToString.put (entry.getKey (), entryValue.toString ());
+      }
+
+    return HttpWebHelper.submitForm (url, formParametersToString, maxTries, httpStatusCode);
+  }
+
 }

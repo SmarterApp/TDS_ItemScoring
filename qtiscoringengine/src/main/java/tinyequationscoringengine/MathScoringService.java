@@ -154,6 +154,13 @@ public class MathScoringService
   }
 
   public Tree antlrize (String sympy) throws RecognitionException {
+    // TODO Shiva: The caching logic below has not been implemented.
+    /*
+     * WeakReference treeRef = null; if (antlrizedStrCache.TryGetValue(sympy,
+     * out treeRef)) { if (treeRef.IsAlive) return (ITree)treeRef.Target;
+     * antlrizedStrCache.Remove(sympy); }
+     */
+
     SympyLexer lex = new SympyLexer (new ANTLRStringStream (sympy + "\n"));
     CommonTokenStream tokens = new CommonTokenStream (lex);
     SympyParser parser = new SympyParser (tokens);
@@ -165,6 +172,11 @@ public class MathScoringService
                                                                           // trace
                                                                           // transforms
 
+    // TODO Shiva: The caching logic below has not been implemented.
+    /*
+     * // cache for re-use later antlrizedStrCache[sympy] = new
+     * WeakReference(simplified_tree);
+     */
     return simplified_tree;
   }
 
@@ -243,7 +255,7 @@ public class MathScoringService
     if (mathexp == null)
       return false;
 
-    return StringUtils.contains (mathexp.toString (), subResponse);
+    return StringUtils.contains (mathexp.toComparableString (), subResponse);
   }
 
   public List<Double> matchDouble (MathExpression mathexp, String pattern, List<String> parameters, List<String> constraints, List<String> variables, boolean allowSimplify) throws QTIScoringException {
@@ -325,7 +337,7 @@ public class MathScoringService
           parsable = sympify (mathexp.getSympyResponse ().get (0));
 
       // correction worked
-      List<Double> runtimeset = null;
+      List<String> runtimeset = null;
       if (parsable) {
         runtimeset = proxy.matchExpression (mathexp.getSympyResponse ().get (0), pattern, parameters, constraints, variables);
         for (int i = 0; i < runtimeset.size (); i++) {
@@ -368,7 +380,7 @@ public class MathScoringService
           mathexp.notSimplifiedParsingFailed = true;
       }
 
-      List<Double> runtimeset = proxy.matchExpression (mathexp.getSympyResponseNotSimplified ().get (0), pattern, parameters, constraints, variables);
+      List<String> runtimeset = proxy.matchExpression (mathexp.getSympyResponseNotSimplified ().get (0), pattern, parameters, constraints, variables);
       for (int i = 0; i < runtimeset.size (); i++) {
         try {
           strretset.add (runtimeset.get (i).toString ());
@@ -419,7 +431,6 @@ public class MathScoringService
     return mathexp.getSympyResponse ().size ();
   }
 
-  // TODO Mohan: Review code from here onwards.
   // equations with just a single variable on either the left or the right.
   public int countAnswerEquations (MathExpression mathexp) {
     int count = 0;
@@ -427,9 +438,8 @@ public class MathScoringService
     if (mathexp == null || mathexp.getSympyResponse () == null)
       return count;
 
-    // TODO Shiva : review this.
     for (String r : mathexp.getSympyResponse ())
-      if (Pattern.matches ("^Eq\\([a-Z],", r) || Pattern.matches ("^Eq\\(.*,[A-z]\\)$", r))
+      if (Pattern.matches ("^Eq\\([A-z],", r) || Pattern.matches ("^Eq\\(.*,[A-z]\\)$", r))
         count += 1;
 
     return count;
@@ -442,9 +452,8 @@ public class MathScoringService
     if (mathexp == null || mathexp.getSympyResponse () == null)
       return count;
 
-    // TODO Shiva review this.
     for (String r : mathexp.getSympyResponse ())
-      if (Pattern.matches ("^(Gt|Ge|Lt|Le)\\([a-Z],", r) || Pattern.matches ("^(Gt|Ge|Lt|Le)\\(.*,[A-z]\\)$", r))
+      if (Pattern.matches ("^(Gt|Ge|Lt|Le)\\([A-z],", r) || Pattern.matches ("^(Gt|Ge|Lt|Le)\\(.*,[A-z]\\)$", r))
         count += 1;
 
     return count;
@@ -457,7 +466,6 @@ public class MathScoringService
     if (mathexp == null || mathexp.getSympyResponse () == null)
       return count;
 
-    // TODO Shiva review this.
     for (String r : mathexp.getSympyResponse ())
       if (Pattern.matches ("^Eq\\(" + var + ",", r) || Pattern.matches ("^Eq\\(.*," + var + "\\)$", r))
         count += 1;
@@ -472,7 +480,6 @@ public class MathScoringService
     if (mathexp == null || mathexp.getSympyResponse () == null)
       return count;
 
-    // TODO Shiva: review regex.
     for (String r : mathexp.getSympyResponse ()) {
       if (Pattern.matches ("^(Gt|Ge|Lt|Le)\\(" + var + ",", r) || Pattern.matches ("^(Gt|Ge|Lt|Le)\\(.*," + var + "\\)$", r))
         count += 1;

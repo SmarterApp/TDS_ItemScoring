@@ -20,6 +20,8 @@ import AIR.Common.xml.XmlReader;
 public class MathMLParser
 {
 
+  public static final int MAX_RESPONSE_LENGTH = 80000;
+
   public static MathExpressionSet processMathMLData (String MathMLstring) throws QTIScoringException {
     MathExpressionSet expressions = new MathExpressionSet ();
 
@@ -28,6 +30,10 @@ public class MathMLParser
       responseXMLString = MathMLstring;
     else
       responseXMLString = "<response>" + MathMLstring + "</response>";
+
+    // IF the response exceeds the MAX size, this is treated as a bogus response
+    if (responseXMLString.length () > MAX_RESPONSE_LENGTH)
+      return expressions;
 
     Document mathMLDoc = null;
     try {

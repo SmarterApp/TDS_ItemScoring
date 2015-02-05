@@ -4,6 +4,8 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
 
+import AIR.Common.xml.XmlElement;
+
 public abstract class TableObject
 {
 
@@ -29,10 +31,7 @@ public abstract class TableObject
   }
 
   protected final String getXmlString () {
-    Element tr = toXml ();
-    XMLOutputter writer = new XMLOutputter ();
-    writer.outputString (tr);
-    return tr.toString ();
+    return new XmlElement (toXml ()).getOuterXml ();
   }
 
   protected TableVector getColumn (String name) {

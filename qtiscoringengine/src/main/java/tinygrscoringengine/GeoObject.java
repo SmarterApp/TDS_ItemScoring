@@ -50,7 +50,7 @@ public class GeoObject extends GRObject
   }
 
   public static GRObject fromXml (Element node) throws TinyGRException {
-    char[] toTrim = { ' ', '{', '}' };
+    final char[] toTrim = { ' ', '{', '}' };
     Element vectorNode = node.getChild ("EdgeVector");
     Element pointNode = node.getChild ("PointVector");
     String pointText = StringHelper.trim (pointNode.getText (), toTrim);
@@ -63,7 +63,7 @@ public class GeoObject extends GRObject
     List<Vector> vectors = null;
 
     if ((start >= 0) && (end > 0)) {
-      vectorText = vectorText.substring (start + 1, end - start - 1);
+      vectorText = vectorText.substring (start + 1, end);
       vectors = getVectorObjects (vectorText);
     }
 
@@ -117,7 +117,7 @@ public class GeoObject extends GRObject
       edgeVector.append (v.getTextRendering ());
     }
 
-    return TDSStringUtils.format ("<Object><PointVector>{{{0}}}</PointVector><EdgeVector>{{{1}}}</EdgeVector></Object>", pointVector.toString (), edgeVector.toString ());
+    return String.format ("<Object><PointVector>{%s}</PointVector><EdgeVector>{%s}</EdgeVector></Object>", pointVector.toString (), edgeVector.toString ());
   }
 
   // 1. top left vector.
@@ -148,44 +148,47 @@ public class GeoObject extends GRObject
     }
   }
 
-  private Comparator<Vector> sortTopLeft = new Comparator<Vector> ()
-                                         {
+  private static final Comparator<Vector> sortTopLeft = new Comparator<Vector> ()
+                                                      {
 
-                                           @Override
-                                           public int compare (Vector v1, Vector v2) {
+                                                        @Override
+                                                        public int compare (Vector v1, Vector v2) {
 
-                                             {
-                                               Point top1 = v1.getTopLeftMost ();
-                                               Point top2 = v2.getTopLeftMost ();
-                                               if (top1._y > top2._y)
-                                                 return -1;
-                                               if (top2._y > top1._y)
-                                                 return 1;
-                                               // otherwise they are equal...
-                                               if (top1._x < top2._x)
-                                                 return -1;
-                                               if (top2._x < top1._x)
-                                                 return 1;
-                                               // otherwise it is the same
-                                               // point,
+                                                          {
+                                                            Point top1 = v1.getTopLeftMost ();
+                                                            Point top2 = v2.getTopLeftMost ();
+                                                            if (top1._y > top2._y)
+                                                              return -1;
+                                                            if (top2._y > top1._y)
+                                                              return 1;
+                                                            // otherwise they
+                                                            // are equal...
+                                                            if (top1._x < top2._x)
+                                                              return -1;
+                                                            if (top2._x < top1._x)
+                                                              return 1;
+                                                            // otherwise it is
+                                                            // the same
+                                                            // point,
 
-                                               if (v1.getLeftExtent () < v2.getLeftExtent ()) {
-                                                 return -1;
-                                               }
-                                               if (v2.getLeftExtent () < v1.getLeftExtent ()) {
-                                                 return 1;
-                                               }
-                                               // otherwise this too is equal
+                                                            if (v1.getLeftExtent () < v2.getLeftExtent ()) {
+                                                              return -1;
+                                                            }
+                                                            if (v2.getLeftExtent () < v1.getLeftExtent ()) {
+                                                              return 1;
+                                                            }
+                                                            // otherwise this
+                                                            // too is equal
 
-                                               if (v2.getLength () < v1.getLength ()) {
-                                                 return 1;
-                                               }
-                                               return -1;
-                                             }
+                                                            if (v2.getLength () < v1.getLength ()) {
+                                                              return 1;
+                                                            }
+                                                            return -1;
+                                                          }
 
-                                           }
+                                                        }
 
-                                         };
+                                                      };
 
   // make sure this works with closed objects. For non-closed objects will
   // return a deterministic sort order, I think, but it is not intuitive.
@@ -218,21 +221,34 @@ public class GeoObject extends GRObject
     });
   }
 
+  @Override
   public boolean intersectsRegion (Point topLeft, Point bottomRight, double eps) {
-    for (Vector v : this._vectorList) {
-      if (v.intersectsRegion (topLeft, bottomRight, eps)) {
-        return true;
+    List<Vector> vecs = new ArrayList<Vector> (10);
+
+    Point topRight = new Point (bottomRight._x, topLeft._y);
+    Point botLeft = new Point (topLeft._x, bottomRight._y);
+
+    vecs.add (new Vector (topLeft, topRight));
+    vecs.add (new Vector (topRight, bottomRight));
+    vecs.add (new Vector (bottomRight, botLeft));
+    vecs.add (new Vector (botLeft, topLeft));
+
+    for (Vector v : this.getVectorList ()) {
+      for (Vector vec : vecs) {
+        if (v.intersectsVector (vec, 1.0))
+          return true;
       }
     }
-    return _vectorList.get (0).points[0].intersectsRegion (topLeft, bottomRight, eps); // checks
-                                                                                       // if
-                                                                                       // the
-                                                                                       // whole
-                                                                                       // thing
-                                                                                       // is
-                                                                                       // inside
-                                                                                       // the
-                                                                                       // region
+
+    return getVectorList ().get (0).points[0].intersectsRegion (topLeft, bottomRight, eps); // checks
+    // if
+    // the
+    // whole
+    // thing
+    // is
+    // inside
+    // the
+    // region
 
   }
 

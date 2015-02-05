@@ -41,3 +41,9 @@ derby.log
 
 # Ignore .orig files
 *.orig
+
+#Ignore code from the .NET project.
+ASPNETCodeForComparisionTesting/OpenCSV\#/bin/
+ASPNETCodeForComparisionTesting/OpenCSV\#/obj/
+ASPNETCodeForComparisionTesting/QTITester/bin/
+ASPNETCodeForComparisionTesting/QTITester/obj/

@@ -27,8 +27,7 @@ public class TGRParameterConstraint
   public TGRParameterConstraint (String Name, TinyGraphicType type) {
     isPositional = false;
     name = Name;
-    graphicTypes = new ArrayList<TinyGraphicType> ();
-    graphicTypes.add (type);
+    graphicTypes = Arrays.asList (type);
   }
 
   public TGRParameterConstraint (String Name, List<TinyGraphicType> types) {

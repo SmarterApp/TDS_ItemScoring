@@ -15,7 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.com.bytecode.opencsv.CSVReader;
 import AIR.Common.Helpers._Ref;
 import AIR.Common.Utilities.JavaPrimitiveUtils;
 import AIR.Common.Utilities.MapUtils;
@@ -39,8 +38,10 @@ public class FormQtiTester
   private QTIRubric           _rubric;
   private Map<String, String> _responseValues = new HashMap<String, String> ();
   private ValidationLog       _log            = null;
+  private ScoreCounter        _counter;
 
-  public FormQtiTester (ItemSpecification itemSpec) throws QTIScoringException, URISyntaxException {
+  public FormQtiTester (ItemSpecification itemSpec, ScoreCounter scoreCounter) throws QTIScoringException, URISyntaxException {
+    _counter = scoreCounter;
     _itemSpec = itemSpec;
     _log = new ValidationLog (_itemSpec._rubricFilePath);
     // load the rubric.
@@ -82,12 +83,10 @@ public class FormQtiTester
       while ((line = bfr.readLine ()) != null) {
         ++lineCounter;
         // get the columns.
-        CSVReader reader = new CSVReader (new StringReader (line), '~');
-        String[] columns = reader.readNext ();
+        String[] columns = qtiscoringengineTester.CSVReader.getColumns (line);
         String itemId = columns[0];
         int originalScore = Integer.parseInt (columns[1]);
         String response = columns[2];
-
         if (!StringUtils.equals (itemId, _itemSpec._itemId))
           continue;
 
@@ -105,12 +104,17 @@ public class FormQtiTester
           String scorestring = findValue (bindings, "SCORE");
           _Ref<Integer> score = new _Ref<Integer> (-1);
           JavaPrimitiveUtils.intTryParse (scorestring, score);
-          if (score.get () == originalScore)
+          if (score.get () == originalScore) {
+            _counter.incrementCorrect (originalScore);
             _logger.info (TDSStringUtils.format ("Correct, item={0}, line={2}, score={1}", itemId, score, lineCounter));
-          else
-            _logger.info (TDSStringUtils.format ("Wrong, item={0}, line={3}, score={1}, realScore={2}", itemId, score.get (), originalScore, lineCounter));
-        } catch (QTIScoringException exp) {
-          _logger.info (TDSStringUtils.format ("Exception, item={0}, line={2}, message={1}", itemId, exp.getMessage (), lineCounter));
+          } else {
+            _counter.incrementIncorrect (originalScore);
+            _logger.error (TDSStringUtils.format ("Wrong, item={0}, line={3}, score={1}, realScore={2}", itemId, score.get (), originalScore, lineCounter));
+          }
+        } catch (Exception exp) {
+          exp.printStackTrace ();
+          _counter.incrementErrors (originalScore);
+          _logger.error (TDSStringUtils.format ("Exception, item={0}, line={2}, message={1}", itemId, exp.getMessage (), lineCounter));
         }
       }
     }

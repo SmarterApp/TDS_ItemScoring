@@ -31,14 +31,14 @@ public class AtomicObject extends GRObject
 
   @Override
   public String getXmlString () {
-    return TDSStringUtils.format ("<AtomicObject>{{{0}{1}}}</AtomicObject>", _name, _location.getTextRendering ());
+    return String.format ("<AtomicObject>{%s%s}</AtomicObject>", _name, _location.getTextRendering ());
   }
 
   public static AtomicObject getAtomicObject (String text) {
     text = text.trim ();
     if (!text.equals ("")) {
       int pntStart = text.indexOf ("(");
-      String name = text.substring (1, pntStart - 1);
+      String name = text.substring (1, pntStart);
       String pntString = text.substring (pntStart);
       return new AtomicObject (name, Point.getPointObj (pntString));
     }

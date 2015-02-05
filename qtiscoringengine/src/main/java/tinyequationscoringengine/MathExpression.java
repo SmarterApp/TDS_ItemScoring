@@ -721,6 +721,22 @@ public class MathExpression
     return MathExpressionInfo.getXmlStringFromMathExpressionInfo (toMathExpressionInfo ());
   }
 
+  public String toComparableString()
+  {
+      String response = "[";
+      boolean first = true;
+      for (String s : getSympyResponse())
+      {
+          if (first)
+              first = false;
+          else
+              response += ", ";
+          response += s;
+      }
+      response += "]";
+      return response;
+  }
+
   public double toDouble () {
     _Ref<Double> response = new _Ref<> (Double.NaN);
     if (sympyResponse.size () == 1) {

@@ -43,7 +43,7 @@ public class TGREIsGraphicType extends TinyGRExpression
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) throws TinyGRException {
     DEString ob = (DEString) vb.getVariable ((DEIdentifier) getAttributeValue ("object"));
     String ty = getAttributeValue ("graphicType").toString ();
-    if (ob.equals (null)) {
+    if (ob == null) {
       return new DEBoolean (false);
     }
     boolean isIt = TinyGR.isGraphicType (ob.toString (), ty);

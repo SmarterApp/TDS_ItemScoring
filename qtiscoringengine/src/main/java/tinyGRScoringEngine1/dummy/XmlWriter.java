@@ -9,6 +9,7 @@
 package tinyGRScoringEngine1.dummy;
 
 import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -32,6 +33,15 @@ public class XmlWriter
   private static final Logger _logger = LoggerFactory.getLogger (XmlWriter.class);
 
   private XMLStreamWriter2    _writer;
+
+  public XmlWriter (Writer stream) {
+    try {
+      _writer = (XMLStreamWriter2) TdsXmlOutputFactory.newInstance ().createXMLStreamWriter (stream);
+      _writer.writeStartDocument ("UTF-8", "1.0");
+    } catch (XMLStreamException | FactoryConfigurationError e) {
+      throw new XmlWriterException (e.getMessage (), e);
+    }
+  }
 
   public XmlWriter (OutputStream stream) {
     try {

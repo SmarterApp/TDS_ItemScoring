@@ -28,6 +28,6 @@
 	<entry key="org.air.org.essayscorer.db.explicitShutdownURL" />
 
 	<!-- training db url settings: HI EOC DOR specific -->
-	<entry key="org.air.org.essayscorer.training.hieocdor.db.url">jdbc:sqlserver://127.0.0.1:20010;databaseName=DoR_HI_Staging_2012;user=sbehera;password=RHUzq8Lnqd;</entry>
+	<entry key="org.air.org.essayscorer.training.hieocdor.db.url"></entry>
 
 </properties>

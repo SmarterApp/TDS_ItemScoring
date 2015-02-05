@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.metamodel.source.internal.OverriddenMappingDefaults;
 import org.jdom2.Element;
 
 import AIR.Common.Helpers._Ref;
@@ -293,15 +292,22 @@ class ExprEqual extends Expression
       return new DEBoolean (false);
     switch (_mode) {
     case Exact:
-      return new DEBoolean (paramValues.get (0).equals (paramValues.get (1)));
-    case Absolute:
-      return new DEBoolean ((_includeLowerBound ? val1.gte (val2.getValue ().doubleValue () - _allowLow) : val1.gt (val2.getValue ().doubleValue () - _allowLow))
-          && (_includeUpperBound ? val1.lte (val2.getValue ().doubleValue () + _allowHi) : val1.lt (val2.getValue ().doubleValue () + _allowHi)));
-    case Relative:
-      return new DEBoolean ((_includeLowerBound ? val1.gte (val2.getValue ().doubleValue () * (1.0 - _allowLow / 100.0)) : val1.gt (val2.getValue ().doubleValue () * (1.0 - _allowLow / 100.0)))
-          && (_includeUpperBound ? val1.lte (val2.getValue ().doubleValue () * (1.0 + _allowHi / 100.0)) : val1.lt (val2.getValue ().doubleValue () * (1.0 + _allowHi / 100.0))));
+      return new DEBoolean (val1.equals (val2));
+    case Absolute: // In absolute mode the result of the
+                   // comparison is true if the value of the
+                   // second expression, y is within the following
+                   // range defined by the first value, x.
+                   // x-t0,x+t1
+      return new DEBoolean ((_includeLowerBound ? val2.gte (val1.getValue ().doubleValue () - _allowLow) : val2.gt (val1.getValue ().doubleValue () - _allowLow))
+          && (_includeUpperBound ? val2.lte (val1.getValue ().doubleValue () + _allowHi) : val2.lt (val1.getValue ().doubleValue () + _allowHi)));
+    case Relative: // In relative mode, t0 and t1 are treated as
+                   // percentages and the following range is used
+                   // instead. x*(1-t0/100),x*(1+t1/100)
+      return new DEBoolean ((_includeLowerBound ? val2.gte (val1.getValue ().doubleValue () * (1.0 - _allowLow / 100.0)) : val2.gt (val1.getValue ().doubleValue () * (1.0 - _allowLow / 100.0)))
+          && (_includeUpperBound ? val2.lte (val1.getValue ().doubleValue () * (1.0 + _allowHi / 100.0)) : val2.lt (val1.getValue ().doubleValue () * (1.0 + _allowHi / 100.0))));
     default:
       throw new QTIScoringException ("ExprEquals got an unknown tolerance mode");
+
     }
   }
 }// end class ExprEqual

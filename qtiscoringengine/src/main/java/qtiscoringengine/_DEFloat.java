@@ -71,6 +71,10 @@ public abstract class _DEFloat<N extends Number> extends DataElement
     @SuppressWarnings ("rawtypes")
     _DEFloat f = i;
     if (f != null) {
+
+      if (Double.isInfinite (getValue ().doubleValue ()) && Double.isInfinite (f.getValue ().doubleValue ()))
+        return true; // special case: infinity == infinity :)
+
       return Math.abs (getValue ().doubleValue () - f.getValue ().doubleValue ()) < DEFAULT_TOLERANCE;
     }
     return false;

@@ -108,7 +108,7 @@ public class Vector extends GRObject
   }
 
   public String getTextRendering () {
-    return TDSStringUtils.format ("{{{0},{1}}}", points[0].getTextRendering (), points[1].getTextRendering ());
+    return String.format ("{%s,%s}", points[0].getTextRendering (), points[1].getTextRendering ());
   }
 
   public double distanceToClosestEndPoint (Point p) {
@@ -196,7 +196,7 @@ public class Vector extends GRObject
                                                                     // region
   }
 
-  private boolean intersectsVector (Vector v, double tolerance) {
+  public boolean intersectsVector (Vector v, double tolerance) {
     Point intersect = intersectionPoint (v, tolerance);
     return (intersect != null);
   }

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{62023C34-2A7B-4870-A04C-73CAF4DC475A}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QTITester</RootNamespace>
+    <AssemblyName>QTITester</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FormQtiTester.cs" />
+    <Compile Include="ItemSpecification.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreCounter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\TinyScoringEngines\QTIScoringEngine\QTIScoringEngine\QTIScoringEngine.csproj">
+      <Project>{cdd87684-79c4-4779-a9be-4ab2cfed8d67}</Project>
+      <Name>QTIScoringEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\TinyScoringEngines\QTIScoringEngine\TinyCtrlScoringEngine\TinyCtrlScoringEngine.csproj">
+      <Project>{874c7d88-a751-44e0-8a79-a39757e9410f}</Project>
+      <Name>TinyCtrlScoringEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\TinyScoringEngines\QTIScoringEngine\TinyEquationScoringEngine\TinyEquationScoringEngine.csproj">
+      <Project>{b9288de7-13f0-4899-a52d-cfd351aa6944}</Project>
+      <Name>TinyEquationScoringEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\TinyScoringEngines\QTIScoringEngine\TinyGRScoringEngine\TinyGRScoringEngine.csproj">
+      <Project>{44bbdcb0-88c9-4e99-a8a3-8a777dd5f1b6}</Project>
+      <Name>TinyGRScoringEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\TinyScoringEngines\QTIScoringEngine\TinyTableScoringEngine\TinyTableScoringEngine.csproj">
+      <Project>{2b0a0f0b-5f2a-4df6-8505-b094f3a25574}</Project>
+      <Name>TinyTableScoringEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenCSV#\Ast.OpenCsv.csproj">
+      <Project>{57b9bc1c-fb92-453b-96e2-b483b0f90e81}</Project>
+      <Name>Ast.OpenCsv</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

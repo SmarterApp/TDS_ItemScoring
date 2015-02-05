@@ -3,6 +3,7 @@ package tinytablescoringengine;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
 import qtiscoringengine.Expression;
@@ -53,7 +54,7 @@ public class TinyTableCustomOpFactory implements ICustomOperatorFactory
   @Override
   public boolean supportsOperator (Element customOperatorNode) {
     Element coElement = customOperatorNode;
-    if ("TABLE".equals (coElement.getAttribute ("type").getValue ())) {
+    if (!StringUtils.equals ("TABLE", coElement.getAttribute ("type").getValue ())) {
       return false;
     }
     return _ttConstructors.containsKey (coElement.getAttribute ("functionName").getValue ());

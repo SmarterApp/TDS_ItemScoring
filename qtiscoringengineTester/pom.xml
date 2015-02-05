@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>1.1.0</version>
+		<version>R01.00.20</version>
 	</parent>
 	<artifactId>qtiscoringengineTester</artifactId>
 	<properties>
@@ -14,7 +14,13 @@
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
 			<artifactId>qtiscoringengine</artifactId>
-			<version>1.1.0</version>
+			<version>R01.00.20</version>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-parent</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

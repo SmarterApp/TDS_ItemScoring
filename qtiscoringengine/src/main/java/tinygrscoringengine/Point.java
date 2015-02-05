@@ -9,6 +9,7 @@
 
 package tinygrscoringengine;
 
+import AIR.Common.Utilities.MathUtils;
 import AIR.Common.Utilities.TDSStringUtils;
 
 /**
@@ -35,7 +36,7 @@ public class Point extends GRObject
     String xText = text.substring (locationOfX + 1, locationOfXC).trim ();
     String yText = text.substring (locationOfXC + 1, endOfPair).trim ();
 
-    return new Point (Integer.parseInt (xText), Integer.parseInt (yText));
+    return new Point ((int) MathUtils.truncate (Double.parseDouble (xText)), (int) MathUtils.truncate (Double.parseDouble (yText)));
   }
 
   @Override

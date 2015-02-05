@@ -98,17 +98,9 @@ public class TinyEquation
     if (StringUtils.isEmpty (response)) {
       return false;
     }
-
+    MathScoringService scoringService = MathScoringService.getInstance ();
     MathExpression exp = new MathExpression (response);
-    String subStrTrimmed = StringHelper.trim (substr, new char[] { '[', ']', ' ' }); // remove
-                                                                                     // any
-                                                                                     // leading/trailing
-                                                                                     // []
-    for (String s : exp.getSympyResponse ()) {
-      if (s.contains (subStrTrimmed))
-        return true;
-    }
-    return false;
+    return scoringService.expressionContains (exp, substr);
   }
 
   public static double evaluate (String response) throws QTIScoringException {

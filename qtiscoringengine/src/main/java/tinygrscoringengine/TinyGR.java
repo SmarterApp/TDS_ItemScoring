@@ -27,25 +27,22 @@ import AIR.Common.xml.XmlReader;
  */
 public class TinyGR
 {
-
+  // TODO Shiva Currently we have an XMLWriter in qtiscoringengine itself. We
+  // need to switch to the one in the shared project.
   public static List<String> getObjectStrings (String answerSet) throws TinyGRException {
     try {
       List<String> objects = new ArrayList<String> ();
-      StringWriter sw = new StringWriter ();
-      StringBuilder sb = null;
-      sb.append (sw);
-      XmlWriter xw = new XmlWriter (null);
       StringReader sr = new StringReader (answerSet);
       XmlReader reader = new XmlReader (sr);
       Document doc = new Document ();
       doc = reader.getDocument ();
-      List<Element> objectSet = new XmlElement (doc.getRootElement ()).selectNodes ("//AnswerSet//Question//QuestionPart//ObjectSet");
-      for (Element child : objectSet) {
+      XmlElement objectSet = new XmlElement(new XmlElement (doc.getRootElement ()).selectSingleNode ("//AnswerSet/Question/QuestionPart/ObjectSet"));
+      for (Element child : objectSet.getChildNodes ()) {
         GRObject obj = GRObject.createFromNode (child);
         objects.add (obj.getXmlString ());
         if (child.getName ().equals ("RegionGroupObject")) {
           for (Element region : child.getChildren ()) {
-            outputObjectString (region, xw, sw, objects, sb);
+            outputObjectString (region, objects);
           }
         }
       }
@@ -55,12 +52,11 @@ public class TinyGR
     }
   }
 
-  private static void outputObjectString (Element child, XmlWriter xw, StringWriter sw, List<String> objects, StringBuilder sb) {
-    String objString = sw.toString ();
+  private static void outputObjectString (Element child, List<String> objects) {
+    String objString = (new XmlElement (child)).getOuterXml ();
     if (objString != null) {
-      objects.add (sw.toString ());
+      objects.add (objString);
     }
-    sb.delete (0, sb.length ());
   }
 
   public static GRObject create (String obj) throws TinyGRException {
@@ -158,7 +154,6 @@ public class TinyGR
     if ((x < 0) || (y < 0)) {
       return false;
     }
-    Point vertex = new Point (x, y);
     return ob.hasVertex (p, tolerance);
   }
 
