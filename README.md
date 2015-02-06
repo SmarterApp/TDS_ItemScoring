@@ -11,8 +11,9 @@ We would be happy to receive feedback on its capabilities, problems, or future e
 * For general questions or discussions, or issues and bugs, please use the [Forum](http://forum.opentestsystem.org/viewforum.php?f=9).
 * Feel free to **Fork** this project and develop your changes!
 
-## 1/31/2015 Release Notes 
-Release `R01.00.19-20150131` is the initial release of the ItemScoring Engine with support for [custom operators](http://www.smarterapp.org/documents/Item_Scoring_Custom_Operators.pdf). QTI provides a means of extending default response processing via custom operators as a mechanism. EQ (equation), GI (grid) and TI (table interaction) item types provide external scoring machine rubric files that are scored using QTI response processing that is extended by custom operators.
+## 2/6/2015 Release Notes 
+Release `R01.00.21-20150206` is a bugfix release of the ItemScoring Engine with operational support for [custom operators](http://www.smarterapp.org/documents/Item_Scoring_Custom_Operators.pdf). Specifically, EQ (equation), GI (grid) and TI (table interaction) scoring is now functional. We continue to refine the scoring, but cannot guarantee that these items will be correctly scored at this time. This release requires Student modifications (DB config and code), which will be released shortly. Furthermore, we will be doing frequent periodic releases as we update this functionality.
+
 ### Known issues
 *These will be provided shortly.*
 
