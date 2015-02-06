@@ -70,7 +70,7 @@ public abstract class DataElement
     return _errorMessage;
   }
 
-  public abstract boolean equals (DataElement d);
+  public abstract boolean equals (Object d);
 
   public static DataElement create (Element node, BaseType bt) {
     _Ref<BaseType> valType = new _Ref<BaseType> (bt);

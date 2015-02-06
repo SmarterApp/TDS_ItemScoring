@@ -15,9 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import qtiscoringengine.QTIScoringException;
 import qtiscoringengine.cs2java.StringHelper;
+import AIR.Common.Configuration.AppSettingsHelper;
 import AIR.Common.Helpers._Ref;
 import AIR.Common.Json.JsonHelper;
 import AIR.Common.Utilities.JavaPrimitiveUtils;
+import AIR.Common.Utilities.TDSStringUtils;
 import AIR.Common.Web.HttpWebHelper;
 import AIR.Common.Web.UrlHelper;
 
@@ -79,9 +81,10 @@ public class WebProxy
       } catch (IOException exp) {
         throw new QTIScoringException (exp);
       }
-      
-      //TODO Shiva: We will never return null from deserialize above for scoreResponse.
-      //Make sure we have ported this faithfull from .NET.
+
+      // TODO Shiva: We will never return null from deserialize above for
+      // scoreResponse.
+      // Make sure we have ported this faithfull from .NET.
       if (scoreResponse != null)
         return scoreResponse.getResult () != null && StringUtils.equalsIgnoreCase (scoreResponse.getResult (), "TRUE");
     }
@@ -284,11 +287,14 @@ public class WebProxy
       for (Map.Entry<String, Object> entry : formParameters.entrySet ()) {
         Object entryValue = entry.getValue ();
         if (entryValue instanceof Boolean)
-          entryValue = ((Boolean) entryValue).booleanValue () ? "True" : "False";
+          entryValue = TDSStringUtils.getCSharpBooleanToString ((Boolean) entryValue);
         formParametersToString.put (entry.getKey (), entryValue.toString ());
       }
 
     return HttpWebHelper.submitForm (url, formParametersToString, maxTries, httpStatusCode);
   }
 
+  static {
+    HttpWebHelper.setTimeoutInMillis (AppSettingsHelper.getInt32 ("itemscoring.qti.sympyTimeoutMillis", 10000));
+  }
 }

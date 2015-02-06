@@ -815,7 +815,7 @@ def evaluate():
 
 #matchDblTest()
 
-unittestlib()
+#unittestlib()
 #assert not parsable('(8/(((((48)/(((((444)))**(((((5/(((5)**(((99)))))))))))))))))')
 #assert not isEquivalent('(8/(((((48)/(((((444)))**(((((5/(((5)**(((99)))))))))))))))))', '891/8')
 

@@ -427,8 +427,11 @@ class ExprInside extends Expression
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
+
     if (paramValues.get (0) == null)
-      return null;
+      // Shiva: this was a return null before and I have now changed it to
+      // return DEBoolean(false).
+      return new DEBoolean (false);
     return _area.getIsInside ((DEPoint) paramValues.get (0));
   }
 }// end class ExprInside

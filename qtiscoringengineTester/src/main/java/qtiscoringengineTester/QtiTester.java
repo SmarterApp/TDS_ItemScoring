@@ -1,13 +1,20 @@
 package qtiscoringengineTester;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import AIR.Common.Helpers._Ref;
 
@@ -16,37 +23,84 @@ public class QtiTester
   private static final Logger _logger = LoggerFactory.getLogger (QtiTester.class);
 
   public static void main (String[] args) {
-    testAllFiles (args);
-    // testOneFile (args);
+    Object[] inputArguments = getParameters (args);
+
+    ApplicationContext applicationContext = new ClassPathXmlApplicationContext ("/scoringengine-spring-config.xml");
+
+    testAllFiles (inputArguments);
+    // testOneFile (inputArguments);
   }
 
-  public static void testAllFiles (String[] args) {
+  // TODO Shiva: make these command line arguments using CLI
+  private static Object[] getParameters (String[] inputArguments) {
+    // the following 5 are required in case you intend to use invoke
+    // testOneFile.
+    /*
+     * final String itemId = "11787"; final String bankId = "NA"; final String
+     * rubricFilePath =
+     * "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/Others/Item_11787_v5.qrx"
+     * ; final String responseFile =
+     * "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/11787_HTQ.tsv"
+     * ; final String itemType = "HTQ";
+     */
+    final String itemId = "12948";
+    final String bankId = "NA";
+    final String rubricFilePath = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/GRX/Item_12948_v14.qrx";
+    final String responseFile = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/12948_GI.tsv";
+    final String itemType = "GI";
+
+    // the following are required in case you intend to use testAllFiles.
+    final String folder = "C:\\WorkSpace\\JavaWorkSpace\\TinyScoringEngine\\DataFiles\\forShiva\\";
+    final Integer MAX_FILES_TO_TEST = 3;
+
+    // TODO Shiva: control logger settings from here.
+    // For the time being set them in log4j.xml
+
+    // Do not modify below this line.
+    Object[] args = new Object[7];
+    args[0] = itemId;
+    args[1] = bankId;
+    args[2] = rubricFilePath;
+    args[3] = responseFile;
+    args[4] = itemType;
+    args[5] = folder;
+    args[6] = MAX_FILES_TO_TEST;
+
+    return args;
+  }
+
+  private static void testAllFiles (Object[] args) {
     final ScoreCounter scoreCounter = new ScoreCounter ();
-    final int MAXFILES = 50;
+    final String folder = sanitizeFileNameForUri ((String) args[5]);
+    final int MAXFILES = (Integer) args[6];
     try {
-      final String folder = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/";
       final Map<String, String> rubricsMap = mapRubricPathToItemId (folder, new _Ref<Map<String, String>> (new HashMap<String, String> ()));
 
       int fileCounter = 1;
-      for (File file : new File (folder).listFiles ()) {
-        if (StringUtils.endsWithIgnoreCase (file.getAbsolutePath (), ".tsv")) {
+      List<File> files = (List<File>) Arrays.asList (new File (folder).listFiles ());
+      Collections.shuffle (files);
+      for (File file : files) {
+        String absoluteFilePath = file.getAbsolutePath ();
+        if (StringUtils.endsWithIgnoreCase (absoluteFilePath, ".tsv")) {
+          final Map<String, String> parameters = getItemIdForResponsefile (file.getName ());
+          final String itemId = parameters.get ("itemid");
+          final String format = parameters.get ("format");
+
+          if (StringUtils.isEmpty (itemId))
+            continue;
 
           if (fileCounter == MAXFILES)
             break;
           ++fileCounter;
 
-          final String itemId = getItemIdForResponsefile (file.getName ());
-          if (StringUtils.isEmpty (itemId))
-            continue;
-
-          final String rubricPath = rubricsMap.get (itemId);
+          final String rubricPath = sanitizeFileNameForUri (rubricsMap.get (itemId));
           if (StringUtils.isEmpty (rubricPath)) {
-            _logger.info (String.format ("Error: No rubric found for item id %s", itemId));
+            _logger.error (String.format ("Error: No rubric found for item id %s", itemId));
             scoreCounter.incrementMissingRubrics ();
             continue;
           }
 
-          _logger.info (String.format ("Processing input file %s with item id %s using rubric %s.", file.getAbsolutePath (), itemId, rubricPath));
+          _logger.error (String.format ("Processing input file %s with item id %s using rubric %s.", file.getAbsolutePath (), itemId, rubricPath));
 
           FormQtiTester qtiTester = new FormQtiTester (new ItemSpecification ()
           {
@@ -54,6 +108,7 @@ public class QtiTester
               this._itemId = itemId;
               this._bankId = "NA";
               this._rubricFilePath = rubricPath;
+              this._format = format;
             }
           }, scoreCounter);
 
@@ -66,17 +121,18 @@ public class QtiTester
       _logger.error (exp.getMessage (), exp);
     }
 
-    _logger.info (scoreCounter.toString ());
+    _logger.error (scoreCounter.toString ());
   }
 
-  public static void testOneFile (String[] args) {
+  private static void testOneFile (Object[] args) {
     final ScoreCounter scoreCounter = new ScoreCounter ();
     try {
       // From here: http://blog.frankel.ch/thoughts-on-java-logging-and-slf4j
-      final String itemId = "10110";
-      final String bankId = "NA";
-      final String rubricFilePath = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/ERX/Item_10110_v14.qrx";
-      final String responseFile = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/10110_EQ.tsv";
+      final String itemId = (String) args[0];
+      final String bankId = (String) args[1];
+      final String rubricFilePath = sanitizeFileNameForUri ((String) args[2]);
+      final String responseFile = sanitizeFileNameForUri ((String) args[3]);
+      final String itemType = (String) args[4];
 
       FormQtiTester qtiTester = new FormQtiTester (new ItemSpecification ()
       {
@@ -84,6 +140,7 @@ public class QtiTester
           this._itemId = itemId;
           this._bankId = bankId;
           this._rubricFilePath = rubricFilePath;
+          this._format = itemType;
         }
       }, scoreCounter);
 
@@ -96,12 +153,15 @@ public class QtiTester
     _logger.info (scoreCounter.toString ());
   }
 
-  final static Pattern FilePattern = Pattern.compile ("(?<itemid>[0-9]*)_[a-zA-Z]*\\.tsv");
+  final static Pattern FilePattern = Pattern.compile ("(?<itemid>[0-9]*)_(?<format>[a-zA-Z0-9]*)\\.tsv");
 
-  private static String getItemIdForResponsefile (String file) {
+  private static Map<String, String> getItemIdForResponsefile (String file) {
     Matcher m = FilePattern.matcher (file.toLowerCase ());
     if (m.matches ()) {
-      return m.group ("itemid");
+      Map<String, String> parameters = new HashMap<String, String> ();
+      parameters.put ("itemid", m.group ("itemid"));
+      parameters.put ("format", m.group ("format"));
+      return parameters;
     }
     return null;
   }
@@ -140,5 +200,9 @@ public class QtiTester
       map.put (m.group ("itemid"), folder.getAbsolutePath ());
     }
     return map;
+  }
+
+  private static String sanitizeFileNameForUri (String name) {
+    return StringUtils.replace (name, "\\", "/");
   }
 }

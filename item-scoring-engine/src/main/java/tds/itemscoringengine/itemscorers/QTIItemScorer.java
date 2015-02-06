@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tds.itemscoringengine.itemscorers;
 
@@ -39,6 +39,7 @@ import qtiscoringengine.CustomOperatorRegistry;
 import qtiscoringengine.DataElement;
 import qtiscoringengine.Expression;
 import qtiscoringengine.ICustomOperatorFactory;
+import qtiscoringengine.ISECustomOperator;
 import qtiscoringengine.QTIRubric;
 import qtiscoringengine.ValidationLog;
 import qtiscoringengine.VariableBindings;
@@ -65,56 +66,72 @@ import AIR.Common.xml.XmlReaderException;
 
 public class QTIItemScorer implements IItemScorer
 {
-  private static final Logger            _logger            = LoggerFactory.getLogger (QTIItemScorer.class);
+  private static final Logger _logger = LoggerFactory.getLogger (QTIItemScorer.class);
 
   public QTIItemScorer () {
 
   }
 
-  public QTIItemScorer (IItemScorer customOperatorItemScorer) {
-    CustomOperatorRegistry.getInstance ().addOperatorFactory (new ISECustomOperator (customOperatorItemScorer));
-  }
-
-  @Override
+  // / <summary>
+  // / Scorer meta information
+  // / </summary>
+  // / <param name="itemFormat"></param>
+  // / <returns></returns>
   public ScorerInfo GetScorerInfo (String itemFormat) {
     return new ScorerInfo ("1.0", false, false, RubricContentSource.ItemXML);
   }
 
   @Override
-  public ItemScore ScoreItem (ResponseInfo responseInfo, IItemScorerCallback callback) {
-    final ItemScore score = new ItemScore (-1, -1, ScoringStatus.NotScored, "overall", new ScoreRationale (), responseInfo.getContextToken ()); // We
-                                                                                                                                                // cannot
-                                                                                                                                                // tell
-                                                                                                                                                // what
-                                                                                                                                                // the
-                                                                                                                                                // Max
-                                                                                                                                                // score
-                                                                                                                                                // is
+  public void shutdown () {
+  }
 
-    // DateTime startTime = DateTime.Now;
+  // / <summary>
+  // / The rubric for a QTI item is an Xml file.
+  // /
+  // / Note: Does not support caching or encryption currently
+  // / </summary>
+  // / <param name="responseInfo"></param>
+  // / <param name="callback"></param>
+  // / <returns></returns>
+  public ItemScore ScoreItem (ResponseInfo responseInfo, IItemScorerCallback callback) {
+    ItemScore score = new ItemScore (-1, -1, ScoringStatus.NotScored, "overall", new ScoreRationale (), responseInfo.getContextToken ()); // We
+                                                                                                                                          // cannot
+                                                                                                                                          // tell
+                                                                                                                                          // what
+    // Shiva: I added the follow null check on the response as it makes it
+    // easier to test it on the web
+    // interface with a REST client.
+    String response = responseInfo.getStudentResponse ();
+    if (response != null) {
+      response = response.trim ();
+      responseInfo.setStudentResponse (response);
+    }
+
+    // Max
+    // score
+    // is
     long startTime = System.currentTimeMillis ();
-    Map<String, String> identifiersAndResponses = new HashMap<> ();
+    Map<String, String> identifiersAndResponses = new HashMap<String, String> ();
     // first try to retrieve the item response, and the identifier
     try {
       XmlReader reader = new XmlReader (new StringReader (responseInfo.getStudentResponse ()));
       Document doc = reader.getDocument ();
+
       List<Element> responseNodes = new XmlElement (doc.getRootElement ()).selectNodes ("//itemResponse/response");
       for (Element elem : responseNodes) {
-        String identifier = elem.getAttributeValue ("id");
+        String identifier = elem.getAttribute ("id").getValue ();
         List<String> responses = new ArrayList<String> ();
         List<Element> valueNodes = new XmlElement (elem).selectNodes ("value");
         for (Element valElem : valueNodes) {
-          responses.add (valElem.getText ());
+          responses.add (new XmlElement (valElem).getInnerText ());
         }
 
-        // if (!identifiersAndResponses.containsKey(identifier)) {
-        identifiersAndResponses.put (identifier, StringUtils.join (responses, ','));
-        // } else {
-        // identifiersAndResponses.put (identifier, StringUtils.join(",",
-        // responses));
-        // }
+        identifiersAndResponses.put (identifier, StringUtils.join (responses, ","));
       }
+
     } catch (final Exception e) {
+      e.printStackTrace ();
+      _logger.error ("Error loading responses " + e.getMessage ());
       score.getScoreInfo ().setStatus (ScoringStatus.ScoringError);
       score.getScoreInfo ().getRationale ().setMsg ("Error loading response. Message: " + e.getMessage ());
       score.getScoreInfo ().getRationale ().setException (e);
@@ -122,8 +139,22 @@ public class QTIItemScorer implements IItemScorer
     }
 
     if (identifiersAndResponses.size () == 0) {
-      score.getScoreInfo ().getRationale ().setMsg ("No responses found");
-      return score;
+      // This could be a response from a grid/ti/eq item being scored using a
+      // QTI version of our proprietary rubrics
+      // Check if this is a TI/GI/SIM/EQ and unfortunately, there is no clean
+      // way to figure this out other than resorting to this hack
+      response = responseInfo.getStudentResponse ();
+
+      if (!StringUtils.isEmpty (response) && ((response.toUpperCase ().startsWith ("<RESPONSESPEC>") || response.toUpperCase ().startsWith ("<RESPONSETABLE>")) || // TI
+          (response.toUpperCase ().startsWith ("<RESPONSE>")) || // EQ
+          (response.toUpperCase ().contains ("<ANSWERSET>"))) // GI
+      ) {
+        identifiersAndResponses.put ("RESPONSE", responseInfo.getStudentResponse ());
+      } else {
+        _logger.error ("No responses found");
+        score.getScoreInfo ().getRationale ().setMsg ("No responses found");
+        return score;
+      }
     }
 
     try {
@@ -135,12 +166,12 @@ public class QTIItemScorer implements IItemScorer
       // check if there were any problems with the rubric
       if (rubric == null || !rubric.validate (log)) {
         score.getScoreInfo ().setStatus (ScoringStatus.ScoringError);
-
         StringBuilder rationaleString = new StringBuilder ();
         for (int i = 0; i < log.getCount (); i++)
           rationaleString.append (log.Message (i) + "\n");
         score.getScoreInfo ().getRationale ().setMsg (rationaleString.toString ());
 
+        _logger.error (String.format ("Error validating rubric. File %s. Message %s", responseInfo.getRubric ().toString (), rationaleString.toString ()));
         return score;
       }
 
@@ -158,7 +189,6 @@ public class QTIItemScorer implements IItemScorer
         score.getScoreInfo ().getRationale ().setMsg ("There was no SCORE identifier specified for the identifiers " + StringUtils.join (identifiersAndResponses.keySet (), ','));
         return score;
       }
-
       if (scoreArr.length < 4 || StringUtils.isEmpty (scoreArr[3])) {
         score.getScoreInfo ().setStatus (ScoringStatus.ScoringError);
         score.getScoreInfo ().getRationale ().setMsg ("There was no score specified for the identifiers " + StringUtils.join (identifiersAndResponses.keySet (), ','));
@@ -170,7 +200,7 @@ public class QTIItemScorer implements IItemScorer
       _Ref<Double> dScore = new _Ref<> ();
       if (JavaPrimitiveUtils.doubleTryParse (scoreArr[3], dScore)) {
         // note: we truncate the double score to be an int
-        score.getScoreInfo ().setPoints ((int) Math.round (Math.max (dScore.get (), 0)));
+        score.getScoreInfo ().setPoints ((int) Math.ceil (Math.max (dScore.get (), 0)));
         score.getScoreInfo ().setStatus (ScoringStatus.Scored);
         score.getScoreInfo ().getRationale ().setMsg ("successfully scored");
 
@@ -180,7 +210,8 @@ public class QTIItemScorer implements IItemScorer
                                                                              // bindings
                                                                              // requested
           {
-            responseInfo.setOutgoingBindings (new ArrayList<VarBinding> ());
+            score.getScoreInfo ().getRationale ().setBindings (new ArrayList<VarBinding> ());
+
             CollectionUtils.collect (bindings, new Transformer ()
             {
 
@@ -196,12 +227,11 @@ public class QTIItemScorer implements IItemScorer
                   }
                 };
               }
-            }, responseInfo.getOutgoingBindings ());
+            }, score.getScoreInfo ().getRationale ().getBindings ());
 
           } else // Specific bindings requested
           {
             score.getScoreInfo ().getRationale ().setBindings (new ArrayList<VarBinding> ());
-
             for (final VarBinding outgoingBinding : responseInfo.getOutgoingBindings ()) {
 
               final String[] binding = (String[]) CollectionUtils.find (bindings, new Predicate ()
@@ -270,8 +300,8 @@ public class QTIItemScorer implements IItemScorer
             }
             score.getScoreInfo ().getSubScores ().add (subScore.getScoreInfo ());
           }
-        }
 
+        }
         // note: ScoreLatency is miliseconds
         score.setScoreLatency (System.currentTimeMillis () - startTime);
         return score;
@@ -281,9 +311,10 @@ public class QTIItemScorer implements IItemScorer
         score.getScoreInfo ().getRationale ().setMsg ("Error changing score to int, score array values='" + StringUtils.join (scoreArr, ',') + "'.");
         return score;
       }
-      // reader.close()
+
     } catch (final Exception e) {
       e.printStackTrace ();
+      _logger.error ("Error : " + e.getMessage ());
       score.getScoreInfo ().setPoints (-1);
       score.getScoreInfo ().setStatus (ScoringStatus.ScoringError);
       score.getScoreInfo ().getRationale ().setMsg ("Error processing rubric. Message: " + e.getMessage ());
@@ -292,6 +323,11 @@ public class QTIItemScorer implements IItemScorer
     }
   }
 
+  // / <summary>
+  // / get an XmlReader object for the rubric
+  // / </summary>
+  // / <param name="ri"></param>
+  // / <returns></returns>
   private XmlReader getReader (ResponseInfo ri) throws JDOMException, IOException, XmlReaderException, URISyntaxException {
     try {
       if (ri.getContentType () == RubricContentType.Uri) {
@@ -306,161 +342,17 @@ public class QTIItemScorer implements IItemScorer
     } catch (XmlReaderException xe) {
       String theStr = "<null>";
       if (ri.getRubric () != null)
-         theStr = ri.getRubric ().toString ();
-      _logger.error (String.format("Exception: %s, input string: '%s'", xe.getMessage(), theStr),xe);
+        theStr = ri.getRubric ().toString ();
+      _logger.error (String.format ("Exception: %s, input string: '%s'", xe.getMessage (), theStr), xe);
       throw xe;
     }
   }
-
-  @Override
-  public void shutdown () {
-  }
-  
-  public static void main (String[] args) {
-    try {
-      // String response =
-      // "<itemResponse><response id=\"1\"><value>1</value></response></itemResponse>";
-      // URI rubricUri = new URI
-      // ("file:///C:/tmp/Bank-187/Items/Item-187-2620/Item_2620_v4.qrx");
-      // ResponseInfo responseInfo = new ResponseInfo ("htq", "2620", response,
-      // rubricUri, RubricContentType.Uri, "abc", false);
-
-      String response = "<itemResponse><response id=\"1\"><value>4</value><value>1</value><value>2</value><value>5</value><value>3</value></response></itemResponse>";
-      URI rubricUri = new URI ("file:///C:/tmp/Bank-187/Items/Item-187-2564/Item_2564_v1.qrx");
-      ResponseInfo responseInfo = new ResponseInfo ("htq", "2564", response, rubricUri, RubricContentType.Uri, "abc", false);
-
-      QTIItemScorer qtiScorer = new QTIItemScorer ();
-      ItemScore score = qtiScorer.ScoreItem (responseInfo, null);
-      
-      StringWriter strnWriter = new StringWriter ();
-      JAXBContext jaxbContext = JAXBContext.newInstance (ItemScore.class);
-      Marshaller jaxbMarshaller = jaxbContext.createMarshaller ();
-      // output pretty printed
-      jaxbMarshaller.setProperty (Marshaller.JAXB_FORMATTED_OUTPUT, true);
-      jaxbMarshaller.marshal(score, strnWriter);
-      
-      System.err.println (strnWriter.toString ());
-    } catch (Exception exp) {
-      exp.printStackTrace ();
-    }
-  }
-
 }
 
-class ISECustomOperator implements ICustomOperatorFactory
-{
-  private IItemScorer _externalScorer;
-
-  public ISECustomOperator (IItemScorer externalScorer) {
-    _externalScorer = externalScorer;
-  }
-
-  @Override
-  public boolean supportsOperator (Element customOperatorNode) {
-    return true;
-  }
-
-  @Override
-  public Expression createExpression (Element customOperatorNode) {
-    return new ISECustomExpression (customOperatorNode, _externalScorer);
-  }
-}
-
-class ISECustomExpression extends Expression
-{
-  private IItemScorer  _itemScorer         = null;
-  private String       _itemFormat         = null;
-  private String       _rubric             = null;
-  private String       _responseIdentifier = null;
-  private List<String> incomingIdentifiers = new ArrayList<String> ();
-  private List<String> outgoingIdentifiers = new ArrayList<String> ();
-
-  public ISECustomExpression (Element nodeInput, IItemScorer externalScorer)
-
-  {
-    super (nodeInput, 0, Integer.MAX_VALUE, BaseType.Boolean, Cardinality.Single);
-
-    XmlNamespaceManager nsMgr = new XmlNamespaceManager ();
-    nsMgr.addNamespace ("air", "http://www.air.org.org/");
-
-    XmlElement node = new XmlElement (nodeInput);
-
-    _itemScorer = externalScorer;
-    _itemFormat = getOperatorType (nodeInput);
-    _rubric = new XmlElement (node.selectSingleNode ("air:rubric", nsMgr)).getInnerXml ();
-    _responseIdentifier = node.selectSingleNode ("air:responseComponent", nsMgr).getAttribute ("identifier").getValue ();
-    for (Element incomingBinding : node.selectNodes ("air:bindInput", nsMgr)) {
-      incomingIdentifiers.add (incomingBinding.getAttribute ("identifier").getValue ());
-    }
-    for (Element outgoingBinding : node.selectNodes ("air:bindOutput", nsMgr)) {
-      outgoingIdentifiers.add (outgoingBinding.getAttribute ("identifier").getValue ());
-    }
-  }
-
-  @Override
-  protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    String response = vb.getVariable (_responseIdentifier).toString ();
-
-    ResponseInfo rinfo = new ResponseInfo (_itemFormat, "", response, _rubric, RubricContentType.ContentString, null, false)
-    {
-      {
-        setOutgoingBindings (new ArrayList<VarBinding> ()
-        {
-          {
-            add (VarBinding.ALL);
-          }
-        }); // We alwyas ask for ALL from expressions and leave it to the QTI
-            // executive to decide which ones to expose to the caller
-      }
-    };
-
-    ItemScore score = _itemScorer.ScoreItem (rinfo, null);
-
-    rubric.getResponseProcessingState ().add (score);
-
-    if (score.getScoreInfo ().getRationale ().getBindings () != null) {
-      for (VarBinding binding : score.getScoreInfo ().getRationale ().getBindings ()) {
-        if (vb.getVariable (binding.getName ()) != null) // this is added so
-                                                         // that only variables
-                                                         // declared in the QTI
-                                                         // rubric will be bound
-                                                         // and we can exclude
-                                                         // all the internal
-                                                         // native scoring
-                                                         // engine bindings
-        {
-          vb.setVariable (binding.getName (), DataElement.create (binding.getValue (), rubric.getOutcomeVariableBaseType (binding.getName ())));
-        }
-      }
-    }
-    if (score.getScoreInfo ().getRationale ().getPropositions () != null) {
-      for (Proposition proposition : score.getScoreInfo ().getRationale ().getPropositions ()) {
-        if (vb.getVariable (proposition.getName ()) != null) // this is added so
-                                                             // that only
-                                                             // variables
-                                                             // declared in the
-                                                             // QTI rubric will
-                                                             // be bound and we
-                                                             // can exclude all
-                                                             // the internal
-                                                             // native scoring
-                                                             // engine
-                                                             // propositions
-        {
-          vb.setVariable (proposition.getName (), DataElement.create (new Boolean ((proposition.getState () == PropositionState.Asserted)).toString (), BaseType.Boolean));
-        }
-      }
-    }
-
-    return score.getScoreInfo ().getStatus () == ScoringStatus.Scored ? DataElement.create ("true", BaseType.Boolean) : DataElement.create ("false", BaseType.Boolean);
-  }
-
-  private static String getOperatorType (Element customOperatorNode) {
-    for (Attribute attribute : customOperatorNode.getAttributes ()) {
-      if ("CLASS".equals (attribute.getName ().toUpperCase ())) {
-        return attribute.getValue ();
-      }
-    }
-    return "";
-  }
-}
+/*
+ * Shiva: the following two classes have now been moved to QTIScoringEngine
+ * project as public classes. Please read the comments in the corresponding
+ * class files to see the rationale behind this.
+ */
+// class ISECustomOperator implements ICustomOperatorFactory
+// class ISECustomExpression extends Expression

@@ -22,7 +22,12 @@ public class DEInteger extends _DEFloat<Integer>
   }
 
   @Override
-  public boolean equals (DataElement d) {
+  public boolean equals (Object e) {
+    if (!(e instanceof DataElement))
+      return false;
+
+    DataElement d = (DataElement) e;
+
     if (d != null) {
       if (d instanceof _DEFloat) {
         _DEFloat intDE = (_DEFloat) d;

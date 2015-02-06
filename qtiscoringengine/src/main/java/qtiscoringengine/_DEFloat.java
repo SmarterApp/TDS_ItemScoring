@@ -61,7 +61,12 @@ public abstract class _DEFloat<N extends Number> extends DataElement
   // optimizations.
   @SuppressWarnings ("unused")
   @Override
-  public boolean equals (DataElement d) {
+  public boolean equals (Object e) {
+    if (!(e instanceof DataElement))
+      return false;
+
+    DataElement d = (DataElement) e;
+
     @SuppressWarnings ("rawtypes")
     _DEFloat i = (_DEFloat) d;
     if (i != null) {

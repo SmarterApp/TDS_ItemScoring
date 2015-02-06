@@ -26,7 +26,12 @@ public class DEPair extends DataElement
   }
 
   @Override
-  public boolean equals (DataElement d) {
+  public boolean equals (Object e) {
+    if (!(e instanceof DataElement))
+      return false;
+
+    DataElement d = (DataElement) e;
+
     if (d.getType () == this.getType ()) {
       DEPair dep = (DEPair) d;
       // might need to add more to the logic here, it looks like something

@@ -27,7 +27,12 @@ public class DEBoolean extends DEInteger
   }
 
   @Override
-  public boolean equals (DataElement d) {
+  public boolean equals (Object e) {
+    if (!(e instanceof DataElement))
+      return false;
+
+    DataElement d = (DataElement) e;
+    
     if (d.getType () == this.getType ()) {
       return (_value == ((DEBoolean) d).getBooleanValue ());
     }

@@ -24,7 +24,12 @@ public class DEString extends DataElement
   }
 
   @Override
-  public boolean equals (DataElement d) {
+  public boolean equals (Object e) {
+    if (!(e instanceof DataElement))
+      return false;
+
+    DataElement d = (DataElement) e;
+
     if (d.getType () == this.getType ()) {
       return StringUtils.equals (_value, ((DEString) d).getValue ());
     }

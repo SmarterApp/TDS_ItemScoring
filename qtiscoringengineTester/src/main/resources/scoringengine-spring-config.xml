@@ -6,6 +6,31 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 
+	<annotation-driven />
+	<context:annotation-config />
+
+	<context:property-placeholder location="classpath:settings.xml" ignore-unresolvable="true" order="900" />
+
+	<context:property-placeholder ignore-unresolvable="true" />
+
+
+
+	<beans:import resource="classpath:opentestsystem.shared.common-context-module.xml" />
+
+	<beans:bean id="httpWebHelper" class="tds.itemscoringengine.web.server.ItemScoringEngineHttpWebHelper" />
+	<beans:bean id="iEncryption" class="tds.itemscoringengine.web.server.NoEncryption" />
+
+	<beans:bean factory-bean="appSettings" factory-method="updateProperties" lazy-init="false" id="test-reg-url-dependency">
+		<beans:constructor-arg>
+			<util:map map-class="java.util.HashMap">
+				<beans:entry key="itemscoring.qti.sympyServiceUrl" value="${itemscoring.qti.sympyServiceUrl}" />
+				<beans:entry key="itemscoring.qti.sympyMaxTries" value="${itemscoring.qti.sympyMaxTries}" />
+				<beans:entry key="itemscoring.qti.sympyTimeoutMillis" value="${itemscoring.qti.sympyTimeoutMillis}" />
+			</util:map>
+		</beans:constructor-arg>
+	</beans:bean>
+
+
 	<beans:bean id="rubricCache" class="tds.itemscoringengine.complexitemscorers.RubricCache" scope="singleton" />
 
 	<beans:bean id="scoringMaster" class="tds.itemscoringengine.web.server.ScoringMaster" scope="singleton" destroy-method="shutdown">
@@ -42,17 +67,9 @@
 	</beans:bean>
 
 
-	<!-- beans:bean id="essay-item-scorer" class="tds.itemscoringengine.complexitemscorers.RubricScorer" scope="prototype"> <beans:constructor-arg> <beans:bean class="tds.itemscoringengine.essayitemscorer.EssayItemScorerFactory" 
-		scope="prototype"/> </beans:constructor-arg> </beans:bean -->
-
 	<beans:bean id="rubric-url-rewriter" class="AIR.Common.Web.PatternUrlRewriter">
 	</beans:bean>
 
-	<beans:bean id="faceletsViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<beans:property name="viewClass" value="org.springframework.faces.mvc.JsfView" />
-		<beans:property name="prefix" value="WEB-INF/views/" />
-		<beans:property name="suffix" value=".xhtml" />
-	</beans:bean>
 	<annotation-driven />
 	<context:component-scan base-package="tds.itemscoringengine" />
 	<context:component-scan base-package="tds.itemscoringengine.web.server" />

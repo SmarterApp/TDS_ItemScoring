@@ -1,0 +1,10 @@
+EQ: about 10% does not work.
+
+GI: about 10% does not work.
+
+HTQ: with a sample of 50 items and 84000-plus respons there were no discrepancies. 
+
+MI: 
+
+TI: for most of the inconsistencies, it seems we are assigning a higher score than what is in the file. 
+there were about .001% errors as well.

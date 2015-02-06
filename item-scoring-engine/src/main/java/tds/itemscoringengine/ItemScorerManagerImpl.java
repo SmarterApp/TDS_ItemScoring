@@ -1,19 +1,21 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tds.itemscoringengine;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import AIR.Common.Helpers.CaseInsensitiveMap;
 import AIR.Common.Threading.AbstractTask;
 import AIR.Common.Threading.BoundedThreadPool;
 import AIR.Common.Threading.ITask;
@@ -28,7 +30,7 @@ public class ItemScorerManagerImpl implements IItemScorerManager
 
   private static final Logger            _logger            = LoggerFactory.getLogger (ItemScorerManagerImpl.class);
 
-  private final Map<String, IItemScorer> _scoringEngines    = new HashMap<String, IItemScorer> ();
+  private final Map<String, IItemScorer> _scoringEngines    = new CaseInsensitiveMap<IItemScorer> ();
   private final BoundedThreadPool        _threadPool;
   private IUrlRewriter                   _rubricUrlRewriter = null;
 

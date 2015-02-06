@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>R01.00.20</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>qtiscoringengineTester</artifactId>
 	<properties>
@@ -13,8 +13,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
-			<artifactId>qtiscoringengine</artifactId>
-			<version>R01.00.20</version>
+			<artifactId>item-scoring-engine</artifactId>
+			<version>1.1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
@@ -33,6 +33,16 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<artifactId>shared-web</artifactId>
+			<groupId>org.opentestsystem.shared</groupId>
+			<version>1.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
 		</dependency>
 	</dependencies>
 	<build>
