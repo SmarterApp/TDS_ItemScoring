@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Educational Online Test Delivery System 
+ * Copyright (c) 2014 American Institutes for Research
+ *     
+ * Distributed under the AIR Open Source License, Version 1.0 
+ * See accompanying file AIR-License-1_0.txt or at
+ * 
+ * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ ******************************************************************************/
 package tinyequationscoringengine;
 
 import java.io.StringReader;
@@ -216,9 +225,9 @@ public class MathMLParser
 
     for (Element mFracNode : matchingNodes) {
       XmlElement elementMFracNode = new XmlElement (mFracNode);
-      if ((!(elementMFracNode.getPreviousSibling ().equals (null))) && "MROW".equalsIgnoreCase (elementMFracNode.getPreviousSibling ().getLocalName ())) {
+      if (elementMFracNode.getPreviousSibling () != null && "MROW".equalsIgnoreCase (elementMFracNode.getPreviousSibling ().getLocalName ())) {
 
-        XmlElement mRowNode = new XmlElement (mFracNode).getPreviousSibling ();
+        XmlElement mRowNode = elementMFracNode.getPreviousSibling ();
 
         // the previous sibling was a mrow. Now, it is bogus ONLY IF it does not
         // have a <mo>(<mo> child

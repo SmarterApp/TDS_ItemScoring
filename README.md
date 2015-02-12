@@ -11,11 +11,11 @@ We would be happy to receive feedback on its capabilities, problems, or future e
 * For general questions or discussions, or issues and bugs, please use the [Forum](http://forum.opentestsystem.org/viewforum.php?f=9).
 * Feel free to **Fork** this project and develop your changes!
 
-## 2/6/2015 Release Notes 
-Release `R01.00.21-20150206` is a bugfix release of the ItemScoring Engine with operational support for [custom operators](http://www.smarterapp.org/documents/Item_Scoring_Custom_Operators.pdf). Specifically, EQ (equation), GI (grid) and TI (table interaction) scoring is now functional. We continue to refine the scoring, but cannot guarantee that these items will be correctly scored at this time. This release requires Student modifications (DB config and code), which will be released shortly. Furthermore, we will be doing frequent periodic releases as we update this functionality.
+## 2/11/2015 Release Notes 
+Release `R01.00.23-20150211` is a bugfix release of the ItemScoring Engine with an updated, functional EQ scoring engine (see below for installation instructions). Related modifications in Student code have been made in the concurrent Student release. We will be doing frequent periodic releases as we update this functionality.
 
 ### Known issues
-*These will be provided shortly.*
+*TBD*
 
 ## Module Overview
 
@@ -38,6 +38,21 @@ Release `R01.00.21-20150206` is a bugfix release of the ItemScoring Engine with 
 ### qtiscoringengine
 
    qtiscoringengine contains QTI scorer module.
+
+### Equation Scoring Service Setup
+
+The Equation (EQ) Scorer is provided as a web service. In order to run this, perform the following steps:
+
+1. On the TDS (student) server, install [Python 2.7](https://www.python.org/download/releases/2.7/), [Sympy 0.7.1](https://github.com/sympy/sympy/releases/tag/sympy-0.7.1), and [Bottle 0.12.8](https://pypi.python.org/pypi/bottle/0.12.8).
+1. For security reasons, we recommend creating a user with non-root privileges. Name it, for example, `itemscoringservice`. Switch to this user.
+1. Create a directory for the EQ service such as `eq/scripts/` 
+1. Create a directory for the EQ service logs such as `eq/logs/` 
+1. Install `sympy-scripts/EqScoringWebService.py` into that user's `~itemscoringservice/eq/scripts` for example.
+1. Start the service as the `itemscoringservice` user using the following command:
+`/usr/bin/python2.7 /home/itemscoringservice/eq/scripts/EqScoringWebService.py  2> /dev/null > /home/itemscoringservice/eq/logs/EqScoringWebService.py.log &`
+1. This will ensure the equation scorer runs in the background and saves its log output. 
+1. It's recommended to make sure only a single instance of the EQ scorer is running at any one time, and that the logs directory is rotated and pruned regularly.
+
 
 ## Setup
 In general, build the code and deploy the JAR file.
