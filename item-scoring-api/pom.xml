@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>R01.00.23</version>
+		<version>R01.00.25</version>
 	</parent>
 
 	<licenses>
