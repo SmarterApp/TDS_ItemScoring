@@ -826,7 +826,7 @@ def evaluate():
 #print matchExpression('2-2','a-b',['a','b'],[],[])
 
 
-run(host='localhost', port=8080, debug=True)
+run(host='localhost', port=8084, debug=True)
 
 # curl -X POST -F response=1 -F exemplar=1 -F simplify=True -F trig=True -F log=True http://localhost:8080/isequivalent
 # curl -X POST -F response=1 http://localhost:8080/parsable

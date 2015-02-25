@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-	<entry key="itemscoring.qti.sympyServiceUrl">http://localhost:8080/</entry>
+	<entry key="itemscoring.qti.sympyServiceUrl">http://localhost:8084/</entry>
 	<entry key="itemscoring.qti.sympyMaxTries">3</entry>
 	<entry key="itemscoring.qti.sympyTimeoutMillis">10000</entry>
 </properties>

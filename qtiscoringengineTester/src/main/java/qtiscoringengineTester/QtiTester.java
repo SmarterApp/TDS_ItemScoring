@@ -27,191 +27,205 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import AIR.Common.Helpers._Ref;
 
-public class QtiTester
-{
-  private static final Logger _logger = LoggerFactory.getLogger (QtiTester.class);
+public class QtiTester {
+	private static final Logger _logger = LoggerFactory
+			.getLogger(QtiTester.class);
 
-  public static void main (String[] args) {
-    Object[] inputArguments = getParameters (args);
+	public static void main(String[] args) {
+		Object[] inputArguments = getParameters(args);
 
-    ApplicationContext applicationContext = new ClassPathXmlApplicationContext ("/scoringengine-spring-config.xml");
+		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+				"/scoringengine-spring-config.xml");
 
-    testAllFiles (inputArguments);
-    // testOneFile (inputArguments);
-  }
+		//testAllFiles(inputArguments);
+		testOneFile (inputArguments);
+	}
 
-  // TODO Shiva: make these command line arguments using CLI
-  private static Object[] getParameters (String[] inputArguments) {
-    // the following 5 are required in case you intend to use invoke
-    // testOneFile.
-    /*
-     * final String itemId = "11787"; final String bankId = "NA"; final String
-     * rubricFilePath =
-     * "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/Others/Item_11787_v5.qrx"
-     * ; final String responseFile =
-     * "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/11787_HTQ.tsv"
-     * ; final String itemType = "HTQ";
-     */
-    final String itemId = "12948";
-    final String bankId = "NA";
-    final String rubricFilePath = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/GRX/Item_12948_v14.qrx";
-    final String responseFile = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/12948_GI.tsv";
-    final String itemType = "GI";
+	// TODO Shiva: make these command line arguments using CLI
+	private static Object[] getParameters(String[] inputArguments) {
+		// the following 5 are required in case you intend to use invoke
+		// testOneFile.
+		final String itemId = "73";
+		final String bankId = "NA";
+		final String rubricFilePath = "C:/Workspace/JavaWorkspace/TinyScoringEngine/DataFiles/ERX/Item_73_v8.qrx";
+		final String responseFile = "C:/Workspace/JavaWorkspace/TinyScoringEngine/DataFiles/73_EQ.tsv";
+		final String itemType = "EQ";
 
-    // the following are required in case you intend to use testAllFiles.
-    final String folder = "C:\\WorkSpace\\JavaWorkSpace\\TinyScoringEngine\\DataFiles\\forShiva\\";
-    final Integer MAX_FILES_TO_TEST = 3;
+		// the following are required in case you intend to use testAllFiles.
+		final String folder = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/";
+		final Integer MAX_FILES_TO_TEST = 3;
 
-    // TODO Shiva: control logger settings from here.
-    // For the time being set them in log4j.xml
+		// TODO Shiva: control logger settings from here.
+		// For the time being set them in log4j.xml
 
-    // Do not modify below this line.
-    Object[] args = new Object[7];
-    args[0] = itemId;
-    args[1] = bankId;
-    args[2] = rubricFilePath;
-    args[3] = responseFile;
-    args[4] = itemType;
-    args[5] = folder;
-    args[6] = MAX_FILES_TO_TEST;
+		// Do not modify below this line.
+		Object[] args = new Object[7];
+		args[0] = itemId;
+		args[1] = bankId;
+		args[2] = rubricFilePath;
+		args[3] = responseFile;
+		args[4] = itemType;
+		args[5] = folder;
+		args[6] = MAX_FILES_TO_TEST;
 
-    return args;
-  }
+		return args;
+	}
 
-  private static void testAllFiles (Object[] args) {
-    final ScoreCounter scoreCounter = new ScoreCounter ();
-    final String folder = sanitizeFileNameForUri ((String) args[5]);
-    final int MAXFILES = (Integer) args[6];
-    try {
-      final Map<String, String> rubricsMap = mapRubricPathToItemId (folder, new _Ref<Map<String, String>> (new HashMap<String, String> ()));
+	private static void testAllFiles(Object[] args) {
+		final ScoreCounter scoreCounter = new ScoreCounter();
+		final String folder = sanitizeFileNameForUri((String) args[5]);
+		final int MAXFILES = (Integer) args[6];
+		try {
+			final Map<String, String> rubricsMap = mapRubricPathToItemId(
+					folder, new _Ref<Map<String, String>>(
+							new HashMap<String, String>()));
 
-      int fileCounter = 1;
-      List<File> files = (List<File>) Arrays.asList (new File (folder).listFiles ());
-      Collections.shuffle (files);
-      for (File file : files) {
-        String absoluteFilePath = file.getAbsolutePath ();
-        if (StringUtils.endsWithIgnoreCase (absoluteFilePath, ".tsv")) {
-          final Map<String, String> parameters = getItemIdForResponsefile (file.getName ());
-          final String itemId = parameters.get ("itemid");
-          final String format = parameters.get ("format");
+			int fileCounter = 1;
+			List<File> files = (List<File>) Arrays.asList(new File(folder)
+					.listFiles());
+			Collections.shuffle(files);
+			for (File file : files) {
+				String absoluteFilePath = file.getAbsolutePath();
+				if (StringUtils.endsWithIgnoreCase(absoluteFilePath, ".tsv")) {
+					final Map<String, String> parameters = getItemIdForResponsefile(file
+							.getName());
+					final String itemId = parameters.get("itemid");
+					final String format = parameters.get("format");
 
-          if (StringUtils.isEmpty (itemId))
-            continue;
+					if (StringUtils.isEmpty(itemId))
+						continue;
 
-          if (fileCounter == MAXFILES)
-            break;
-          ++fileCounter;
+					if (fileCounter == MAXFILES)
+						break;
+					++fileCounter;
 
-          final String rubricPath = sanitizeFileNameForUri (rubricsMap.get (itemId));
-          if (StringUtils.isEmpty (rubricPath)) {
-            _logger.error (String.format ("Error: No rubric found for item id %s", itemId));
-            scoreCounter.incrementMissingRubrics ();
-            continue;
-          }
+					final String rubricPath = sanitizeFileNameForUri(rubricsMap
+							.get(itemId));
+					if (StringUtils.isEmpty(rubricPath)) {
+						_logger.error(String
+								.format("Error: No rubric found for item id %s",
+										itemId));
+						scoreCounter.incrementMissingRubrics();
+						continue;
+					}
 
-          _logger.error (String.format ("Processing input file %s with item id %s using rubric %s.", file.getAbsolutePath (), itemId, rubricPath));
+					_logger.error(String
+							.format("Processing input file %s with item id %s using rubric %s.",
+									file.getAbsolutePath(), itemId, rubricPath));
 
-          FormQtiTester qtiTester = new FormQtiTester (new ItemSpecification ()
-          {
-            {
-              this._itemId = itemId;
-              this._bankId = "NA";
-              this._rubricFilePath = rubricPath;
-              this._format = format;
-            }
-          }, scoreCounter);
+					FormQtiTester qtiTester = new FormQtiTester(
+							new ItemSpecification() {
+								{
+									this._itemId = itemId;
+									this._bankId = "NA";
+									this._rubricFilePath = rubricPath;
+									this._format = format;
+								}
+							}, scoreCounter);
 
-          qtiTester.processResponseFiles (file.getAbsolutePath ());
-        }
-      }
+					qtiTester.processResponseFiles(file.getAbsolutePath());
+				}
+			}
 
-    } catch (Exception exp) {
-      exp.printStackTrace ();
-      _logger.error (exp.getMessage (), exp);
-    }
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			_logger.error(exp.getMessage(), exp);
+		}
 
-    _logger.error (scoreCounter.toString ());
-  }
+		_logger.error(scoreCounter.toString());
+	}
 
-  private static void testOneFile (Object[] args) {
-    final ScoreCounter scoreCounter = new ScoreCounter ();
-    try {
-      // From here: http://blog.frankel.ch/thoughts-on-java-logging-and-slf4j
-      final String itemId = (String) args[0];
-      final String bankId = (String) args[1];
-      final String rubricFilePath = sanitizeFileNameForUri ((String) args[2]);
-      final String responseFile = sanitizeFileNameForUri ((String) args[3]);
-      final String itemType = (String) args[4];
+	private static void testOneFile(Object[] args) {
+		final ScoreCounter scoreCounter = new ScoreCounter();
+		try {
+			// From here:
+			// http://blog.frankel.ch/thoughts-on-java-logging-and-slf4j
+			final String itemId = (String) args[0];
+			final String bankId = (String) args[1];
+			final String rubricFilePath = sanitizeFileNameForUri((String) args[2]);
+			final String responseFile = sanitizeFileNameForUri((String) args[3]);
+			final String itemType = (String) args[4];
 
-      FormQtiTester qtiTester = new FormQtiTester (new ItemSpecification ()
-      {
-        {
-          this._itemId = itemId;
-          this._bankId = bankId;
-          this._rubricFilePath = rubricFilePath;
-          this._format = itemType;
-        }
-      }, scoreCounter);
+			FormQtiTester qtiTester = new FormQtiTester(
+					new ItemSpecification() {
+						{
+							this._itemId = itemId;
+							this._bankId = bankId;
+							this._rubricFilePath = rubricFilePath;
+							this._format = itemType;
+						}
+					}, scoreCounter);
 
-      qtiTester.processResponseFiles (responseFile);
+			qtiTester.processResponseFiles(responseFile);
 
-    } catch (Exception exp) {
-      exp.printStackTrace ();
-      _logger.error (exp.getMessage (), exp);
-    }
-    _logger.info (scoreCounter.toString ());
-  }
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			_logger.error(exp.getMessage(), exp);
+		}
+		_logger.error(scoreCounter.toString());
+	}
 
-  final static Pattern FilePattern = Pattern.compile ("(?<itemid>[0-9]*)_(?<format>[a-zA-Z0-9]*)\\.tsv");
+	final static Pattern FilePattern = Pattern
+			.compile("(?<itemid>[0-9]*)_(?<format>[a-zA-Z0-9]*)\\.tsv");
 
-  private static Map<String, String> getItemIdForResponsefile (String file) {
-    Matcher m = FilePattern.matcher (file.toLowerCase ());
-    if (m.matches ()) {
-      Map<String, String> parameters = new HashMap<String, String> ();
-      parameters.put ("itemid", m.group ("itemid"));
-      parameters.put ("format", m.group ("format"));
-      return parameters;
-    }
-    return null;
-  }
+	private static Map<String, String> getItemIdForResponsefile(String file) {
+		Matcher m = FilePattern.matcher(file.toLowerCase());
+		if (m.matches()) {
+			Map<String, String> parameters = new HashMap<String, String>();
+			parameters.put("itemid", m.group("itemid"));
+			parameters.put("format", m.group("format"));
+			return parameters;
+		}
+		return null;
+	}
 
-  final static Pattern RubricPattern = Pattern.compile ("item_(?<itemid>[0-9]*)_v[0-9]*\\.qrx");
+	final static Pattern RubricPattern = Pattern
+			.compile("item_(?<itemid>[0-9]*)_v[0-9]*\\.qrx");
 
-  private static Map<String, String> mapRubricPathToItemId (String folderPathToScan, _Ref<Map<String, String>> outputMap) {
-    Map<String, String> map = outputMap.get ();
-    if (map == null) {
-      outputMap.set (new HashMap<String, String> ());
-      map = outputMap.get ();
-    }
+	private static Map<String, String> mapRubricPathToItemId(
+			String folderPathToScan, _Ref<Map<String, String>> outputMap) {
+		Map<String, String> map = outputMap.get();
+		if (map == null) {
+			outputMap.set(new HashMap<String, String>());
+			map = outputMap.get();
+		}
 
-    // scan files.
-    File folder = new File (folderPathToScan);
-    if (folder.isFile ())
-      mapRubricPathToItemIdForFile (folder.getAbsolutePath (), outputMap);
-    else {
-      for (String subFile : folder.list ()) {
-        File subFilePath = new File (folder.getAbsolutePath () + File.separator + subFile);
-        if (subFilePath.isDirectory ())
-          mapRubricPathToItemId (subFilePath.getAbsolutePath (), outputMap);
-        else if (subFilePath.isFile ())
-          mapRubricPathToItemIdForFile (subFilePath.getAbsolutePath (), outputMap);
-      }
-    }
+		// scan files.
+		File folder = new File(folderPathToScan);
+		if (folder.isFile())
+			mapRubricPathToItemIdForFile(folder.getAbsolutePath(), outputMap);
+		else {
+			for (String subFile : folder.list()) {
+				File subFilePath = new File(folder.getAbsolutePath()
+						+ File.separator + subFile);
+				if (subFilePath.isDirectory())
+					mapRubricPathToItemId(subFilePath.getAbsolutePath(),
+							outputMap);
+				else if (subFilePath.isFile())
+					mapRubricPathToItemIdForFile(subFilePath.getAbsolutePath(),
+							outputMap);
+			}
+		}
 
-    return map;
-  }
+		return map;
+	}
 
-  private static Map<String, String> mapRubricPathToItemIdForFile (String file, _Ref<Map<String, String>> outputMap) {
-    File folder = new File (file);
-    Map<String, String> map = outputMap.get ();
-    Matcher m = RubricPattern.matcher (folder.getName ().toLowerCase ());
-    if (m.matches ()) {
-      map.put (m.group ("itemid"), folder.getAbsolutePath ());
-    }
-    return map;
-  }
+	private static Map<String, String> mapRubricPathToItemIdForFile(
+			String file, _Ref<Map<String, String>> outputMap) {
+		File folder = new File(file);
+		Map<String, String> map = outputMap.get();
+		Matcher m = RubricPattern.matcher(folder.getName().toLowerCase());
+		if (m.matches()) {
+			String itemId = m.group("itemid");
+			String currentMap = map.get(itemId);
+			if (currentMap == null
+					|| currentMap.toLowerCase().contains("others"))
+				map.put(itemId, folder.getAbsolutePath());
+		}
+		return map;
+	}
 
-  private static String sanitizeFileNameForUri (String name) {
-    return StringUtils.replace (name, "\\", "/");
-  }
+	private static String sanitizeFileNameForUri(String name) {
+		return StringUtils.replace(name, "\\", "/");
+	}
 }

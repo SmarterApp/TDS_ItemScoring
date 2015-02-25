@@ -42,7 +42,7 @@ public class TGREGetSlope extends TinyGRExpression
 
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) throws TinyGRException {
     DEString vector = (DEString) vb.getVariable ((DEIdentifier) getAttributeValue ("vector"));
-    if (vector.equals (null)) {
+    if (vector == null) {
       return new DEFloat (Double.NaN);
     }
     double slope = TinyGR.getSlope (vector.toString ());

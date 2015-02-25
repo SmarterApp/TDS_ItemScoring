@@ -256,7 +256,7 @@ class ExprEqual extends Expression
     } else {
       _allowLow = ((_DEFloat) tolerances.getMember (0)).getValue ().doubleValue ();
 
-      if (tolerances.getMember (1) == null) {
+      if (tolerances.getMemberCount () < 2 || tolerances.getMember (1) == null) {
         _allowHi = _allowLow;
       } else
         _allowHi = ((_DEFloat) tolerances.getMember (1)).getValue ().doubleValue ();

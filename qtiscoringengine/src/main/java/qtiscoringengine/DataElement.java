@@ -20,6 +20,7 @@ import org.jdom2.Element;
 import qtiscoringengine.cs2java.StringHelper;
 import AIR.Common.Helpers._Ref;
 import AIR.Common.Utilities.JavaPrimitiveUtils;
+import AIR.Common.Utilities.MathUtils;
 
 public abstract class DataElement
 {
@@ -106,11 +107,12 @@ public abstract class DataElement
     case Identifier:
       return new DEIdentifier (val);
     case Integer:
-      _Ref<Integer> num = new _Ref<Integer> ();
+      _Ref<Double> num = new _Ref<Double> ();
 
-      if (!JavaPrimitiveUtils.intTryParse (val, num))
+      if (!JavaPrimitiveUtils.doubleTryParse (val, num))
         return new DEError ("Could not parse int from value '" + val + "'");
-      return new DEInteger (num.get ());
+
+      return new DEInteger ((int) MathUtils.truncate (num.get ()));
     case Float:
       try {
         double f = Double.parseDouble (val);
