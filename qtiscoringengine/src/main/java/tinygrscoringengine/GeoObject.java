@@ -36,9 +36,22 @@ public class GeoObject extends GRObject
     super (ObjectType.Geometric);
     _pointList = pointList;
     _vectorList = vectorList;
-    if ((vectorList != null) && (vectorList.size () > 0)) {
+
+    List<Point> meetingPoints = GetUniqueMeetingPoints (vectorList);
+
+    // if it is a useable closed form shape, sort the vectors
+    if ((vectorList != null) && ((vectorList.size () == 3 && meetingPoints.size () == 3) || // closed
+        // form
+        // triangle
+        (vectorList.size () == 4 && meetingPoints.size () == 4) || // closed
+                                                                   // form
+        // quadrilateral
+        (vectorList.size () == 5 && meetingPoints.size () == 5) // closed form
+        // pentagram
+        )) {
       sortVectors ();
     }
+
   }
 
   public List<Point> getPointList () {
@@ -148,48 +161,6 @@ public class GeoObject extends GRObject
     }
   }
 
-  private static final Comparator<Vector> sortTopLeft = new Comparator<Vector> ()
-                                                      {
-
-                                                        @Override
-                                                        public int compare (Vector v1, Vector v2) {
-
-                                                          {
-                                                            Point top1 = v1.getTopLeftMost ();
-                                                            Point top2 = v2.getTopLeftMost ();
-                                                            if (top1._y > top2._y)
-                                                              return -1;
-                                                            if (top2._y > top1._y)
-                                                              return 1;
-                                                            // otherwise they
-                                                            // are equal...
-                                                            if (top1._x < top2._x)
-                                                              return -1;
-                                                            if (top2._x < top1._x)
-                                                              return 1;
-                                                            // otherwise it is
-                                                            // the same
-                                                            // point,
-
-                                                            if (v1.getLeftExtent () < v2.getLeftExtent ()) {
-                                                              return -1;
-                                                            }
-                                                            if (v2.getLeftExtent () < v1.getLeftExtent ()) {
-                                                              return 1;
-                                                            }
-                                                            // otherwise this
-                                                            // too is equal
-
-                                                            if (v2.getLength () < v1.getLength ()) {
-                                                              return 1;
-                                                            }
-                                                            return -1;
-                                                          }
-
-                                                        }
-
-                                                      };
-
   // make sure this works with closed objects. For non-closed objects will
   // return a deterministic sort order, I think, but it is not intuitive.
   // For points that intersect at this point, it will select the one the
@@ -272,4 +243,73 @@ public class GeoObject extends GRObject
     }
     return false;
   }
+
+  private static List<Point> GetUniqueMeetingPoints (List<Vector> vecs) {
+    List<Point> r = new ArrayList<Point> ();
+    if (vecs.size () == 0)
+      return r;
+    for (Vector v1 : vecs) {
+      for (Vector v2 : vecs) {
+        if ((!v1.equalsVector (v2)) && v1.meetsVector (v2)) {
+          Point meetingPoint = v1.meetingPoint (v2);
+          if (meetingPoint != null) {
+            boolean alreadyIn = false;
+            for (Point p : r) {
+              if (p.equalsPoint (meetingPoint)) {
+                alreadyIn = true;
+                // break;
+              }
+            }
+            if (!alreadyIn)
+              r.add (meetingPoint);
+          }
+        }
+      }
+    }
+
+    return r;
+  }
+
+  private static final Comparator<Vector> sortTopLeft = new Comparator<Vector> ()
+                                                      {
+
+                                                        @Override
+                                                        public int compare (Vector v1, Vector v2) {
+
+                                                          {
+                                                            Point top1 = v1.getTopLeftMost ();
+                                                            Point top2 = v2.getTopLeftMost ();
+                                                            if (top1._y > top2._y)
+                                                              return -1;
+                                                            if (top2._y > top1._y)
+                                                              return 1;
+                                                            // otherwise they
+                                                            // are equal...
+                                                            if (top1._x < top2._x)
+                                                              return -1;
+                                                            if (top2._x < top1._x)
+                                                              return 1;
+                                                            // otherwise it is
+                                                            // the same
+                                                            // point,
+
+                                                            if (v1.getLeftExtent () < v2.getLeftExtent ()) {
+                                                              return -1;
+                                                            }
+                                                            if (v2.getLeftExtent () < v1.getLeftExtent ()) {
+                                                              return 1;
+                                                            }
+                                                            // otherwise this
+                                                            // too is equal
+
+                                                            if (v2.getLength () < v1.getLength ()) {
+                                                              return 1;
+                                                            }
+                                                            return -1;
+                                                          }
+
+                                                        }
+
+                                                      };
+
 }

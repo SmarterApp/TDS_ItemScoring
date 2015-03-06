@@ -1,0 +1,1 @@
+C:\Python27\python.exe C:\java_workspace\sts_workspace\TinyScoringEngine\SourceCode\ItemScoringEngineDev\sympy-scripts\EqScoringWebService.py

@@ -55,6 +55,7 @@ public class Table extends TableObject
     return column;
   }
 
+  @Override
   public TableVector getHeaderRow () {
     return (_rowCount > 0) ? _rows[0] : null;
   }

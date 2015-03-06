@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *     
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
  * 
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at
+ * 
+ * http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tinytablescoringengine;
 
@@ -74,12 +75,13 @@ public class TableVector extends TableObject
     return t;
   }
 
+  @Override
   public double getValueNumeric (int idx) {
     if ((idx < 0) || (idx >= _elements.length)) {
       return Double.NaN;
     }
     _Ref<Double> d = new _Ref<Double> ();
-    boolean success = JavaPrimitiveUtils.doubleTryParse (_elements[idx]._content, d);
+    boolean success = JavaPrimitiveUtils.doubleTryParseFormattedString (_elements[idx]._content, d);
     if (success) {
       return d.get ();
     }

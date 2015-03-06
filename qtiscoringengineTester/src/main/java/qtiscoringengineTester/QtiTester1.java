@@ -1,15 +1,4 @@
-/*******************************************************************************
-* Educational Online Test Delivery System Copyright (c) 2014 American
-* Institutes for Research
-* 
- * Distributed under the AIR Open Source License, Version 1.0 See accompanying
-* file AIR-License-1_0.txt or at
-* 
- * http://www.smarterapp.org/documents/
-* American_Institutes_for_Research_Open_Source_Software_License.pdf
-******************************************************************************/
 package qtiscoringengineTester;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -33,10 +22,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import AIR.Common.Helpers._Ref;
-
-public class QtiTester
+public class QtiTester1
 {
-  private static final Logger _logger = LoggerFactory.getLogger (QtiTester.class);
+  private static final Logger _logger = LoggerFactory.getLogger (QtiTester1.class);
 
   public static void main (String[] args) {
 
@@ -62,10 +50,13 @@ public class QtiTester
     final String itemType = "TI";
 
     // the following are required in case you intend to use testAllFiles.
-    final String folder = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/";
+    //final String folder = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/";
+    final String folder = "C:/java_workspace/sts_workspace/TinyScoringEngine/DataFiles";
     final Integer MAX_FILES_TO_TEST = 2000;
-    final String itemIdsToScore = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/SourceCode/itemscoringdevdefault/ScoringResults/MismatchItemIds.txt";
+    //final String itemIdsToScore = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/SourceCode/itemscoringdevdefault/ScoringResults/MismatchItemIds.txt";
+    final String itemIdsToScore = "C:/Users/efurman/Downloads/qtitester_eq.log";
 
+    
     // TODO Shiva: control logger settings from here.
     // For the time being set them in log4j.xml
 
@@ -149,36 +140,7 @@ public class QtiTester
     _logger.error (scoreCounter.toString ());
   }
 
-  private static void testOneFile (Object[] args) {
-    final ScoreCounter scoreCounter = new ScoreCounter ();
-    try {
-      // From here:
-      // http://blog.frankel.ch/thoughts-on-java-logging-and-slf4j
-      final String itemId = (String) args[0];
-      final String bankId = (String) args[1];
-      final String rubricFilePath = sanitizeFileNameForUri ((String) args[2]);
-      final String responseFile = sanitizeFileNameForUri ((String) args[3]);
-      final String itemType = (String) args[4];
-
-      FormQtiTester qtiTester = new FormQtiTester (new ItemSpecification ()
-      {
-        {
-          this._itemId = itemId;
-          this._bankId = bankId;
-          this._rubricFilePath = rubricFilePath;
-          this._format = itemType;
-        }
-      }, scoreCounter);
-
-      qtiTester.processResponseFiles (responseFile);
-
-    } catch (Exception exp) {
-      exp.printStackTrace ();
-      _logger.error (exp.getMessage (), exp);
-    }
-    _logger.error (scoreCounter.toString ());
-  }
-
+ 
   final static Pattern FilePattern = Pattern.compile ("(?<itemid>[0-9]*)_(?<format>[a-zA-Z0-9]*)\\.tsv");
 
   private static Map<String, String> getItemIdForResponsefile (String file) {
@@ -242,9 +204,18 @@ public class QtiTester
     try (BufferedReader bfr = new BufferedReader (new FileReader (fileName))) {
       String line = null;
       while ((line = bfr.readLine ()) != null) {
-        line = line.trim ();
-        if (!StringUtils.isEmpty (line))
-          set.add (line);
+                
+        // Looking for item number in string like this:
+        //02:37:17,055 ERROR [FormQtiTester] Wrong, item=3034, line=5, score=0,....
+        int start = StringUtils.indexOf (line, "Wrong, item=");
+        if  (start != -1) {
+          start += 12;
+          int end = StringUtils.indexOf (line, ",", start);
+          if (end != -1) {
+            String a = StringUtils.substring (line, start, end);
+            set.add (a);
+          }
+        }
       }
       if (set.size () > 0)
         return set;
@@ -261,7 +232,7 @@ public class QtiTester
       Process endPython = Runtime.getRuntime ().exec ("taskkill /F /IM python.exe");
       Process endCmd = Runtime.getRuntime ().exec ("taskkill /F /IM cmd.exe");
       // TODO: only for debugging: remove it
-      Thread.sleep (10000);
+      //Thread.sleep (10000);
 
       if (_pythonProcessThread != null)
         _pythonProcessThread.join ();
@@ -273,7 +244,9 @@ public class QtiTester
           try {
             //from 
             // TODO start python http://stackoverflow.com/questions/15199119/runtime-exec-waitfor-doesnt-wait-until-process-is-done
-            Process startPython = Runtime.getRuntime ().exec ("cmd /c start C:/Workspace/JavaWorkspace/TinyScoringEngine/SourceCode/ItemScoringEngineDev/sympy-scripts/start.bat");
+            //Process startPython = Runtime.getRuntime ().exec ("cmd /c start C:/Workspace/JavaWorkspace/TinyScoringEngine/SourceCode/ItemScoringEngineDev/sympy-scripts/start.bat");
+            Process startPython = Runtime.getRuntime ().exec ("cmd /c start C:/java_workspace/sts_workspace/TinyScoringEngine/SourceCode/ItemScoringEngineDev/sympy-scripts/start.bat");
+
           } catch (Exception exp)
           {
             _logger.error (exp.getMessage ());
@@ -284,11 +257,10 @@ public class QtiTester
       _pythonProcessThread.start ();
 
       // TODO only for debugging: remove it.
-      Thread.sleep (10000);
+      //Thread.sleep (10000);
     } catch (Exception exp)
     {
       exp.printStackTrace ();
     }
   }
 }
-

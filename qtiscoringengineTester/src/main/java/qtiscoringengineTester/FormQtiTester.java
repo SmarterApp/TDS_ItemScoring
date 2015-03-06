@@ -87,15 +87,17 @@ public class FormQtiTester
           continue;
 
         try {
+          long startTime = System.currentTimeMillis ();
           ResponseInfo res = new ResponseInfo (_itemSpec._format, itemId, wrapResponse (response), new URI ("file:///" + _itemSpec._rubricFilePath), RubricContentType.Uri, "NA", true);
           ItemScore score = getScoringMaster ().ScoreItem (res, null);
+          long totalTime = System.currentTimeMillis () - startTime;
 
           if (score.getScoreInfo ().getPoints () == originalScore) {
             _counter.incrementCorrect (originalScore);
-            _logger.info (TDSStringUtils.format ("Correct, item={0}, line={2}, score={1}", itemId, score.getScoreInfo ().getPoints (), lineCounter));
+            _logger.info (TDSStringUtils.format ("Correct, item={0}, line={2}, score={1}, timeToScore={3}", itemId, score.getScoreInfo ().getPoints (), lineCounter, totalTime));
           } else {
             _counter.incrementIncorrect (originalScore);
-            _logger.error (TDSStringUtils.format ("Wrong, item={0}, line={3}, score={1}, realScore={2}", itemId, score.getScoreInfo ().getPoints (), originalScore, lineCounter));
+            _logger.error (TDSStringUtils.format ("Wrong, item={0}, line={3}, score={1}, realScore={2}, format={4}, timeToScore={5}", itemId, score.getScoreInfo ().getPoints (), originalScore, lineCounter, _itemSpec._format, totalTime));
           }
         } catch (Exception exp) {
           exp.printStackTrace ();

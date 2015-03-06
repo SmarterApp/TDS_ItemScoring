@@ -87,14 +87,12 @@ public class ItemScoringHandler extends HttpHandlerBase
       while ((line = bfr.readLine ()) != null)
         stringBuffer.append (line);
       // I am going to strip anything before the first "<".
-      System.out.println ("==========Original Request============\n" + stringBuffer.toString ());
       String originalRequest = stringBuffer.toString ();
       
       int indexOfBegin = originalRequest.indexOf ('<');
       if (indexOfBegin > 0)
         originalRequest = originalRequest.substring (indexOfBegin);
-      System.out.println ("==========Modified Request============\n" + originalRequest);
-
+      logger.info ("Request: " + originalRequest);
       // SB:End Hack!
 
       xmlReader = new XmlReader (new StringReader (originalRequest));

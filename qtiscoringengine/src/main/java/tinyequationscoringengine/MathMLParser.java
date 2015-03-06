@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *     
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
  * 
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at
+ * 
+ * http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tinyequationscoringengine;
 
@@ -86,15 +87,13 @@ public class MathMLParser
         List<Element> nodeList;
 
         // Case <math><mstyle>...</mstyle></math> Need to check this
-
-        if (new XmlElement (mathml).getChildNodes ().size () == 1 && new XmlElement (mathml).getChildNodes ().get (0).getName ().equals ("mstyle")) {
-          nodeList = new XmlElement (mathml).getChildNodes ().get (0).getChildren ();
+        XmlElement mathmlXmlElement = new XmlElement (mathml);
+        if (mathmlXmlElement.getChildNodes ().size () == 1 && "mstyle".equals (mathmlXmlElement.getChildNodes ().get (0).getName ())) {
+          nodeList = mathmlXmlElement.getChildNodes ().get (0).getChildren ();
         }
         // Case <math>...</math>, no <mstyle>
-
         else {
-          nodeList = new XmlElement (mathml).getChildNodes ();
-
+          nodeList = mathmlXmlElement.getChildNodes ();
         }
 
         MathExpression mathExpObj = new MathExpression (nodeList);
@@ -297,20 +296,21 @@ public class MathMLParser
       }
 
       if (containsOnlyMnorMi) {
-        Element mRowParentNode = mRowNode.getParentElement ();
+        XmlElement mRowParentNode = new XmlElement(mRowNode.getParentElement ());
 
         // Remove all the remaing mrow children and elevate them to be siblings
         // of the mrow
-        while (new XmlElement (mRowNode).hasChildNodes ()) {
+        XmlElement rowNodeElement = new XmlElement(mRowNode);
+        while (rowNodeElement.hasChildNodes ()) {
 
-          XmlElement node = new XmlElement (mRowNode).getFirstChild ();
-          new XmlElement (mRowNode).removeChild (node.getContentNode ());
-          new XmlElement (mRowParentNode).insertBefore (node.getContentNode (), new XmlElement (mRowNode).getContentNode ());
+          XmlElement node = rowNodeElement.getFirstChild ();
+          rowNodeElement.removeChild (node.getContentNode ());
+          mRowParentNode.insertBefore (node.getContentNode (), rowNodeElement.getContentNode ());
         }
         // remove the mrow all together and splice the new base node in as the
         // first child.
 
-        new XmlElement (mRowParentNode).removeChild (mRowNode);
+        mRowParentNode.removeChild (mRowNode);
         docModified = true;
       }
     }
@@ -327,7 +327,7 @@ public class MathMLParser
     if (JavaPrimitiveUtils.doubleTryParse (mRowNode.getInnerText (), number))
       return false;
 
-    return mRowNode.getChildNodes ().size () > 0 && !("MO".equalsIgnoreCase (mRowNode.getFirstChild ().getLocalName ()) && ("(".equalsIgnoreCase (mRowNode.getFirstChild ().getInnerText ())));
+    return mRowNode.getChildNodes ().size () > 0 && !("MO".equalsIgnoreCase (mRowNode.getFirstChild ().getLocalName ()) && ("(".equals (mRowNode.getFirstChild ().getInnerText ())));
   }
 
   private static boolean hasComplexParent (Element node) {

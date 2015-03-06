@@ -361,7 +361,7 @@ public class MathExpression
         String op = decodedText;
         // parenthesis and dot are listed as operators but need to be treated
         // like an expression
-        if (op == ".") {
+        if (".".equals(op)) {
           switch (sympy.getLeftType ()) {
           case Expression:
           // if (IsMathMLSimpleNumericFraction(nodelist[ind + 1]))
@@ -389,7 +389,7 @@ public class MathExpression
             throw new QTIScoringException ("Unhandled type: " + sympy.getLeftType ().toString ());
           }
         } else if (closed_brackets.contains (op) && !sympy.isClosed ()) {
-          if (op == "|") {
+          if ("|".equals(op)) {
             op = ")";
             sympy.setClosed (true);
           }
@@ -409,7 +409,7 @@ public class MathExpression
         } else {
           LeftMostType ltype = LeftMostType.Operator;
           if (open_brackets.containsKey (op)) {
-            if (op == "|") {
+            if ("|".equals(op)) {
               op = "Abs(";
               sympy.setClosed (false);
             }

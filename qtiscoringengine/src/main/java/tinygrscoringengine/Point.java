@@ -61,6 +61,10 @@ public class Point extends GRObject
     return this;
   }
 
+  public boolean equalsPoint (Point p) {
+    return this._x == p._x && this._y == p._y;
+  }
+
   public boolean equalsPoint (Point p, double eps) {
     return ((Math.abs ((double) (_x - p._x)) <= eps) && (Math.abs ((double) (_y - p._y)) <= eps));
   }

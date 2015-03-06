@@ -49,7 +49,7 @@ public class TGREGetVector extends TinyGRExpression
       return null;
     }
     String vector = TinyGR.getVector (obj.toString (), index.getValue ());
-    if (vector.equals (null))
+    if (vector == null)
       return null;
     return new DEString (vector);
   }

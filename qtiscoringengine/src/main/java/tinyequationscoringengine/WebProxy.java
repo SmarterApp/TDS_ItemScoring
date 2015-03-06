@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *     
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
  * 
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at
+ * 
+ * http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tinyequationscoringengine;
 
@@ -81,8 +82,18 @@ public class WebProxy
     try {
       httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
-      throw new QTIScoringException ("Web Proxy returned an exception", e);
+      // TODO Review Shiva: In revision set 112 of .NET code there is a
+      // "response == null" check here. .NET semantics are different.
+      // so hence no instead of throwing an exception we will be returning false
+      // here.
+
+      // Shiva Removed below based on comments above.
+      /*
+       * throw new QTIScoringException ("Web Proxy returned an exception", e);
+       */
+      return false;
     }
+
     if (httpStatusCode.get () == HttpServletResponse.SC_OK) {
       ScoreResponse scoreResponse = null;
       try {
@@ -125,7 +136,16 @@ public class WebProxy
     try {
       httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
-      throw new QTIScoringException ("Web Proxy returned an exception", e);
+      // TODO Review Shiva: In revision set 112 of .NET code there is a
+      // "response == null" check here. .NET semantics are different.
+      // so hence no instead of throwing an exception we will be returning false
+      // here.
+
+      // Shiva Removed below based on comments above.
+      /*
+       * throw new QTIScoringException ("Web Proxy returned an exception", e);
+       */
+      return false;
     }
     if (httpStatusCode.get () == HttpServletResponse.SC_OK) {
       ScoreResponse scoreResponse = null;

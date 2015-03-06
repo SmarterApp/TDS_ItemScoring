@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *     
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
  * 
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at
+ * 
+ * http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tinytablescoringengine;
 
@@ -39,24 +40,23 @@ public abstract class TableObject
     }
   }
 
-  protected final String getXmlString () {
+  public String getXmlString () {
     return new XmlElement (toXml ()).getOuterXml ();
   }
-
-  protected TableVector getColumn (String name) {
+  
+  public TableVector getColumn (String name) {
     return null;
   }
 
-  protected TableVector getColumn (int i) {
+  public TableVector getColumn (int i) {
     return null;
   }
 
-  protected double getValueNumeric (int idx) {
+  public double getValueNumeric (int idx) {
     return Double.NaN;
   }
 
-  protected TableVector getHeaderRow () {
+  public TableVector getHeaderRow () {
     return null;
   }
-
 }

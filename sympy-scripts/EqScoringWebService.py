@@ -101,6 +101,8 @@ def isEquivalent(response, rubric, allowChangeOfVariable = False, allowSimplify 
         # there are other kinds of exceptions for ill formed responses like sin=v that get caught by the below if clause
         if str(e4).startswith('unbound method'):
             return False
+        if str(e4).startswith('unhashable type'):
+            return False
         raise e4
     except CoercionFailed as e5:
         if str(e5).startswith('expected `Rational` object, got'):
@@ -108,6 +110,10 @@ def isEquivalent(response, rubric, allowChangeOfVariable = False, allowSimplify 
         raise e5
 
 def isEquivalentExpressions(response, rubric, allowChangeOfVariable = False, allowSimplify = True, trigIdentities = False, logIdentities = False, forceAssumptions = False):
+    # check if they are simply equal. this takes care of .3333 == .3333
+    if response == rubric:
+            return True
+
     if not allowChangeOfVariable:
         if isinstance(response, bool):
             return (type(response) == type(rubric) and response == rubric)
@@ -142,7 +148,7 @@ def findFactor(exp1, exp2):
         subs_int = 200
         subs_int_reduced = 4
         subs_iter = 20
-        subs_error = 1e-10
+        subs_error = 1e-8
         factor = None
         for i in range(0, subs_iter):
             subs_map = {}
@@ -293,26 +299,26 @@ def matchDouble(response, rubric, parameters, constraints, variables):
     except ValueError as e1:
         #handling ValueError: cannot convert 0 to int
         if str(e1) == 'cannot convert 0 to int' or str(e1).startswith('Cannot take to exponent') or str(e1) == 'Number too big':
-            return False
+            return []
         raise e1
     except AttributeError as e2:
         #handling AttributeError: 'bool' object has no attribute 'is_commutative'
         if str(e2).find('object has no attribute') >= 0:
-            return False
+            return []
         raise e2
     except OverflowError:
         #handling OverflowError: Value was either too large or too small for an Int32
-        return False
+        return []
     except TypeError as e4:
         if str(e4).startswith('unbound method as_numer_denom() must be called with'):
-            return False
+            return []
          # there are other kinds of exceptions for ill formed responses like sin=v that get caught by the below if clause
         if str(e4).startswith('unbound method'):
-            return False
+            return []
         raise e4
     except CoercionFailed as e5:
         if str(e5).startswith('expected `Rational` object, got'):
-            return False
+            return []
         raise e5
 
 def bestMatch(response, rubric, var):
@@ -435,26 +441,26 @@ def matchExpression(response, rubric, parameters, constraints, variables):
     except ValueError as e1:
         #handling ValueError: cannot convert 0 to int
         if str(e1) == 'cannot convert 0 to int' or str(e1).startswith('Cannot take to exponent') or str(e1) == 'Number too big':
-            return False
+            return []
         raise e1
     except AttributeError as e2:
         #handling AttributeError: 'bool' object has no attribute 'is_commutative'
         if str(e2).find('object has no attribute') >= 0:
-            return False
+            return []
         raise e2
     except OverflowError:
         #handling OverflowError: Value was either too large or too small for an Int32
-        return False
+        return []
     except TypeError as e4:
         if str(e4).startswith('unbound method as_numer_denom() must be called with'):
-            return False
+            return []
          # there are other kinds of exceptions for ill formed responses like sin=v that get caught by the below if clause
         if str(e4).startswith('unbound method'):
-            return False
+            return []
         raise e4
     except CoercionFailed as e5:
         if str(e5).startswith('expected `Rational` object, got'):
-            return False
+            return []
         raise e5
 
 def evaluateExpression(response):
@@ -825,6 +831,8 @@ def evaluate():
 #print matchExpression('((2+_a4)*_m4)-((2+_a3)*_m3)','a-b',['a','b'],[],[]) #18666
 #print matchExpression('2-2','a-b',['a','b'],[],[])
 
+#assert isEquivalent('asin(0.8)', 'asin(0.8)', False, True, True, False, False)
+#assert isEquivalent('asin((0.8))', 'asin(0.8)', False, True, True, False, False)
 
 run(host='localhost', port=8084, debug=True)
 

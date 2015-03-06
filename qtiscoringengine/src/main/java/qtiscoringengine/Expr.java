@@ -177,7 +177,7 @@ class ExprEqual extends Expression
     Exact, Absolute, Relative
   };
 
-  private ToleranceMode _mode              = ToleranceMode.Exact;
+  private _Ref<ToleranceMode> _mode              = new _Ref<>(ToleranceMode.Exact);
   private double        _allowLow          = 0.0;
   private double        _allowHi           = 0.0;
   private boolean       _includeLowerBound = true;
@@ -185,7 +185,7 @@ class ExprEqual extends Expression
 
   ExprEqual (Element node) {
     super (node, 2, 2, BaseType.Boolean, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
     ExpressionAttributeSpec eac = new ExpressionAttributeSpec ("toleranceMode", Arrays.asList ("exact", "absolute", "relative"), true);
     addAttribute (eac);
@@ -221,7 +221,7 @@ class ExprEqual extends Expression
     DEBoolean includeLower = (DEBoolean) getAttributeValue ("includeLowerBound");
 
     if (toleranceMode == null) {
-      _mode = ToleranceMode.Exact;
+      _mode = new _Ref<>(ToleranceMode.Exact);
     } else {
       ok = validateTolerance (ok, log, toleranceMode, tolerance, includeLower, includeUpper);
     }
@@ -230,7 +230,6 @@ class ExprEqual extends Expression
   }
 
   private boolean validateTolerance (boolean ok, ValidationLog log, DEIdentifier toleranceMode, DEString tolerance, DEBoolean includeLower, DEBoolean includeUpper) {
-    _Ref<ToleranceMode> _mode = new _Ref<> ();
     boolean status = JavaPrimitiveUtils.enumTryParse (ToleranceMode.class, toleranceMode.getValue (), true, _mode);
     if (status == false) {
       log.addMessage (_node, TDSStringUtils.format ("Tolerance mode, if provided, must be one of 'exact', 'absolute','relative'. Got {0}", toleranceMode.getValue ()));
@@ -290,7 +289,7 @@ class ExprEqual extends Expression
     _DEFloat val2 = (_DEFloat) paramValues.get (1);
     if ((val1 == null) || (val2 == null))
       return new DEBoolean (false);
-    switch (_mode) {
+    switch (_mode.get ()) {
     case Exact:
       return new DEBoolean (val1.equals (val2));
     case Absolute: // In absolute mode the result of the
@@ -315,12 +314,12 @@ class ExprEqual extends Expression
 class ExprEqualRounded extends Expression
 {
   // this is a very stupid default. I am going to require the mode attribute
-  private DEFloat.RoundingMode _roundingMode = DEFloat.RoundingMode.SignificantFigures;
+  private _Ref<DEFloat.RoundingMode> _roundingMode = new _Ref<>(DEFloat.RoundingMode.SignificantFigures);
   private int                  _figures      = 1;
 
   ExprEqualRounded (Element node) {
     super (node, 2, 2, BaseType.Boolean, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
     ExpressionAttributeSpec eac = new ExpressionAttributeSpec ("roundingMode", Arrays.asList ("significantFigures", "decimalPlaces"));
     addAttribute (eac);
@@ -337,7 +336,6 @@ class ExprEqualRounded extends Expression
     DEIdentifier roundingMode = (DEIdentifier) getAttributeValue ("roundingMode");
     DEInteger figures = (DEInteger) getAttributeValue ("figures");
 
-    _Ref<DEFloat.RoundingMode> _roundingMode = new _Ref<> ();
     boolean status = JavaPrimitiveUtils.enumTryParse (DEFloat.RoundingMode.class, roundingMode.getValue (), true, _roundingMode);
     if (status == false) {
       log.addMessage (_node, "Invalid rounding mode, must be 'significantFigures' or 'decimalPlaces'");
@@ -354,8 +352,8 @@ class ExprEqualRounded extends Expression
 
     _DEFloat val1 = (_DEFloat) paramValues.get (0);
     _DEFloat val2 = (_DEFloat) paramValues.get (1);
-    double val1Rounded = val1.round (_roundingMode, _figures);
-    double val2Rounded = val2.round (_roundingMode, _figures);
+    double val1Rounded = val1.round (_roundingMode.get(), _figures);
+    double val2Rounded = val2.round (_roundingMode.get(), _figures);
 
     return new DEBoolean (val1Rounded == val2Rounded);
   }
@@ -440,13 +438,13 @@ class ExprLt extends Expression
 {
   ExprLt (Element node) {
     super (node, 2, 2, BaseType.Boolean, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, true, true));
   }
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () < ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () < ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());
   }
 
 }// end class ExprLt
@@ -455,13 +453,13 @@ class ExprGt extends Expression
 {
   ExprGt (Element node) {
     super (node, 2, 2, BaseType.Boolean, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, true, true));
   }
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () > ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () > ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());
   }
 }// end class ExprGt
 
@@ -469,13 +467,13 @@ class ExprLte extends Expression
 {
   ExprLte (Element node) {
     super (node, 2, 2, BaseType.Boolean, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, true, true));
   }
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () <= ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () <= ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());
   }
 }// end class ExprLte
 
@@ -483,13 +481,13 @@ class ExprGte extends Expression
 {
   ExprGte (Element node) {
     super (node, 2, 2, BaseType.Boolean, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, true, true));
   }
 
   @Override
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) {
-    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () >= ((_DEFloat) paramValues.get (0)).getValue ().doubleValue ());
+    return new DEBoolean (((_DEFloat) paramValues.get (0)).getValue ().doubleValue () >= ((_DEFloat) paramValues.get (1)).getValue ().doubleValue ());
   }
 }// end class ExprGte
 
@@ -497,7 +495,7 @@ class ExprSum extends Expression
 {
   ExprSum (Element node) {
     super (node, 1, Integer.MAX_VALUE, BaseType.Float, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
   }
 
@@ -518,7 +516,7 @@ class ExprProduct extends Expression
 {
   ExprProduct (Element node) {
     super (node, 1, Integer.MAX_VALUE, BaseType.Float, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
   }
 
@@ -549,7 +547,7 @@ class ExprSubtract extends Expression
 {
   ExprSubtract (Element node) {
     super (node, 2, 2, BaseType.Float, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
   }
 
@@ -576,7 +574,7 @@ class ExprDivide extends Expression
 {
   ExprDivide (Element node) {
     super (node, 2, 2, BaseType.Float, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
   }
 
@@ -602,7 +600,7 @@ class ExprPower extends Expression
 {
   ExprPower (Element node) {
     super (node, 2, 2, BaseType.Float, Cardinality.Single);
-    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float);
+    List<BaseType> types = Arrays.asList (BaseType.Integer, BaseType.Float, BaseType.Boolean);
     addParameterConstraint (new ExpressionParameterConstraint (-1, Cardinality.Single, types, false, false));
   }
 

@@ -50,7 +50,7 @@ public class TinyTable
 
   public static double getValueNumeric (String obj, int idx) throws TinyTableScoringException {
     TableObject to = create (obj);
-    if (to.equals (null)) {
+    if (to == null) {
       return Double.NaN;
     }
     return to.getValueNumeric (idx);

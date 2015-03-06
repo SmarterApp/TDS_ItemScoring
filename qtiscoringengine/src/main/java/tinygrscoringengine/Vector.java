@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *     
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
  * 
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at
+ * 
+ * http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tinygrscoringengine;
 
@@ -214,6 +215,27 @@ public class Vector extends GRObject
     if (index == 0) {
       return this;
     }
+    return null;
+  }
+
+  public boolean equalsVector (Vector v) {
+    return ((points[0].equalsPoint (v.points[0]) && points[1].equalsPoint (v.points[1])) || (points[1].equalsPoint (v.points[0]) && points[0].equalsPoint (v.points[1])));
+  }
+
+  public boolean meetsVector (Vector v) {
+    return (points[0].equalsPoint (v.points[0]) || points[1].equalsPoint (v.points[1]) || points[0].equalsPoint (v.points[1]) || points[1].equalsPoint (v.points[0]));
+  }
+
+  // assumes they meet, and they’re not equal
+  public Point meetingPoint (Vector v) {
+    if (points[0].equalsPoint (v.points[0]))
+      return points[0];
+    if (points[1].equalsPoint (v.points[1]))
+      return points[1];
+    if (points[0].equalsPoint (v.points[1]))
+      return points[0];
+    if (points[1].equalsPoint (v.points[0]))
+      return points[1];
     return null;
   }
 

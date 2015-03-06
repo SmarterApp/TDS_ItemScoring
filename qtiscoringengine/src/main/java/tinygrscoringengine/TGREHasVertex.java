@@ -46,7 +46,7 @@ public class TGREHasVertex extends TinyGRExpression
   protected DataElement exprEvaluate (VariableBindings vb, QTIRubric rubric, List<DataElement> paramValues) throws TinyGRException {
     DEIdentifier obString = (DEIdentifier) getAttributeValue ("object");
     DEString ob = (DEString) vb.getVariable (obString);
-    if (ob.equals (null)) {
+    if (ob == null) {
       return new DEBoolean (false);
     }
     int x = ((DEInteger) paramValues.get (0)).getValue ();
