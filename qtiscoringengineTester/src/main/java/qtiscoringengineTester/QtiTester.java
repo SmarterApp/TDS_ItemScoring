@@ -1,13 +1,13 @@
 /*******************************************************************************
-* Educational Online Test Delivery System Copyright (c) 2014 American
-* Institutes for Research
-* 
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
  * Distributed under the AIR Open Source License, Version 1.0 See accompanying
-* file AIR-License-1_0.txt or at
-* 
+ * file AIR-License-1_0.txt or at
+ * 
  * http://www.smarterapp.org/documents/
-* American_Institutes_for_Research_Open_Source_Software_License.pdf
-******************************************************************************/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
+ ******************************************************************************/
 package qtiscoringengineTester;
 
 import java.io.BufferedReader;
@@ -44,27 +44,38 @@ public class QtiTester
 
     ApplicationContext applicationContext = new ClassPathXmlApplicationContext ("/scoringengine-spring-config.xml");
 
-    testAllFiles (inputArguments);
-    // testOneFile (inputArguments);
+    // testAllFiles (inputArguments);
+    testOneFile (inputArguments);
+
+    try {
+      if (_pythonProcessThread != null)
+        _pythonProcessThread.wait ();
+    } catch (Exception exp) {
+      exp.printStackTrace ();
+    }
   }
+
+  public static int THREADS = 1;
 
   // TODO Shiva: make these command line arguments using CLI
   private static Object[] getParameters (String[] inputArguments) {
     // the following 5 are required in case you intend to use invoke
     // testOneFile.
     // final String itemId = "21690";
-    final String itemId = "8222";
+    final String itemId = "21588";
     final String bankId = "NA";
-    final String rubricFilePath = "C:/javaworkspace/DataFiles/QRXrubrics/Item_8222_v7.qrx";
-    final String responseFile = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forshiva/8222_EQ.tsv";
+    // final String rubricFilePath =
+    // "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forshiva/GRX/Item_26015_v10.qrx";
+    final String rubricFilePath = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forshiva/ERX/Item_21588_v6.qrx";
+    final String responseFile = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forshiva/21588_EQ.tsv";
     // final String responseFile =
     // "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/16207_TI.tsv";
-    final String itemType = "TI";
+    final String itemType = "EQ";
 
     // the following are required in case you intend to use testAllFiles.
-    final String folder = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/DataFiles/forShiva/";
+    final String folder = "C:/JavaWorkSpace/DataFiles/Content/";
     final Integer MAX_FILES_TO_TEST = 2000;
-    final String itemIdsToScore = "C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/SourceCode/itemscoringdevdefault/ScoringResults/MismatchItemIds.txt";
+    final String itemIdsToScore = "C:/JavaWorkSpace/DataFiles/MismatchItemIds.txt";
 
     // TODO Shiva: control logger settings from here.
     // For the time being set them in log4j.xml
@@ -126,6 +137,7 @@ public class QtiTester
           _logger.error (String.format ("Processing input file %s with item id %s using rubric %s.", file.getAbsolutePath (), itemId, rubricPath));
 
           restartPython ();
+          _logger.info ("Python started.");
 
           FormQtiTester qtiTester = new FormQtiTester (new ItemSpecification ()
           {
@@ -192,7 +204,7 @@ public class QtiTester
     return null;
   }
 
-  final static Pattern RubricPattern = Pattern.compile ("item_(?<itemid>[0-9]*)_v[0-9]*\\.qrx");
+  final static Pattern RubricPattern = Pattern.compile ("item_(?<itemid>[0-9]*)_v[0-9]*\\.[qm]rx");
 
   private static Map<String, String> mapRubricPathToItemId (String folderPathToScan, _Ref<Map<String, String>> outputMap) {
     Map<String, String> map = outputMap.get ();
@@ -254,12 +266,12 @@ public class QtiTester
 
   static Thread _pythonProcessThread = null;
 
-  public static void restartPython ()
-  {
+  public static void restartPython () {
     try {
       // first kill all python processes.
       Process endPython = Runtime.getRuntime ().exec ("taskkill /F /IM python.exe");
-      Process endCmd = Runtime.getRuntime ().exec ("taskkill /F /IM cmd.exe");
+      // Process endCmd = Runtime.getRuntime ().exec
+      // ("taskkill /F /IM cmd.exe");
       // TODO: only for debugging: remove it
       Thread.sleep (10000);
 
@@ -268,14 +280,13 @@ public class QtiTester
 
       _pythonProcessThread = new Thread ()
       {
-        public void run ()
-        {
+        public void run () {
           try {
-            //from 
-            // TODO start python http://stackoverflow.com/questions/15199119/runtime-exec-waitfor-doesnt-wait-until-process-is-done
-            Process startPython = Runtime.getRuntime ().exec ("cmd /c start C:/Workspace/JavaWorkspace/TinyScoringEngine/SourceCode/ItemScoringEngineDev/sympy-scripts/start.bat");
-          } catch (Exception exp)
-          {
+            // from
+            // TODO start python
+            // http://stackoverflow.com/questions/15199119/runtime-exec-waitfor-doesnt-wait-until-process-is-done
+            Process startPython = Runtime.getRuntime ().exec ("cmd /c start C:\\JavaWorkSpace\\InstallationSoftware\\QTITesterClient\\start.bat");
+          } catch (Exception exp) {
             _logger.error (exp.getMessage ());
             exp.printStackTrace ();
           }
@@ -285,10 +296,9 @@ public class QtiTester
 
       // TODO only for debugging: remove it.
       Thread.sleep (10000);
-    } catch (Exception exp)
-    {
+    } catch (Exception exp) {
+      _logger.error (exp.getMessage (), exp);
       exp.printStackTrace ();
     }
   }
 }
-

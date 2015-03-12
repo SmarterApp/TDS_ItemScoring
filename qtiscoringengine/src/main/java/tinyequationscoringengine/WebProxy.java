@@ -22,6 +22,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import qtiscoringengine.QTIScoringException;
 import qtiscoringengine.cs2java.StringHelper;
@@ -35,6 +37,7 @@ import AIR.Common.Web.UrlHelper;
 
 public class WebProxy
 {
+  private static final Logger        _logger       = LoggerFactory.getLogger (WebProxy.class);
   private static final HttpWebHelper HttpWebHelper = new HttpWebHelper ();
   private int                        _maxRetries;
   private URI                        _serverUri;
@@ -319,7 +322,6 @@ public class WebProxy
           entryValue = TDSStringUtils.getCSharpBooleanToString ((Boolean) entryValue);
         formParametersToString.put (entry.getKey (), entryValue.toString ());
       }
-
     return HttpWebHelper.submitForm (url, formParametersToString, maxTries, httpStatusCode);
   }
 

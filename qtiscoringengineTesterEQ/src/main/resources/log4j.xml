@@ -10,7 +10,7 @@
 
 	<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
 		<param name="append" value="false" />
-		<param name="file" value="C:/JavaWorkSpace/Logs/qtitester.log" />
+		<param name="file" value="C:/WorkSpace/JavaWorkSpace/TinyScoringEngine/logs/qtitester_eq.log" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n" />
 		</layout>

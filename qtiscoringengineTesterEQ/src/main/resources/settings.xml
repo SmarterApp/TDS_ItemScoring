@@ -3,5 +3,5 @@
 <properties>
 	<entry key="itemscoring.qti.sympyServiceUrl">http://localhost:5000/</entry>
 	<entry key="itemscoring.qti.sympyMaxTries">1</entry>
-	<entry key="itemscoring.qti.sympyTimeoutMillis">5000</entry>
+	<entry key="itemscoring.qti.sympyTimeoutMillis">10000</entry>
 </properties>

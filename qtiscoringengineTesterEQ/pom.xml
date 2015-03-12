@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>R01.00.32</version>
+		<version>1.1.0</version>
 	</parent>
-	<artifactId>qtiscoringengineTester</artifactId>
+	<artifactId>qtiscoringengineTesterEQ</artifactId>
 	<properties>
 		<servlet-api.version>2.5</servlet-api.version>
 	</properties>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
 			<artifactId>item-scoring-engine</artifactId>
-			<version>R01.00.32</version>
+			<version>1.1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
@@ -48,11 +48,6 @@
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
 			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-jndi</artifactId>
-			<version>8.1.15.v20140411</version>
 		</dependency>
 	</dependencies>
 	<build>

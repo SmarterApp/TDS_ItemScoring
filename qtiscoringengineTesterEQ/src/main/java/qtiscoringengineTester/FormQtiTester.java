@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jetty.jndi.local.localContextRoot;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -79,7 +78,7 @@ public class FormQtiTester
       // get the header line.
       getNextRecord (bfr, LineCounter);
 
-      Thread[] threads = new Thread[5];
+      Thread[] threads = new Thread[EQQtiTester.THREADS];
       for (int counter1 = 0; counter1 < threads.length; ++counter1) {
         threads[counter1] = new Thread ()
         {

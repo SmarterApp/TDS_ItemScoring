@@ -1,20 +1,26 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tds.itemscoringengine;
 
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import AIR.Common.xml.IXmlSerializable;
 
 @XmlRootElement (name = "ScoreInfo")
 public class ItemScoreInfo
@@ -104,5 +110,24 @@ public class ItemScoreInfo
     _status = status;
     _dimension = dimension;
     _rationale = rationale;
+  }
+
+  public String toXmlString () throws JAXBException {
+    StringWriter writer = new StringWriter ();
+    final Marshaller jaxbMarshaller = JAXBContext.newInstance (ItemScoreInfo.class).createMarshaller ();
+    jaxbMarshaller.marshal (this, writer);
+    return writer.toString ();
+  }
+
+  public static void main (String[] args) {
+    try {
+      ItemScoreInfo info = new ItemScoreInfo ();
+      info.setMaxScore (-1);
+      info.setPoints (2);
+      info.setDimension ("overall");
+      System.err.println (info.toXmlString ());
+    } catch (Exception exp) {
+      exp.printStackTrace ();
+    }
   }
 }

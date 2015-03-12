@@ -11,9 +11,6 @@ We would be happy to receive feedback on its capabilities, problems, or future e
 * For general questions or discussions, or issues and bugs, please use the [Forum](http://forum.opentestsystem.org/viewforum.php?f=9).
 * Feel free to **Fork** this project and develop your changes!
 
-## 3/5/2015 Release Notes 
-Release `R01.00.31-20150305` is a bugfix release of the ItemScoring Engine. Fixed discrepancies between proprietary and OSS versions for MI, TI, GI, and HTQ item formats.
-
 ## 2/11/2015 Release Notes 
 Release `R01.00.23-20150211` is a bugfix release of the ItemScoring Engine with an updated, functional EQ scoring engine (see below for installation instructions). Related modifications in Student code have been made in the concurrent Student release. We will be doing frequent periodic releases as we update this functionality.
 

@@ -100,6 +100,11 @@ public class ItemScoreResponse implements IXmlSerializable
   }
 
   public static ItemScoreResponse getInstanceFromXml (String xml) throws JAXBException {
+  
+    int indexOfBegin = xml.indexOf ('<');
+    if (indexOfBegin > 0)
+      xml = xml.substring (indexOfBegin);
+    
     Unmarshaller jaxbUnmarshaller = JAXBContext.newInstance (ItemScoreResponse.class).createUnmarshaller ();
     return (ItemScoreResponse) jaxbUnmarshaller.unmarshal (new StringReader (xml));
   }

@@ -62,7 +62,7 @@ public class MathMLParser
         && mathMLDoc.getRootElement ().getChildren ().get (0).getAttribute ("title") == null) {
       // / HACK BEGIN: FIX UP BUGS IN THE RESPONSE
       // Msup Issue
-      while (applyMFRACFix (mathMLDoc, nsMgr)) {
+      while (applyMSUPFix (mathMLDoc, nsMgr)) {
       }
       // negation vs subtraction
       while (applySubtractionFix (mathMLDoc, nsMgr)) {
@@ -134,7 +134,7 @@ public class MathMLParser
         continue;
       }
 
-      if (!(elementMSupNode.getFirstChild ().equals (mRowNode)))
+      if (!(elementMSupNode.getFirstChild ().equals (elementMRowNode)))
         continue; // This hack only applies if the mrow is the base node and not
                   // the exponent
 
@@ -149,7 +149,7 @@ public class MathMLParser
       while (elementMRowNode.hasChildNodes ()) {
         XmlElement node = elementMRowNode.getFirstChild ();
         elementMRowNode.removeChild (node.getContentNode ());
-        elementMSupNode.insertBefore (node.getContentNode (), elementMSupNode.getContentNode ());
+        elementMSupNode.getParentElement().insertBefore (node.getContentNode (), elementMSupNode.getContentNode ());
       }
 
       // remove the mrow all together and splice the new base node in as the
@@ -324,7 +324,7 @@ public class MathMLParser
 
     _Ref<Double> number = new _Ref<Double> ();
 
-    if (JavaPrimitiveUtils.doubleTryParse (mRowNode.getInnerText (), number))
+    if (JavaPrimitiveUtils.doubleTryParse (mRowNode.getInnerTextNormalize (), number))
       return false;
 
     return mRowNode.getChildNodes ().size () > 0 && !("MO".equalsIgnoreCase (mRowNode.getFirstChild ().getLocalName ()) && ("(".equals (mRowNode.getFirstChild ().getInnerText ())));
