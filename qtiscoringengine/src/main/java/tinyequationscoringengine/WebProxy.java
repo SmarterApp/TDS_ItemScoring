@@ -69,7 +69,9 @@ public class WebProxy
     try {
       serviceUri = new URI (UrlHelper.buildUrl (getServerUri ().toString (), "isequivalent"));
     } catch (URISyntaxException exp) {
-      throw new QTIScoringException (exp);
+    	String url = (serviceUri != null)? serviceUri.toString (): "null";
+       	_logger.error (String.format ("Failed to invoke @isEquivalent method: URL = %s; %s", url, exp.getMessage()), exp);
+       	throw new QTIScoringException (exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -85,16 +87,16 @@ public class WebProxy
     try {
       httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
-      // TODO Review Shiva: In revision set 112 of .NET code there is a
+      // Review Shiva: In revision set 112 of .NET code there is a
       // "response == null" check here. .NET semantics are different.
       // so hence no instead of throwing an exception we will be returning false
       // here.
 
       // Shiva Removed below based on comments above.
-      /*
-       * throw new QTIScoringException ("Web Proxy returned an exception", e);
-       */
-      return false;
+      // SB-1269 (Alex): I uncommented exception. See SB-1269 description	    	
+      _logger.error (String.format ("Failed to invoke @isEquivalent methodWeb. Proxy returned an exception: %s ", e.getMessage()), e);
+      throw new QTIScoringException ("Web Proxy returned an exception", e);      
+      // return false;
     }
 
     if (httpStatusCode.get () == HttpServletResponse.SC_OK) {
@@ -128,7 +130,9 @@ public class WebProxy
     try {
       serviceUri = new URI (UrlHelper.buildUrl (getServerUri ().toString (), "parsable"));
     } catch (URISyntaxException exp) {
-      throw new QTIScoringException (exp);
+    	String url = (serviceUri != null)? serviceUri.toString (): "null";
+    	_logger.error (String.format ("Failed to invoke @parsable method: URL = %s; %s", url, exp.getMessage()), exp);
+    	throw new QTIScoringException (exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -139,16 +143,16 @@ public class WebProxy
     try {
       httpResponse = submitForm (serviceUri.toString (), requestForm, getMaxTries (), httpStatusCode);
     } catch (IOException e) {
-      // TODO Review Shiva: In revision set 112 of .NET code there is a
+      // Review Shiva: In revision set 112 of .NET code there is a
       // "response == null" check here. .NET semantics are different.
       // so hence no instead of throwing an exception we will be returning false
       // here.
 
       // Shiva Removed below based on comments above.
-      /*
-       * throw new QTIScoringException ("Web Proxy returned an exception", e);
-       */
-      return false;
+      // SB-1269 (Alex): I uncommented exception. See SB-1269 description	    	
+       _logger.error (String.format ("Failed to invoke @parsable methodWeb. Proxy returned an exception: %s ", e.getMessage()), e);        
+       throw new QTIScoringException ("Web Proxy returned an exception", e);
+       // return false;
     }
     if (httpStatusCode.get () == HttpServletResponse.SC_OK) {
       ScoreResponse scoreResponse = null;
@@ -177,7 +181,9 @@ public class WebProxy
       serviceUri = new URI (UrlHelper.buildUrl (getServerUri ().toString (), "matchdouble"));
 
     } catch (URISyntaxException exp) {
-      throw new QTIScoringException (exp);
+    	String url = (serviceUri != null)? serviceUri.toString (): "null";
+       	_logger.error (String.format ("Failed to invoke @matchDouble method: URL = %s; %s", url, exp.getMessage()), exp);
+       	throw new QTIScoringException (exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -226,7 +232,9 @@ public class WebProxy
     try {
       serviceUri = new URI (UrlHelper.buildUrl (getServerUri ().toString (), "matchexpression"));
     } catch (URISyntaxException exp) {
-      throw new QTIScoringException (exp);
+    	String url = (serviceUri != null)? serviceUri.toString (): "null";
+       	_logger.error (String.format ("Failed to invoke @matchExpression method: URL = %s; %s", url, exp.getMessage()), exp);
+       	throw new QTIScoringException (exp);
     }
     Map<String, Object> requestForm = new HashMap<String, Object> ();
     requestForm.put ("response", studentResponse);
@@ -276,7 +284,9 @@ public class WebProxy
     try {
       serviceUri = new URI (UrlHelper.buildUrl (getServerUri ().toString (), "evaluate"));
     } catch (URISyntaxException exp) {
-      throw new QTIScoringException (exp);
+       	String url = (serviceUri != null)? serviceUri.toString (): "null";
+       	_logger.error (String.format ("Failed to invoke @evaluateExpression method: URL = %s; %s", url, exp.getMessage()), exp);
+       	throw new QTIScoringException (exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
