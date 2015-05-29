@@ -71,7 +71,8 @@ public class WebProxy
     } catch (URISyntaxException exp) {
     	String url = (serviceUri != null)? serviceUri.toString (): "null";
        	_logger.error (String.format ("Failed to invoke @isEquivalent method: URL = %s; %s", url, exp.getMessage()), exp);
-       	throw new QTIScoringException (exp);
+       	throw new QTIScoringException ("REST endpoint URI cannot be constructed. Service URI specified as " 
+       	+ url + ": " + exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -107,13 +108,17 @@ public class WebProxy
         throw new QTIScoringException (exp);
       }
 
-      // TODO Shiva: We will never return null from deserialize above for
+      // Shiva: We will never return null from deserialize above for
       // scoreResponse.
       // Make sure we have ported this faithfull from .NET.
       if (scoreResponse != null)
+      {
         return scoreResponse.getResult () != null && StringUtils.equalsIgnoreCase (scoreResponse.getResult (), "TRUE");
+      }
+      throw new QTIScoringException("JsonHelper return null from deserialize for scoreResponse.");
     }
-    return false;
+    // SB-1269 (Alex): We need to return false only in the case if student answer is not equivalent expected answer.
+    throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
   }
 
   public boolean parsable (String studentResponseStr) throws QTIScoringException {
@@ -132,7 +137,8 @@ public class WebProxy
     } catch (URISyntaxException exp) {
     	String url = (serviceUri != null)? serviceUri.toString (): "null";
     	_logger.error (String.format ("Failed to invoke @parsable method: URL = %s; %s", url, exp.getMessage()), exp);
-    	throw new QTIScoringException (exp);
+       	throw new QTIScoringException ("REST endpoint URI cannot be constructed. Service URI specified as " 
+       	+ url + ": " + exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -161,9 +167,14 @@ public class WebProxy
       } catch (IOException exp) {
         throw new QTIScoringException (exp);
       }
-      return scoreResponse.getResult () != null && StringUtils.equalsIgnoreCase (scoreResponse.getResult (), "TRUE");
+      if (scoreResponse != null)
+      {
+        return scoreResponse.getResult () != null && StringUtils.equalsIgnoreCase (scoreResponse.getResult (), "TRUE");
+      }
+      throw new QTIScoringException("JsonHelper return null from deserialize for scoreResponse.");
     }
-    return false;
+    // SB-1269 (Alex): We need to return false only in the case if student answer is not equivalent expected answer.
+    throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
   }
 
   public List<Double> matchDouble (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
@@ -183,7 +194,8 @@ public class WebProxy
     } catch (URISyntaxException exp) {
     	String url = (serviceUri != null)? serviceUri.toString (): "null";
        	_logger.error (String.format ("Failed to invoke @matchDouble method: URL = %s; %s", url, exp.getMessage()), exp);
-       	throw new QTIScoringException (exp);
+       	throw new QTIScoringException ("REST endpoint URI cannot be constructed. Service URI specified as " 
+       	+ url + ": " + exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -214,8 +226,13 @@ public class WebProxy
           returnValue.add (Double.parseDouble (value));
         return returnValue;
       }
+      else if(scorerResponse == null)
+      {
+    	  throw new QTIScoringException("JsonHelper return null from deserialize for scoreResponse."); 
+      }
+      return new ArrayList<Double> ();
     }
-    return new ArrayList<Double> ();
+    throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
   }
 
   public List<String> matchExpression (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
@@ -234,7 +251,8 @@ public class WebProxy
     } catch (URISyntaxException exp) {
     	String url = (serviceUri != null)? serviceUri.toString (): "null";
        	_logger.error (String.format ("Failed to invoke @matchExpression method: URL = %s; %s", url, exp.getMessage()), exp);
-       	throw new QTIScoringException (exp);
+       	throw new QTIScoringException ("REST endpoint URI cannot be constructed. Service URI specified as " 
+       	+ url + ": " + exp);
     }
     Map<String, Object> requestForm = new HashMap<String, Object> ();
     requestForm.put ("response", studentResponse);
@@ -262,9 +280,14 @@ public class WebProxy
         String[] values = StringUtils.split (scorerResponse.getResult (), '|');
         return Arrays.asList (values);
       }
+      else if(scorerResponse == null)
+      {
+    	  throw new QTIScoringException("JsonHelper return null from deserialize for scoreResponse."); 
+      }
       return new ArrayList<String> ();
     }
-    return new ArrayList<String> ();
+    throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
+    
 
   }
 
@@ -286,7 +309,8 @@ public class WebProxy
     } catch (URISyntaxException exp) {
        	String url = (serviceUri != null)? serviceUri.toString (): "null";
        	_logger.error (String.format ("Failed to invoke @evaluateExpression method: URL = %s; %s", url, exp.getMessage()), exp);
-       	throw new QTIScoringException (exp);
+       	throw new QTIScoringException ("REST endpoint URI cannot be constructed. Service URI specified as " 
+       	+ url + ": " + exp);
     }
 
     Map<String, Object> requestForm = new HashMap<String, Object> ();
@@ -307,7 +331,7 @@ public class WebProxy
       } catch (IOException exp) {
         throw new QTIScoringException (exp);
       }
-      // TODO Shiva: The deserialize above is never going to return null. Check
+      // Shiva: The deserialize above is never going to return null. Check
       // that this logic has been
       // ported faithfull from .NET.
       if (scorerResponse != null) {
@@ -315,8 +339,9 @@ public class WebProxy
         JavaPrimitiveUtils.doubleTryParse (scorerResponse.getResult (), value);
         return value.get ();
       }
+      throw new QTIScoringException("JsonHelper return null from deserialize for scoreResponse."); 
     }
-    return Double.NaN;
+    throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
   }
 
   /*
