@@ -1,12 +1,17 @@
 /*******************************************************************************
- * Educational Online Test Delivery System 
- * Copyright (c) 2014 American Institutes for Research
- *   
- * Distributed under the AIR Open Source License, Version 1.0 
- * See accompanying file AIR-License-1_0.txt or at
- * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
+ * Educational Online Test Delivery System Copyright (c) 2014 American
+ * Institutes for Research
+ * 
+ * Distributed under the AIR Open Source License, Version 1.0 See accompanying
+ * file AIR-License-1_0.txt or at http://www.smarterapp.org/documents/
+ * American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tds.itemscoringengine.itemscorers;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -31,7 +36,47 @@ public class MCItemScorer implements IItemScorer
   public ItemScore ScoreItem (final ResponseInfo responseInfo, IItemScorerCallback callback) {
     if (responseInfo.getStudentResponse () != null && responseInfo.getRubric () != null) {
       // The rubric is of the format <answerkey>|<maxscore>
-      String rubricContent = (String) (responseInfo.getRubric ());
+      String rubricContent = null;
+      if (responseInfo.getRubric () instanceof URL)
+      {
+        URL rubric = (URL) responseInfo.getRubric ();
+        BufferedReader in = null;
+        InputStreamReader inreader = null;
+        try {
+          inreader = new InputStreamReader (rubric.openStream ());
+          in = new BufferedReader (inreader);
+          String inputLine;
+          StringBuilder sb = new StringBuilder ();
+          while ((inputLine = in.readLine ()) != null)
+            sb.append (inputLine);
+          rubricContent = sb.toString ();
+
+        } catch (IOException e) {
+
+        } finally {
+          if (in != null)
+          {
+            try {
+              in.close ();
+            } catch (IOException e) {
+              System.err.print (e.getMessage ());
+            }
+          }
+          if (inreader != null)
+          {
+            try {
+              inreader.close ();
+            } catch (IOException e) {
+              System.err.print (e.getMessage ());
+            }
+          }
+        }
+
+      }
+      else
+      {
+        rubricContent = (String) (responseInfo.getRubric ());
+      }
       String[] tokens = StringUtils.split (rubricContent, '|');
       final String answerKey = tokens[0];
       // Legacy support in case "|<maxscore>" is not part of the rubric or if it
