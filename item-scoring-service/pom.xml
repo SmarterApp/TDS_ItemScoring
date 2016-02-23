@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>1.1.0</version>
+		<version>1.1.0-SNAPSHOT</version>
 	</parent>
 
 	<licenses>
@@ -33,7 +33,7 @@
 		</dependency>
 		<!-- Custom scorers -->
 		<!-- dependency> <groupId>tds</groupId> <artifactId>itemscoringengine.essayitemscorer</artifactId> 
-			<version>0.0.1</version> </dependency -->
+			<version>0.0.1-SNAPSHOT</version> </dependency -->
 		<!-- End Custom scorers -->
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
@@ -56,7 +56,7 @@
 		<!--  dependency>
 			<groupId>tds</groupId>
 			<artifactId>itemscoringengine.essayitemscorer</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency -->
 
 
