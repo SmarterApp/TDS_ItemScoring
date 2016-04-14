@@ -1,6 +1,6 @@
 # Welcome to the Item Scoring Engine
 
-The ItemScoring project is a group of modules that can be used for scoring student responses for different item types. This uses standard QTI response processing with custom operators, an extension point. This engine supports response processing on the following item scoring categories: Trivially scored, Machine scored, and Machine scored with custom operators. Refer to the [custom operators document](http://www.smarterapp.org/documents/Item_Scoring_Custom_Operators.pdf) for more information on this.
+The ItemScoring project is a group of modules that can be used for scoring student responses for different item types. This uses standard QTI response processing with custom operators, an extension point. This engine supports response processing on the following item scoring categories: Trivially scored, Machine scored, and Machine scored with custom operators. Refer to the [custom operators document](http://www.smarterapp.org/documents/Item_Scoring_Custom_Operators.pdf) for more information on this. Instructions to install the customized SymPy library can be found in the docs directory, in the file called `Running Item Scoring Engine.docx`.
 
 ## License ##
 This project is licensed under the [AIR Open Source License v1.0](http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf).
