@@ -1,17 +1,17 @@
 __author__ = 'bkodeswaran'
 
 import traceback
+from random import uniform
 import sys
+
 from bottle import route, run, request, response
 import cherrypy
 from cherrypy import TimeoutError
 
-#from __future__ import division
 from sympy import *
 from sympy.core.sympify import SympifyError
 from sympy.parsing.sympy_parser import parse_expr
 from sympy.core.relational import Relational
-from random import uniform
 
 __python_library_version__ = '3.0.56'
 __max_expr_len__ = 200
@@ -669,12 +669,12 @@ def sbactest():
         assert not isEquivalent('(4.15*((10))**((2*((20))**((2+500)))))','15')
     #does not pass, yet
     #assert not isEquivalent('(6.48*1*(0)**(((-10))))','x')
-	# precision issues
-	assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.903225806545)')
-	assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.9032258065)')
-	assert not isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.90322581)')
-	# some sample response that used to crash the scorer
-	assert not isEquivalent('sin((cos((tan((asin((acos((atan((6))*4))*4))*7))*8))*2))*5', '3', False, True, False, False, False)
+        # precision issues
+        assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.903225806545)')
+        assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.9032258065)')
+        assert not isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.90322581)')
+        # some sample response that used to crash the scorer
+        assert not isEquivalent('sin((cos((tan((asin((acos((atan((6))*4))*4))*7))*8))*2))*5', '3', False, True, False, False, False)
 
 def hitest():
     assert isEquivalent('(Eq(f(5)*30+2.25,152.25))','Eq(f(5),5)')
@@ -765,7 +765,7 @@ def checkequivalence():
     log = request.forms.get("log") == 'True'
     force = request.forms.get("force") == 'True'
 
-    try:       
+    try:
         if isEquivalent(studentResponse, exemplar, False, allowSimplification, trig, log, force):
             return '{"result":"true"}'
         else:
@@ -807,7 +807,6 @@ def checkmatchexpression():
     constraints = request.forms.get("constraints").strip().split('|')
     variables = request.forms.get("variables").strip().split('|')
     try:
-       
         if variables == ['']:
             variables = []
 
@@ -817,10 +816,9 @@ def checkmatchexpression():
         if parameters == ['']:
             parameters = []
 
-    
         result = '|'.join(matchExpression(studentresponse, pattern, parameters, constraints, variables))
         return '{"result":"' + result + '"}'
-    
+
     except TimeoutError:
         traceback.print_exc()
         response.status = 500
@@ -845,7 +843,7 @@ def checkmatchdouble():
             variables = []
             result = '|'.join(matchDouble(studentresponse, pattern, parameters, constraints, variables))
             return '{"result":"' + result + '"}'
-    
+
     except TimeoutError:
         traceback.print_exc()
         response.status = 500
@@ -875,7 +873,7 @@ def evaluate():
 
 #matchDblTest()
 
-#unittestlib()
+unittestlib()
 #assert not
 #parsable('(8/(((((48)/(((((444)))**(((((5/(((5)**(((99)))))))))))))))))')
 #assert not
