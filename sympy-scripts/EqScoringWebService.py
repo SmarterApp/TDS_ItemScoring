@@ -1,17 +1,21 @@
+#!/usr/bin/env python
 __author__ = 'bkodeswaran'
 
 import traceback
 from random import uniform
 import sys
+import uuid
 
 from bottle import route, run, request, response
 import cherrypy
 from cherrypy import TimeoutError
-
 from sympy import *
+from sympy.core.relational import Relational
 from sympy.core.sympify import SympifyError
 from sympy.parsing.sympy_parser import parse_expr
-from sympy.core.relational import Relational
+
+import logstasher
+
 
 __python_library_version__ = '3.0.56'
 __max_expr_len__ = 200
@@ -19,6 +23,16 @@ __max_expr_len__ = 200
 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = symbols('a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z')
 _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14, _a15, _a16, _a17, _a18, _a19, _a20, _a21, _a22, _a23, _a24, _a25, _a26, _a27, _a28, _a29, _a30, _a31, _a32, _a33, _a34, _a35, _a36, _a37, _a38, _a39, _a40 = symbols('_a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14, _a15, _a16, _a17, _a18, _a19, _a20, _a21, _a22, _a23, _a24, _a25, _a26, _a27, _a28, _a29, _a30, _a31, _a32, _a33, _a34, _a35, _a36, _a37, _a38, _a39, _a40')
 _m1, _m2, _m3, _m4, _m5, _m6, _m7, _m8, _m9, _m10, _m11, _m12, _m13, _m14, _m15, _m16, _m17, _m18, _m19, _m20, _m21, _m22, _m23, _m24, _m25, _m26, _m27, _m28, _m29, _m30, _m31, _m32, _m33, _m34, _m35, _m36, _m37, _m38, _m39, _m40 = symbols('_m1, _m2, _m3, _m4, _m5, _m6, _m7, _m8, _m9, _m10, _m11, _m12, _m13, _m14, _m15, _m16, _m17, _m18, _m19, _m20, _m21, _m22, _m23, _m24, _m25, _m26, _m27, _m28, _m29, _m30, _m31, _m32, _m33, _m34, _m35, _m36, _m37, _m38, _m39, _m40')
+
+logger = logstasher.getLogger()
+
+# all items in data_dict will be added to the log info as fields.
+# be careful not to use any reserved words as keys.
+def logevent(event_name, data_dict={}):
+    # add extra fields to logstash message
+    extra = {'data_%s' % key: value for (key, value) in data_dict.iteritems()}
+    extra['marker']='metric'
+    logger.info('%s event' % event_name or 'Unknown', extra=extra)
 
 def nthroot(b, e, evaluate=True):
     return Pow(b, 1.0 / e, evaluate)
@@ -765,38 +779,52 @@ def checkequivalence():
     log = request.forms.get("log") == 'True'
     force = request.forms.get("force") == 'True'
 
+    request_id = str(uuid.uuid1())
+    logevent('isequivalent entry', locals())
+
+    return_value = '{"result":"error"}'
     try:
         if isEquivalent(studentResponse, exemplar, False, allowSimplification, trig, log, force):
-            return '{"result":"true"}'
+            return_value = '{"result":"true"}'
         else:
-            return '{"result":"false"}'
-
+            return_value = '{"result":"false"}'
     except TimeoutError:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
     except:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('isequivalent exit', {'request_id': request_id, 'return_value': return_value})
+    return return_value
 
 @route('/parsable', method='POST')
 def checkparsable():
     response.timeout = 2
     studentResponse = request.forms.get("response")
+
+    request_id = str(uuid.uuid1())
+    logevent('parsable entry', locals())
+
+    return_value = '{"result":"error"}'
     try:
         if(parsable(studentResponse)):
-            return '{"result":"true"}'
+            return_value = '{"result":"true"}'
         else:
-            return '{"result":"false"}'
+            return_value = '{"result":"false"}'
     except TimeoutError:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
     except:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('parsable exit', {'request_id': request_id, 'return_value': return_value})
+    return return_value
 
 @route('/matchexpression', method='POST')
 def checkmatchexpression():
@@ -806,6 +834,11 @@ def checkmatchexpression():
     parameters = request.forms.get("parameters").strip().split('|')
     constraints = request.forms.get("constraints").strip().split('|')
     variables = request.forms.get("variables").strip().split('|')
+
+    request_id = str(uuid.uuid1())
+    logevent('matchexpression entry', locals())
+
+    return_value = '{"result":"error"}'
     try:
         if variables == ['']:
             variables = []
@@ -817,17 +850,20 @@ def checkmatchexpression():
             parameters = []
 
         result = '|'.join(matchExpression(studentresponse, pattern, parameters, constraints, variables))
-        return '{"result":"' + result + '"}'
+        return_value = '{"result":"' + result + '"}'
 
     except TimeoutError:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
 
     except:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('matchexpression exit', {'request_id': request_id, 'return_value': return_value})
+    return return_value
 
 @route('/matchdouble', method='POST')
 def checkmatchdouble():
@@ -838,42 +874,57 @@ def checkmatchdouble():
     parameters = request.forms.get("parameters").strip().split('|')
     constraints = request.forms.get("constraints").strip().split('|')
     variables = request.forms.get("variables").strip().split('|')
+
+    request_id = str(uuid.uuid1())
+    logevent('matchdouble entry', locals())
+
+    return_value = '{"result":"error"}'
     try:
         if variables == ['']:
             variables = []
             result = '|'.join(matchDouble(studentresponse, pattern, parameters, constraints, variables))
-            return '{"result":"' + result + '"}'
+            return_value = '{"result":"' + result + '"}'
 
     except TimeoutError:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
 
     except:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('matchdouble exit', {'request_id': request_id, 'return_value': return_value})
+    return return_value
 
 @route('/evaluate', method='POST')
 def evaluate():
     response.timeout = 2
     studentresponse = request.forms.get("response").strip()
 
+    request_id = str(uuid.uuid1())
+    logevent('evaluate entry', locals())
+
+    return_value = '{"result":"error"}'
     try:
         result = evaluateExpression(studentresponse)
-        return '{"result":"' + str(result) + '"}'
+        return_value = '{"result":"' + str(result) + '"}'
     except TimeoutError:
         traceback.print_exc
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
     except:
         traceback.print_exc()
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('evaluate exit', {'request_id': request_id, 'return_value': return_value})
+    return return_value
 
 #matchDblTest()
 
-unittestlib()
+#unittestlib()
 #assert not
 #parsable('(8/(((((48)/(((((444)))**(((((5/(((5)**(((99)))))))))))))))))')
 #assert not
@@ -890,7 +941,14 @@ unittestlib()
 #assert isEquivalent('asin(0.8)', 'asin(0.8)', False, True, True, False, False)
 #assert isEquivalent('asin((0.8))', 'asin(0.8)', False, True, True, False,
 #False)
-run(host='localhost', port=8084, debug=True, server='cherrypy')
+host = 'localhost'
+port = 8084
+debug = True
+server = 'cherrypy'
+
+logevent('Starting EqScoringWebService on node %d (%s:%d), debug=%s, server=%s' % (
+    uuid.getnode(), host, port, debug, server))
+run(host=host, port=port, debug=debug, server=server)
 
 # curl -X POST -F response=1 -F exemplar=1 -F simplify=True -F trig=True -F log=True http://localhost:8080/isequivalent
 # curl -X POST -F response=1 http://localhost:8080/parsable
