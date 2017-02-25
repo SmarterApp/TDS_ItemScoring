@@ -26,13 +26,14 @@ _m1, _m2, _m3, _m4, _m5, _m6, _m7, _m8, _m9, _m10, _m11, _m12, _m13, _m14, _m15,
 
 logger = logstasher.getLogger()
 
-# all items in data_dict will be added to the log info as fields.
-# be careful not to use any reserved words as keys.
-def logevent(event_name, data_dict={}):
+# event_name gets logged into the 'event' field
+# event_data gets logged into the 'event_data' field
+def logevent(event_name='Unknown', event_data={}):
     # add extra fields to logstash message
-    extra = {'data_%s' % key: value for (key, value) in data_dict.iteritems()}
-    extra['marker']='metric'
-    logger.info('%s event' % event_name or 'Unknown', extra=extra)
+    extra = {}
+    extra['event'] = str(event_name)
+    extra['event_data'] = event_data
+    logger.info(extra['event'], extra=extra)
 
 def nthroot(b, e, evaluate=True):
     return Pow(b, 1.0 / e, evaluate)
@@ -783,21 +784,27 @@ def checkequivalence():
     logevent('isequivalent entry', locals())
 
     return_value = '{"result":"error"}'
+    exception = None
     try:
         if isEquivalent(studentResponse, exemplar, False, allowSimplification, trig, log, force):
             return_value = '{"result":"true"}'
         else:
             return_value = '{"result":"false"}'
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"errorTimeout"}'
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"error"}'
 
-    logevent('isequivalent exit', {'request_id': request_id, 'return_value': return_value})
+    logevent('isequivalent exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
     return return_value
 
 @route('/parsable', method='POST')
@@ -809,21 +816,27 @@ def checkparsable():
     logevent('parsable entry', locals())
 
     return_value = '{"result":"error"}'
+    exception = None
     try:
         if(parsable(studentResponse)):
             return_value = '{"result":"true"}'
         else:
             return_value = '{"result":"false"}'
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"errorTimeout"}'
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"error"}'
 
-    logevent('parsable exit', {'request_id': request_id, 'return_value': return_value})
+    logevent('parsable exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
     return return_value
 
 @route('/matchexpression', method='POST')
@@ -839,6 +852,7 @@ def checkmatchexpression():
     logevent('matchexpression entry', locals())
 
     return_value = '{"result":"error"}'
+    exception = None
     try:
         if variables == ['']:
             variables = []
@@ -853,16 +867,21 @@ def checkmatchexpression():
         return_value = '{"result":"' + result + '"}'
 
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"errorTimeout"}'
 
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"error"}'
 
-    logevent('matchexpression exit', {'request_id': request_id, 'return_value': return_value})
+    logevent('matchexpression exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
     return return_value
 
 @route('/matchdouble', method='POST')
@@ -879,6 +898,7 @@ def checkmatchdouble():
     logevent('matchdouble entry', locals())
 
     return_value = '{"result":"error"}'
+    exception = None
     try:
         if variables == ['']:
             variables = []
@@ -886,16 +906,21 @@ def checkmatchdouble():
             return_value = '{"result":"' + result + '"}'
 
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"errorTimeout"}'
 
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"error"}'
 
-    logevent('matchdouble exit', {'request_id': request_id, 'return_value': return_value})
+    logevent('matchdouble exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
     return return_value
 
 @route('/evaluate', method='POST')
@@ -907,19 +932,25 @@ def evaluate():
     logevent('evaluate entry', locals())
 
     return_value = '{"result":"error"}'
+    exception = None
     try:
         result = evaluateExpression(studentresponse)
         return_value = '{"result":"' + str(result) + '"}'
     except TimeoutError:
-        traceback.print_exc
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"errorTimeout"}'
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
         return_value = '{"result":"error"}'
 
-    logevent('evaluate exit', {'request_id': request_id, 'return_value': return_value})
+    logevent('evaluate exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
     return return_value
 
 #matchDblTest()
