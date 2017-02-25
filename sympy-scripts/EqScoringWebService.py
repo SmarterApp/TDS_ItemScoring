@@ -773,19 +773,19 @@ def utahtest():
 @route('/isequivalent', method='POST')
 def checkequivalence():
     response.timeout = 2
-    studentResponse = request.forms.get("response")
-    exemplar = request.forms.get("exemplar")
-    allowSimplification = request.forms.get("simplify") == 'True'
-    trig = request.forms.get("trig") == 'True'
-    log = request.forms.get("log") == 'True'
-    force = request.forms.get("force") == 'True'
-
-    request_id = str(uuid.uuid1())
-    logevent('isequivalent entry', locals())
-
-    return_value = '{"result":"error"}'
     exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentResponse = request.forms.get("response")
+        exemplar = request.forms.get("exemplar")
+        allowSimplification = request.forms.get("simplify") == 'True'
+        trig = request.forms.get("trig") == 'True'
+        log = request.forms.get("log") == 'True'
+        force = request.forms.get("force") == 'True'
+
+        logevent('isequivalent entry', locals())
+        return_value = '{"result":"error"}'
+
         if isEquivalent(studentResponse, exemplar, False, allowSimplification, trig, log, force):
             return_value = '{"result":"true"}'
         else:
@@ -810,14 +810,14 @@ def checkequivalence():
 @route('/parsable', method='POST')
 def checkparsable():
     response.timeout = 2
-    studentResponse = request.forms.get("response")
-
-    request_id = str(uuid.uuid1())
-    logevent('parsable entry', locals())
-
-    return_value = '{"result":"error"}'
     exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentResponse = request.forms.get("response")
+
+        logevent('parsable entry', locals())
+        return_value = '{"result":"error"}'
+
         if(parsable(studentResponse)):
             return_value = '{"result":"true"}'
         else:
@@ -842,18 +842,18 @@ def checkparsable():
 @route('/matchexpression', method='POST')
 def checkmatchexpression():
     response.timeout = 2
-    studentresponse = request.forms.get("response").strip()
-    pattern = request.forms.get("pattern").strip()
-    parameters = request.forms.get("parameters").strip().split('|')
-    constraints = request.forms.get("constraints").strip().split('|')
-    variables = request.forms.get("variables").strip().split('|')
-
-    request_id = str(uuid.uuid1())
-    logevent('matchexpression entry', locals())
-
-    return_value = '{"result":"error"}'
     exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentresponse = request.forms.get("response").strip()
+        pattern = request.forms.get("pattern").strip()
+        parameters = request.forms.get("parameters").strip().split('|')
+        constraints = request.forms.get("constraints").strip().split('|')
+        variables = request.forms.get("variables").strip().split('|')
+
+        logevent('matchexpression entry', locals())
+        return_value = '{"result":"error"}'
+
         if variables == ['']:
             variables = []
 
@@ -886,20 +886,19 @@ def checkmatchexpression():
 
 @route('/matchdouble', method='POST')
 def checkmatchdouble():
-
     response.timeout = 2
-    studentresponse = request.forms.get("response").strip()
-    pattern = request.forms.get("pattern").strip()
-    parameters = request.forms.get("parameters").strip().split('|')
-    constraints = request.forms.get("constraints").strip().split('|')
-    variables = request.forms.get("variables").strip().split('|')
-
-    request_id = str(uuid.uuid1())
-    logevent('matchdouble entry', locals())
-
-    return_value = '{"result":"error"}'
     exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentresponse = request.forms.get("response").strip()
+        pattern = request.forms.get("pattern").strip()
+        parameters = request.forms.get("parameters").strip().split('|')
+        constraints = request.forms.get("constraints").strip().split('|')
+        variables = request.forms.get("variables").strip().split('|')
+
+        logevent('matchdouble entry', locals())
+        return_value = '{"result":"error"}'
+
         if variables == ['']:
             variables = []
             result = '|'.join(matchDouble(studentresponse, pattern, parameters, constraints, variables))
@@ -926,14 +925,12 @@ def checkmatchdouble():
 @route('/evaluate', method='POST')
 def evaluate():
     response.timeout = 2
-    studentresponse = request.forms.get("response").strip()
-
-    request_id = str(uuid.uuid1())
-    logevent('evaluate entry', locals())
-
-    return_value = '{"result":"error"}'
     exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentresponse = request.forms.get("response").strip()
+        logevent('evaluate entry', locals())
+        return_value = '{"result":"error"}'
         result = evaluateExpression(studentresponse)
         return_value = '{"result":"' + str(result) + '"}'
     except TimeoutError:
