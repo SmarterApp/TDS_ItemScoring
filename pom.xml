@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.opentestsystem.shared</groupId>
 		<artifactId>shared-master</artifactId>
-		<version>1.0.1-BUILD-SNAPSHOT</version>
+		<version>3.0.1</version>
 	</parent>
 	
 	<scm>
@@ -23,8 +23,10 @@
 		<module>item-scoring-api</module>
 		<module>item-scoring-engine</module>
 		<module>item-scoring-service</module>
+		<module>item-scoring-student-simulator</module>
 		<module>qtiscoringengine</module>
 		<module>qtiscoringengineTester</module>
+		<module>qtiscoringengineTesterEQ</module>
 	</modules>
 
 	<licenses>
