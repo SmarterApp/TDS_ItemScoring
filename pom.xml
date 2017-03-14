@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.opentestsystem.delivery</groupId>
 	<artifactId>item-scoring-master</artifactId>
 	<name>Item Scoring Master</name>
 	<packaging>pom</packaging>
-	<version>1.1.0</version>
+	<version>3.0.1-SNAPSHOT</version>
+
 	<parent>
 		<groupId>org.opentestsystem.shared</groupId>
 		<artifactId>shared-master</artifactId>
-		<version>1.0.1</version>
+		<version>3.0.1</version>
 	</parent>
-	
-	<scm>
-        <connection>scm:hg:https://bitbucket.org/sbacoss/itemscoring_release</connection>
-        <developerConnection>scm:hg:https://bitbucket.org/sbacoss/itemscoring_release</developerConnection>
-        <url>https://bitbucket.org/sbacoss/itemscoring_release</url>
-    </scm>
 
 	<modules>
 		<module>item-scoring-api</module>
 		<module>item-scoring-engine</module>
 		<module>item-scoring-service</module>
+		<module>item-scoring-student-simulator</module>
 		<module>qtiscoringengine</module>
 		<module>qtiscoringengineTester</module>
+		<module>qtiscoringengineTesterEQ</module>
 	</modules>
 
 	<licenses>
@@ -35,5 +31,37 @@
 			<comments>Educational Online Test Delivery System Copyright (c) 2013 American Institutes for Research</comments>
 		</license>
 	</licenses>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-toolchains-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<scm>
+		<connection>scm:git:https://github.com/SmarterApp/TDS_ItemScoring.git</connection>
+		<developerConnection>scm:git:git://github.com/SmarterApp/TDS_ItemScoring.git</developerConnection>
+		<url>https://github.com/SmarterApp/TDS_ItemScoring</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>airdev-releases</name>
+			<url>https://airdev.jfrog.io/airdev/libs-releases-local</url>
+		</repository>
+	</distributionManagement>
 
 </project>

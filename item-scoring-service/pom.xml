@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>item-scoring-service</artifactId>
 	<name>Item Scoring Web Service</name>
@@ -9,7 +8,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>1.1.0</version>
+		<version>3.0.1-SNAPSHOT</version>
 	</parent>
 
 	<licenses>
@@ -33,7 +32,7 @@
 		</dependency>
 		<!-- Custom scorers -->
 		<!-- dependency> <groupId>tds</groupId> <artifactId>itemscoringengine.essayitemscorer</artifactId> 
-			<version>0.0.1</version> </dependency -->
+			<version>0.0.1-SNAPSHOT</version> </dependency -->
 		<!-- End Custom scorers -->
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
@@ -56,7 +55,7 @@
 		<!--  dependency>
 			<groupId>tds</groupId>
 			<artifactId>itemscoringengine.essayitemscorer</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency -->
 
 

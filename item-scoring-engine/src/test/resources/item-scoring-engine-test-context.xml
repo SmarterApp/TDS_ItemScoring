@@ -3,13 +3,26 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
 >
 
 	<import resource="classpath:opentestsystem.shared.test-context-module.xml"/>
+
 	<context:component-scan base-package="tds.itemscoringengine" />
+
+	<bean factory-bean="appSettings"
+		  factory-method="updateProperties"
+		  lazy-init="false">
+		<constructor-arg>
+			<util:map map-class="java.util.HashMap">
+				<entry key="EncryptionKey" value="testKey1234567891234567891234" />
+			</util:map>
+		</constructor-arg>
+	</bean>
 	<bean id="iEncryption" class="TDS.Shared.Web.Encryption"/>
 
 </beans>
