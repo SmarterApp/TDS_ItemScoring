@@ -20,8 +20,5 @@ RUN pip install -r /requirements.txt
 #Install custom AIR sympy
 RUN unzip site-packages.zip -o -d /usr/local/lib/python2.7/site-packages/
 
-#Create log directory
-RUN mkdir /logs && chmod a+w /logs
-
 EXPOSE 8080
 CMD ["python", "/EqScoringWebService.py"]
