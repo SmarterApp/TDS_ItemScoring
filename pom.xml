@@ -14,6 +14,7 @@
 	</parent>
 
 	<modules>
+		<module>equation-scoring-image</module>
 		<module>item-scoring-api</module>
 		<module>item-scoring-engine</module>
 		<module>item-scoring-service</module>

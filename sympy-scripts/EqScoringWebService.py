@@ -950,6 +950,24 @@ def evaluate():
         'return_value': return_value})
     return return_value
 
+@route('/healthz', method='GET')
+def healthz():
+    response.timeout = 2
+    exception = None
+    try:
+        return_value = '{"status":"healthy"}'
+    except TimeoutError:
+        exception = traceback.format_exc()
+        print exception
+        response.status = 500
+        return_value = '{"result":"errorTimeout"}'
+    except:
+        exception = traceback.format_exc()
+        print exception
+        response.status = 500
+        return_value = '{"result":"error"}'
+    return return_value
+
 #matchDblTest()
 
 #unittestlib()
@@ -969,8 +987,8 @@ def evaluate():
 #assert isEquivalent('asin(0.8)', 'asin(0.8)', False, True, True, False, False)
 #assert isEquivalent('asin((0.8))', 'asin(0.8)', False, True, True, False,
 #False)
-host = 'localhost'
-port = 8084
+host = '0.0.0.0'
+port = 8080
 debug = True
 server = 'cherrypy'
 
