@@ -24,6 +24,10 @@
 		<module>qtiscoringengineTesterEQ</module>
 	</modules>
 
+	<properties>
+		<docker.image.prefix>fwsbac</docker.image.prefix>
+	</properties>
+
 	<licenses>
 		<license>
 			<name>AIR-License-1.0</name>
