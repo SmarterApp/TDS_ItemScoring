@@ -11,10 +11,6 @@
         <version>3.0.1-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <docker.image.prefix>fwsbac</docker.image.prefix>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

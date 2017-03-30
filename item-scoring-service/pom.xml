@@ -98,8 +98,7 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
 	</dependencies>
-	<build>
-	</build>
+
 	<reporting>
 		<plugins>
 			<!-- jxr creates cross a reference of the projects source, required by 
@@ -122,6 +121,31 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.10</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<imageTags>
+						<imageTag>${project.version}</imageTag>
+						<imageTag>latest</imageTag>
+					</imageTags>
+					<dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.war</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<profiles>
 		<profile>
