@@ -9,14 +9,14 @@
 
 package tds.itemscoringengine.itemscorers;
 
-import java.io.ByteArrayOutputStream;
-
+import AIR.Common.Utilities.SpringApplicationContext;
+import AIR.Common.Web.HttpWebHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import AIR.Common.Utilities.SpringApplicationContext;
-import AIR.Common.Web.HttpWebHelper;
+import java.io.ByteArrayOutputStream;
+
 import tds.itemscoringengine.IItemScorer;
 import tds.itemscoringengine.IItemScorerCallback;
 import tds.itemscoringengine.ItemScore;
@@ -31,11 +31,15 @@ import tds.itemscoringengine.WebProxyItemScorerCallback;
 
 public class ProxyItemScorer implements IItemScorer
 {
-  private static final Logger        _logger     = LoggerFactory.getLogger (ProxyItemScorer.class);
-  private HttpWebHelper              _httpClient = null;
+  private static final Logger _logger = LoggerFactory.getLogger(ProxyItemScorer.class);
+  private final HttpWebHelper _httpClient;
 
-  public ProxyItemScorer () {
-    _httpClient = SpringApplicationContext.getBean ("httpWebHelper", HttpWebHelper.class);
+  public ProxyItemScorer() {
+    _httpClient = SpringApplicationContext.getBean("httpWebHelper", HttpWebHelper.class);
+  }
+
+  public ProxyItemScorer(HttpWebHelper httpWebHelper) {
+    _httpClient = httpWebHelper;
   }
 
   // / <summary>
