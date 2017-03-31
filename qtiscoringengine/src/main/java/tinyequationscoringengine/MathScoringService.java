@@ -57,12 +57,12 @@ public class MathScoringService
     }
   }
 
-  public boolean isInitialized () {
+  boolean isInitialized () {
     return proxy != null;
   }
 
-  public void initialize (URI eqScoringServer, int maxRetries) {
-    proxy = new WebProxy (eqScoringServer, maxRetries);
+  void initialize (URI eqScoringServer, int maxRetries, int timeoutInMillis) {
+    proxy = new WebProxy (eqScoringServer, maxRetries, timeoutInMillis);
   }
 
   public boolean lineContainsEquivalent (MathExpression mathexp, String rubric, boolean allowSimplify, boolean trig, boolean log, boolean force) throws QTIScoringException {

@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import AIR.Common.Configuration.AppSettingsHelper;
 import org.jdom2.Element;
 
 import qtiscoringengine.Expression;
@@ -31,8 +32,8 @@ public class TinyEqCustomOpFactory implements ICustomOperatorFactory
 
   public Map<String, IEQConstructor> _eqConstructors = new HashMap<String, IEQConstructor> ();
 
-  public TinyEqCustomOpFactory (URI scoringService, int maxRetries) {
-    MathScoringService.getInstance ().initialize (scoringService, maxRetries);
+  public TinyEqCustomOpFactory (URI scoringService, int maxRetries, int timeoutInMillis) {
+    MathScoringService.getInstance ().initialize (scoringService, maxRetries, timeoutInMillis);
     addConstructor ("PREPROCESSRESPONSE", new TEConPreprocess ());
     addConstructor ("ISEQUIVALENT", new TEConIsEquivalent ());
     addConstructor ("ISEQUIVALENTLOG", new TEConIsEquivalentLog ());
