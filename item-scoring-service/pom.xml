@@ -20,6 +20,11 @@
 		</license>
 	</licenses>
 
+	<properties>
+		<janino.version>3.0.7</janino.version>
+		<logstash-appender.version>4.8</logstash-appender.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
@@ -88,6 +93,8 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Logging dependencies -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -96,6 +103,16 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>${janino.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-appender.version}</version>
 		</dependency>
 	</dependencies>
 
