@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>item-scoring-service</artifactId>
 	<name>Item Scoring Web Service</name>
@@ -9,7 +8,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>1.1.0</version>
+		<version>3.1.0.RELEASE</version>
 	</parent>
 
 	<licenses>
@@ -20,6 +19,11 @@
 			<comments>Educational Online Test Delivery System Copyright (c) 2013 American Institutes for Research</comments>
 		</license>
 	</licenses>
+
+	<properties>
+		<janino.version>3.0.7</janino.version>
+		<logstash-appender.version>4.8</logstash-appender.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -33,7 +37,7 @@
 		</dependency>
 		<!-- Custom scorers -->
 		<!-- dependency> <groupId>tds</groupId> <artifactId>itemscoringengine.essayitemscorer</artifactId> 
-			<version>0.0.1</version> </dependency -->
+			<version>0.0.1-SNAPSHOT</version> </dependency -->
 		<!-- End Custom scorers -->
 		<dependency>
 			<groupId>org.opentestsystem.delivery</groupId>
@@ -56,7 +60,7 @@
 		<!--  dependency>
 			<groupId>tds</groupId>
 			<artifactId>itemscoringengine.essayitemscorer</artifactId>
-			<version>0.0.3</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency -->
 
 
@@ -89,6 +93,8 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Logging dependencies -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -98,9 +104,18 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>${janino.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-appender.version}</version>
+		</dependency>
 	</dependencies>
-	<build>
-	</build>
+
 	<reporting>
 		<plugins>
 			<!-- jxr creates cross a reference of the projects source, required by 
@@ -123,4 +138,51 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.10</version>
+				<configuration>
+					<imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+					<imageTags>
+						<imageTag>${project.version}</imageTag>
+						<imageTag>latest</imageTag>
+					</imageTags>
+					<dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.war</include>
+						</resource>
+					</resources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
