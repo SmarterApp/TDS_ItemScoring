@@ -1,7 +1,0 @@
-# Sample docker run command (replace values with your environment values)
-
-docker run -e "ITEMSCORING_QTI_SYMPYSERVICEURL=<equation-scoring-service-url>" \
--e "ITEMSCORING_QTI_SYMPYMAXTRIES=3" \
--e "ITEMSCORING_QTI_SYMPYTIMEOUTMILLIS=10000" \
--e "QTHREADCOUNT=5" \
--P <DOCKER_IMAGE_ID>
