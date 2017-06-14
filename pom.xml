@@ -25,7 +25,7 @@
 	</modules>
 
 	<properties>
-		<docker.image.prefix>fwsbac</docker.image.prefix>
+		<docker.image.prefix>smarterbalanced</docker.image.prefix>
 	</properties>
 
 	<licenses>
