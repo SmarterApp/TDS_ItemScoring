@@ -35,27 +35,27 @@ import AIR.Common.Utilities.TDSStringUtils;
 import AIR.Common.Web.HttpWebHelper;
 import AIR.Common.Web.UrlHelper;
 
-public class WebProxy
-{
+class WebProxy {
   private static final Logger        _logger       = LoggerFactory.getLogger (WebProxy.class);
   private static final HttpWebHelper HttpWebHelper = new HttpWebHelper ();
   private int                        _maxRetries;
   private URI                        _serverUri;
 
-  public int getMaxTries () {
+  private int getMaxTries () {
     return _maxRetries;
   }
 
-  public URI getServerUri () {
+  private URI getServerUri () {
     return _serverUri;
   }
 
-  public WebProxy (URI serverUri, int maxRetries) {
+  WebProxy(final URI serverUri, final int _maxRetries, int timeoutInMillis) {
     this._serverUri = serverUri;
-    this._maxRetries = maxRetries;
+    this._maxRetries = _maxRetries;
+    HttpWebHelper.setTimeoutInMillis (timeoutInMillis);
   }
 
-  public boolean isEquivalent (String studentResponseStr, String exemplar, boolean simplify, boolean trigIdenties, boolean logIdenties, boolean force) throws QTIScoringException {
+  boolean isEquivalent (String studentResponseStr, String exemplar, boolean simplify, boolean trigIdenties, boolean logIdenties, boolean force) throws QTIScoringException {
     String studentResponse = StringHelper.trim (studentResponseStr, new char[] { '[', ' ', ']' }); // remove
                                                                                                    // the
                                                                                                    // []
@@ -177,7 +177,7 @@ public class WebProxy
     throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
   }
 
-  public List<Double> matchDouble (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
+  List<Double> matchDouble (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
     String studentResponse = StringHelper.trim (studentResponseStr, new char[] { '[', ' ', ']' }); // remove
                                                                                                    // the
                                                                                                    // []
@@ -235,7 +235,7 @@ public class WebProxy
     throw new QTIScoringException("Web Proxy returned a failure status code: " + httpStatusCode.get ().toString());
   }
 
-  public List<String> matchExpression (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
+  List<String> matchExpression (String studentResponseStr, String pattern, List<String> parameters, List<String> constraints, List<String> variables) throws QTIScoringException {
     String studentResponse = StringHelper.trim (studentResponseStr, new char[] { '[', ' ', ']' }); // remove
                                                                                                    // the
                                                                                                    // []
@@ -291,7 +291,7 @@ public class WebProxy
 
   }
 
-  public double evaluateExpression (String studentResponseStr) throws QTIScoringException {
+  double evaluateExpression (String studentResponseStr) throws QTIScoringException {
     String studentResponse = StringHelper.trim (studentResponseStr, new char[] { '[', ' ', ']' }); // remove
                                                                                                    // the
                                                                                                    // []
@@ -358,9 +358,5 @@ public class WebProxy
         formParametersToString.put (entry.getKey (), entryValue.toString ());
       }
     return HttpWebHelper.submitForm (url, formParametersToString, maxTries, httpStatusCode);
-  }
-
-  static {
-    HttpWebHelper.setTimeoutInMillis (AppSettingsHelper.getInt32 ("itemscoring.qti.sympyTimeoutMillis", 10000));
   }
 }

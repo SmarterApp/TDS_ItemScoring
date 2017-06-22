@@ -9,24 +9,14 @@
 
 package tds.itemscoringengine.itemscorers;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.apache.cassandra.io.util.MemoryOutputStream;
-import org.apache.commons.io.output.XmlStreamWriter;
+import AIR.Common.Utilities.SpringApplicationContext;
+import AIR.Common.Web.HttpWebHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import AIR.Common.Utilities.SpringApplicationContext;
-import AIR.Common.Web.HttpWebHelper;
-import scala.collection.immutable.StringOps;
+import java.io.ByteArrayOutputStream;
+
 import tds.itemscoringengine.IItemScorer;
 import tds.itemscoringengine.IItemScorerCallback;
 import tds.itemscoringengine.ItemScore;
@@ -41,11 +31,15 @@ import tds.itemscoringengine.WebProxyItemScorerCallback;
 
 public class ProxyItemScorer implements IItemScorer
 {
-  private static final Logger        _logger     = LoggerFactory.getLogger (ProxyItemScorer.class);
-  private HttpWebHelper              _httpClient = null;
+  private static final Logger _logger = LoggerFactory.getLogger(ProxyItemScorer.class);
+  private final HttpWebHelper _httpClient;
 
-  public ProxyItemScorer () {
-    _httpClient = SpringApplicationContext.getBean ("httpWebHelper", HttpWebHelper.class);
+  public ProxyItemScorer() {
+    _httpClient = SpringApplicationContext.getBean("httpWebHelper", HttpWebHelper.class);
+  }
+
+  public ProxyItemScorer(HttpWebHelper httpWebHelper) {
+    _httpClient = httpWebHelper;
   }
 
   // / <summary>

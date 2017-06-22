@@ -1,30 +1,40 @@
 <configuration>
-    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <property scope="context" name="app.context.name" value="item-scoring" />
+
+    <property scope="local" name="logfile.path" value="${catalina.home:-${user.home}}" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>TRACE</level>
-        </filter>
     </appender>
- 	
- 	<property scope="local" name="logfile.path" value="${catalina.home:-${user.home}}" />
- 	
-     <appender name="filelog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-       <File>${catalina.home}/logs/itemscoring/itemscoring.log</File>
-       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${catalina.home}/logs/itemscoring/itemscoring.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
            <!-- daily rollover -->
            <FileNamePattern>itemscoring.%d{yyyy-MM-dd}.log</FileNamePattern>
 
            <!-- keep 30 days' worth of history -->
-           <maxHistory>30</maxHistory>            
-       </rollingPolicy>
+           <maxHistory>30</maxHistory>
+        </rollingPolicy>
 
-       <encoder>
+        <encoder>
            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-       </encoder>         
-     </appender>
- 
+        </encoder>
+    </appender>
+
+    <if condition='isDefined("LOGSTASH_DESTINATION")'>
+        <then>
+            <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${LOGSTASH_DESTINATION}</destination>
+                <!-- encoder is required -->
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            </appender>
+        </then>
+    </if>
+
     <logger name="tds.itemscoringengine" level="info" />
     <logger name="qtiscoringengine" level="info" />
     <logger name="tinyctrlscoringengine" level="info" />
@@ -39,9 +49,17 @@
     <logger name="org.springframework.beans" level="info" />
     <logger name="org.springframework.context" level="info" />
     <logger name="org.springframework.web" level="info" />
-    
+
     <root level="INFO">
-        <appender-ref ref="filelog" />
-    	<appender-ref ref="consoleAppender" />
-     </root>
+        <appender-ref ref="CONSOLE"/>
+
+        <if condition='isDefined("LOGSTASH_DESTINATION")'>
+            <then>
+                <appender-ref ref="LOGSTASH"/>
+            </then>
+            <else>
+                <appender-ref ref="FILE"/>
+            </else>
+        </if>
+    </root>
 </configuration>

@@ -1,17 +1,21 @@
+#!/usr/bin/env python
 __author__ = 'bkodeswaran'
 
 import traceback
+from random import uniform
 import sys
+import uuid
+
 from bottle import route, run, request, response
 import cherrypy
 from cherrypy import TimeoutError
-
-#from __future__ import division
 from sympy import *
+from sympy.core.relational import Relational
 from sympy.core.sympify import SympifyError
 from sympy.parsing.sympy_parser import parse_expr
-from sympy.core.relational import Relational
-from random import uniform
+
+import logstasher
+
 
 __python_library_version__ = '3.0.56'
 __max_expr_len__ = 200
@@ -19,6 +23,17 @@ __max_expr_len__ = 200
 a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z = symbols('a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z')
 _a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14, _a15, _a16, _a17, _a18, _a19, _a20, _a21, _a22, _a23, _a24, _a25, _a26, _a27, _a28, _a29, _a30, _a31, _a32, _a33, _a34, _a35, _a36, _a37, _a38, _a39, _a40 = symbols('_a1, _a2, _a3, _a4, _a5, _a6, _a7, _a8, _a9, _a10, _a11, _a12, _a13, _a14, _a15, _a16, _a17, _a18, _a19, _a20, _a21, _a22, _a23, _a24, _a25, _a26, _a27, _a28, _a29, _a30, _a31, _a32, _a33, _a34, _a35, _a36, _a37, _a38, _a39, _a40')
 _m1, _m2, _m3, _m4, _m5, _m6, _m7, _m8, _m9, _m10, _m11, _m12, _m13, _m14, _m15, _m16, _m17, _m18, _m19, _m20, _m21, _m22, _m23, _m24, _m25, _m26, _m27, _m28, _m29, _m30, _m31, _m32, _m33, _m34, _m35, _m36, _m37, _m38, _m39, _m40 = symbols('_m1, _m2, _m3, _m4, _m5, _m6, _m7, _m8, _m9, _m10, _m11, _m12, _m13, _m14, _m15, _m16, _m17, _m18, _m19, _m20, _m21, _m22, _m23, _m24, _m25, _m26, _m27, _m28, _m29, _m30, _m31, _m32, _m33, _m34, _m35, _m36, _m37, _m38, _m39, _m40')
+
+logger = logstasher.getLogger()
+
+# event_name gets logged into the 'event' field
+# event_data gets logged into the 'event_data' field
+def logevent(event_name='Unknown', event_data={}):
+    # add extra fields to logstash message
+    extra = {}
+    extra['event'] = str(event_name)
+    extra['event_data'] = event_data
+    logger.info(extra['event'], extra=extra)
 
 def nthroot(b, e, evaluate=True):
     return Pow(b, 1.0 / e, evaluate)
@@ -669,12 +684,12 @@ def sbactest():
         assert not isEquivalent('(4.15*((10))**((2*((20))**((2+500)))))','15')
     #does not pass, yet
     #assert not isEquivalent('(6.48*1*(0)**(((-10))))','x')
-	# precision issues
-	assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.903225806545)')
-	assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.9032258065)')
-	assert not isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.90322581)')
-	# some sample response that used to crash the scorer
-	assert not isEquivalent('sin((cos((tan((asin((acos((atan((6))*4))*4))*7))*8))*2))*5', '3', False, True, False, False, False)
+        # precision issues
+        assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.903225806545)')
+        assert isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.9032258065)')
+        assert not isEquivalent('Eq(L,40/3.1)', 'Eq(L,12.90322581)')
+        # some sample response that used to crash the scorer
+        assert not isEquivalent('sin((cos((tan((asin((acos((atan((6))*4))*4))*7))*8))*2))*5', '3', False, True, False, False, False)
 
 def hitest():
     assert isEquivalent('(Eq(f(5)*30+2.25,152.25))','Eq(f(5),5)')
@@ -758,56 +773,87 @@ def utahtest():
 @route('/isequivalent', method='POST')
 def checkequivalence():
     response.timeout = 2
-    studentResponse = request.forms.get("response")
-    exemplar = request.forms.get("exemplar")
-    allowSimplification = request.forms.get("simplify") == 'True'
-    trig = request.forms.get("trig") == 'True'
-    log = request.forms.get("log") == 'True'
-    force = request.forms.get("force") == 'True'
+    exception = None
+    request_id = str(uuid.uuid1())
+    try:
+        studentResponse = request.forms.get("response")
+        exemplar = request.forms.get("exemplar")
+        allowSimplification = request.forms.get("simplify") == 'True'
+        trig = request.forms.get("trig") == 'True'
+        log = request.forms.get("log") == 'True'
+        force = request.forms.get("force") == 'True'
 
-    try:       
+        logevent('isequivalent entry', locals())
+        return_value = '{"result":"error"}'
+
         if isEquivalent(studentResponse, exemplar, False, allowSimplification, trig, log, force):
-            return '{"result":"true"}'
+            return_value = '{"result":"true"}'
         else:
-            return '{"result":"false"}'
-
+            return_value = '{"result":"false"}'
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('isequivalent exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
+    return return_value
 
 @route('/parsable', method='POST')
 def checkparsable():
     response.timeout = 2
-    studentResponse = request.forms.get("response")
+    exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentResponse = request.forms.get("response")
+
+        logevent('parsable entry', locals())
+        return_value = '{"result":"error"}'
+
         if(parsable(studentResponse)):
-            return '{"result":"true"}'
+            return_value = '{"result":"true"}'
         else:
-            return '{"result":"false"}'
+            return_value = '{"result":"false"}'
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('parsable exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
+    return return_value
 
 @route('/matchexpression', method='POST')
 def checkmatchexpression():
     response.timeout = 2
-    studentresponse = request.forms.get("response").strip()
-    pattern = request.forms.get("pattern").strip()
-    parameters = request.forms.get("parameters").strip().split('|')
-    constraints = request.forms.get("constraints").strip().split('|')
-    variables = request.forms.get("variables").strip().split('|')
+    exception = None
+    request_id = str(uuid.uuid1())
     try:
-       
+        studentresponse = request.forms.get("response").strip()
+        pattern = request.forms.get("pattern").strip()
+        parameters = request.forms.get("parameters").strip().split('|')
+        constraints = request.forms.get("constraints").strip().split('|')
+        variables = request.forms.get("variables").strip().split('|')
+
+        logevent('matchexpression entry', locals())
+        return_value = '{"result":"error"}'
+
         if variables == ['']:
             variables = []
 
@@ -817,61 +863,110 @@ def checkmatchexpression():
         if parameters == ['']:
             parameters = []
 
-    
         result = '|'.join(matchExpression(studentresponse, pattern, parameters, constraints, variables))
-        return '{"result":"' + result + '"}'
-    
+        return_value = '{"result":"' + result + '"}'
+
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
 
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('matchexpression exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
+    return return_value
 
 @route('/matchdouble', method='POST')
 def checkmatchdouble():
-
     response.timeout = 2
-    studentresponse = request.forms.get("response").strip()
-    pattern = request.forms.get("pattern").strip()
-    parameters = request.forms.get("parameters").strip().split('|')
-    constraints = request.forms.get("constraints").strip().split('|')
-    variables = request.forms.get("variables").strip().split('|')
+    exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentresponse = request.forms.get("response").strip()
+        pattern = request.forms.get("pattern").strip()
+        parameters = request.forms.get("parameters").strip().split('|')
+        constraints = request.forms.get("constraints").strip().split('|')
+        variables = request.forms.get("variables").strip().split('|')
+
+        logevent('matchdouble entry', locals())
+        return_value = '{"result":"error"}'
+
         if variables == ['']:
             variables = []
             result = '|'.join(matchDouble(studentresponse, pattern, parameters, constraints, variables))
-            return '{"result":"' + result + '"}'
-    
+            return_value = '{"result":"' + result + '"}'
+
     except TimeoutError:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
 
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('matchdouble exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
+    return return_value
 
 @route('/evaluate', method='POST')
 def evaluate():
     response.timeout = 2
-    studentresponse = request.forms.get("response").strip()
-
+    exception = None
+    request_id = str(uuid.uuid1())
     try:
+        studentresponse = request.forms.get("response").strip()
+        logevent('evaluate entry', locals())
+        return_value = '{"result":"error"}'
         result = evaluateExpression(studentresponse)
-        return '{"result":"' + str(result) + '"}'
+        return_value = '{"result":"' + str(result) + '"}'
     except TimeoutError:
-        traceback.print_exc
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"errorTimeout"}'
+        return_value = '{"result":"errorTimeout"}'
     except:
-        traceback.print_exc()
+        exception = traceback.format_exc()
+        print exception
         response.status = 500
-        return '{"result":"error"}'
+        return_value = '{"result":"error"}'
+
+    logevent('evaluate exit', {
+        'request_id': request_id,
+        'exception': exception,
+        'return_value': return_value})
+    return return_value
+
+@route('/healthz', method='GET')
+def healthz():
+    response.timeout = 2
+    exception = None
+    try:
+        return_value = '{"status":"healthy"}'
+    except TimeoutError:
+        exception = traceback.format_exc()
+        print exception
+        response.status = 500
+        return_value = '{"result":"errorTimeout"}'
+    except:
+        exception = traceback.format_exc()
+        print exception
+        response.status = 500
+        return_value = '{"result":"error"}'
+    return return_value
 
 #matchDblTest()
 
@@ -892,7 +987,14 @@ def evaluate():
 #assert isEquivalent('asin(0.8)', 'asin(0.8)', False, True, True, False, False)
 #assert isEquivalent('asin((0.8))', 'asin(0.8)', False, True, True, False,
 #False)
-run(host='localhost', port=8084, debug=True, server='cherrypy')
+host = '0.0.0.0'
+port = 8080
+debug = True
+server = 'cherrypy'
+
+logevent('Starting EqScoringWebService on node %d (%s:%d), debug=%s, server=%s' % (
+    uuid.getnode(), host, port, debug, server))
+run(host=host, port=port, debug=debug, server=server)
 
 # curl -X POST -F response=1 -F exemplar=1 -F simplify=True -F trig=True -F log=True http://localhost:8080/isequivalent
 # curl -X POST -F response=1 http://localhost:8080/parsable

@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>equation-scoring-image</artifactId>
+    <name>Equation Scoring Image</name>
+    <description>Docker image hosting python/sympy equation scoring service</description>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.opentestsystem.delivery</groupId>
+        <artifactId>item-scoring-master</artifactId>
+        <version>3.1.1.RELEASE</version>
+    </parent>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.10</version>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <imageTags>
+                        <imageTag>${project.version}</imageTag>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.parent.basedir}/sympy-scripts</directory>
+                            <include>site-packages.zip</include>
+                        </resource>
+
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.parent.basedir}/sympy-scripts</directory>
+                            <include>EqScoringWebService.py</include>
+                        </resource>
+
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.parent.basedir}/sympy-scripts</directory>
+                            <include>logstasher.py</include>
+                        </resource>
+
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.parent.basedir}/sympy-scripts</directory>
+                            <include>requirements.txt</include>
+                        </resource>
+                    </resources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
