@@ -22,6 +22,7 @@
 			<groupId>org.opentestsystem.shared</groupId>
 			<artifactId>shared-xml</artifactId>
 		</dependency>
+		<!--Unfortunately, this is used in non test code.-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

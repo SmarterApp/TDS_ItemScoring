@@ -34,6 +34,7 @@
 		<dependency>
 			<groupId>org.opentestsystem.shared</groupId>
 			<artifactId>shared-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- Custom scorers -->
 		<!-- dependency> <groupId>tds</groupId> <artifactId>itemscoringengine.essayitemscorer</artifactId> 
