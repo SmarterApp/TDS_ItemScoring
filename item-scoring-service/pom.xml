@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>org.opentestsystem.delivery</groupId>
 		<artifactId>item-scoring-master</artifactId>
-		<version>3.1.1.RELEASE</version>
+		<version>4.0.2.RELEASE</version>
 	</parent>
 
 	<licenses>
@@ -34,6 +34,7 @@
 		<dependency>
 			<groupId>org.opentestsystem.shared</groupId>
 			<artifactId>shared-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- Custom scorers -->
 		<!-- dependency> <groupId>tds</groupId> <artifactId>itemscoringengine.essayitemscorer</artifactId> 
