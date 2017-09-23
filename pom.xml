@@ -5,12 +5,12 @@
 	<artifactId>item-scoring-master</artifactId>
 	<name>Item Scoring Master</name>
 	<packaging>pom</packaging>
-	<version>3.1.1.RELEASE</version>
+	<version>4.0.2.RELEASE</version>
 
 	<parent>
 		<groupId>org.opentestsystem.shared</groupId>
 		<artifactId>shared-master</artifactId>
-		<version>3.1.0.RELEASE</version>
+		<version>4.0.6.RELEASE</version>
 	</parent>
 
 	<modules>
@@ -58,7 +58,7 @@
 		<connection>scm:git:https://github.com/SmarterApp/TDS_ItemScoring.git</connection>
 		<developerConnection>scm:git:git://github.com/SmarterApp/TDS_ItemScoring.git</developerConnection>
 		<url>https://github.com/SmarterApp/TDS_ItemScoring</url>
-		<tag>3.1.1.RELEASE</tag>
+		<tag>4.0.2.RELEASE</tag>
 	</scm>
 
 	<distributionManagement>
