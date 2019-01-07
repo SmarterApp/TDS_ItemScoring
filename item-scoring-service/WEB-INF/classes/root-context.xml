@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+	<annotation-driven />
+	<context:annotation-config />
+
+	<context:property-placeholder location="classpath:settings.xml" ignore-unresolvable="true" order="900" />
+
+	<context:property-placeholder ignore-unresolvable="true" />
+
+
+
+	<beans:import resource="classpath:opentestsystem.shared.common-context-module.xml" />
+
+	<beans:bean id="httpWebHelper" class="tds.itemscoringengine.web.server.ItemScoringEngineHttpWebHelper" />
+	<beans:bean id="iEncryption" class="tds.itemscoringengine.web.server.NoEncryption" />
+
+	<beans:bean factory-bean="appSettings" factory-method="updateProperties" lazy-init="false" id="test-reg-url-dependency">
+		<beans:constructor-arg>
+			<util:map map-class="java.util.HashMap">
+				<beans:entry key="itemscoring.qti.sympyServiceUrl" value="${itemscoring.qti.sympyServiceUrl}" />
+				<beans:entry key="itemscoring.qti.sympyMaxTries" value="${itemscoring.qti.sympyMaxTries}" />
+				<beans:entry key="itemscoring.qti.sympyTimeoutMillis" value="${itemscoring.qti.sympyTimeoutMillis}" />
+				<beans:entry key="QThreadCount" value="${QThreadCount}" />
+			</util:map>
+		</beans:constructor-arg>
+	</beans:bean>
+</beans:beans>

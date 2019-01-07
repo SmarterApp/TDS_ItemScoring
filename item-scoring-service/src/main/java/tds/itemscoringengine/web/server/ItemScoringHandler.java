@@ -104,7 +104,7 @@ public class ItemScoringHandler extends HttpHandlerBase
     scoreRequest.readXML (xmlReader);
 
     // Decrypt student response if needed
-    scoreRequest.decrypt (true, true);
+    //scoreRequest.decrypt (true, true);
 
     // If it is valid and complete, update stats
     if (scoreRequest.getResponseInfo () != null && scoreRequest.getResponseInfo ().isComplete ())

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- Start: Do not modify unless you are modifying code behaviour -->
+	<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:root-context.xml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.SUPPORT_JSP_AND_FACES_EL</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.EXPRESSION_FACTORY</param-name>
+		<param-value>com.sun.el.ExpressionFactoryImpl</param-value>
+	</context-param>
+
+<context-param>
+			<param-name>tds.itemscoringengine.rubricurlrewriter.pattern</param-name>
+			<param-value>^https://tds2\.airws\.org/Test_Student_[^/]*/V[^/]*/ItemScoringRubric\.axd\?itembank=([^/]*)&amp;itemid=([^/]*)</param-value>
+		</context-param>
+
+
+
+
+	<context-param>
+		<param-name>tds.itemscoringengine.rubricurlrewriter.replacement</param-name>
+		<param-value>file:///C:/AIROSE Trainer Deployments/tmp/Datafiles/Item-$1-$2/Item_$2_v5_rubric.xml</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.air.org.essayscorer.opennlp.datapath</param-name>
+		<param-value>C:/AIROSE Trainer Deployments/tmp/Datafiles/OpenNLPData</param-value>
+	</context-param>
+
+
+
+
+	<context-param>
+		<param-name>wordnet.database.dir</param-name>
+		<param-value>C:/AIROSE Trainer Deployments/tmp/Datafiles/WordNetData/dict</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.air.essayscorer.config.output.dir</param-name>
+		<param-value>>C:/AIROSE Trainer Deployments/tmp/airose-temp</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>logger.proctorDevLogPath</param-name>
+		<param-value>C:/AIROSE Trainer Deployments/tmp/Datafiles/logs/</param-value>
+	</context-param>
+	<context-param>
+		<param-name>rootLogPath</param-name>
+		<param-value>C:/AIROSE Trainer Deployments/tmp/Datafiles/logs/</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>logger.debuglevel</param-name>
+		<param-value>DEBUG</param-value>
+	</context-param>
+
+
+
+
+
+	<!-- Creates the Spring Container shared by all Servlets and Filters -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- Set up the JSF implementation -->
+	<listener>
+		<listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+	</listener>
+
+	<!-- Redirects for requests that have no path -->
+	<servlet>
+		<servlet-name>301</servlet-name>
+		<servlet-class>AIR.Common.Web.Servlet301</servlet-class>
+		<init-param>
+			<param-name>AIR.Common.Web.Servlet301.REDIRECT_URL</param-name>
+			<param-value>/Scoring/index.xhtml</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>301</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+	<!-- Processes application requests -->
+
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>settings.config</param-name>
+			<param-value>/settings.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<url-pattern>/Scoring/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- JSF servlet -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<init-param>
+			<param-name>javax.faces.CONFIG-FILES</param-name>
+			<param-value>/WEB-INF/faces-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+
+	<!-- Start: Application config settings. Modify as necessary. -->
+	<!-- These are settings from settings.config. Overwrite any of the ones mentioned in <settings.config> in context.xml -->
+	<context-param>
+		<param-name>settings.config</param-name>
+		<param-value>settings.xml</param-value>
+	</context-param>
+
+	<!-- End: Application config settings. Modify as necessary. -->
+	<welcome-file-list>
+		<welcome-file>index</welcome-file>
+	</welcome-file-list>
+	<display-name>Item Scoring Engine</display-name>
+</web-app>

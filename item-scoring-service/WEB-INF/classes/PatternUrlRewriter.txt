@@ -1,0 +1,2 @@
+https://(?:[^/]*)\.airast\.org/[sS]tudent/V[^/]*/ItemScoringRubric\.axd\?itembank=(?<bankid>[^/]*)&itemid=(?<itemid>[^/]*)	file:///C:/Datafiles/Item-${bankid}-${itemid}/Item_${itemid}_v5_rubric.xml
+file:[/]*C:/DataFiles/ContentXMLs/Bank-([^/]*)/Items/Item-(?<bankid>[^/]*)-(?<itemid>[^/]*)/([^/]*)	file:///C:/Datafiles/Item-${bankid}-${itemid}/Item_${itemid}_v5_rubric.xml
