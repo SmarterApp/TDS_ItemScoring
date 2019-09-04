@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnswerSet>
+    <Question id="">
+        <QuestionPart id="1">
+            <ObjectSet>
+                <AtomicObject>{1(296,225)}</AtomicObject>
+                <AtomicObject>{2(277,225)}</AtomicObject>
+                <AtomicObject>{1(313,225)}</AtomicObject>
+                <AtomicObject>{2(277,187)}</AtomicObject>
+                <AtomicObject>{3(295,186)}</AtomicObject>
+                <AtomicObject>{1(313,188)}</AtomicObject>
+                <AtomicObject>{2(279,146)}</AtomicObject>
+                <AtomicObject>{5(297,146)}</AtomicObject>
+                <AtomicObject>{1(314,146)}</AtomicObject>
+                <AtomicObject>{2(279,106)}</AtomicObject>
+                <AtomicObject>{7(298,106)}</AtomicObject>
+                <AtomicObject>{1(315,107)}</AtomicObject>
+            </ObjectSet>
+            <SnapPoint>
+                40@277,185;296,185;313,185;313,222;277,223;279,264;297,264;314,264;279,304;298,304;315,303;295,224
+            </SnapPoint>
+        </QuestionPart>
+    </Question>
+</AnswerSet>

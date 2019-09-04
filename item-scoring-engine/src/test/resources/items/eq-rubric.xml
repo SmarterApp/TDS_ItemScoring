@@ -1,0 +1,487 @@
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" identifier="" title="" timeDependent="false">
+    <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE"/>
+    <outcomeDeclaration baseType="integer" cardinality="single" identifier="SCORE">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="string" cardinality="ordered" identifier="PP_RESPONSE"/>
+    <outcomeDeclaration identifier="obj2" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="obj2Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="line2" baseType="string" cardinality="single"/>
+    <outcomeDeclaration identifier="numEqs" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="ContainV1" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="ContainV1Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="ContainV2" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="ContainV2Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="ContainV3" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="ContainV3Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="Contain36" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="Contain36Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="obj1" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="obj1Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="line" baseType="string" cardinality="single"/>
+    <outcomeDeclaration identifier="numEqs1" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="emptyline" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="emptylineCount" baseType="integer" cardinality="single"/>
+    <responseProcessing>
+        <setOutcomeValue identifier="PP_RESPONSE">
+            <customOperator type="EQ" functionName="PREPROCESSRESPONSE" response="RESPONSE"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="obj2">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <or>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(s,36)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="36" simplify="False"/>
+                </or>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="obj2Count">
+            <containerSize>
+                <variable identifier="obj2"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="line2">
+            <index n="2">
+                <variable identifier="PP_RESPONSE"/>
+            </index>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="numEqs">
+            <customOperator type="EQ" functionName="GETEQUATIONSCOUNT" object="line2"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ContainV1">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <customOperator type="EQ" functionName="LINECONTAINS" object="@" exemplar="Eq(s,36)" simplify="False"/>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ContainV1Count">
+            <containerSize>
+                <variable identifier="ContainV1"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ContainV2">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <customOperator type="EQ" functionName="LINECONTAINS" object="@" exemplar="Eq(216/6,36)"
+                                simplify="False"/>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ContainV2Count">
+            <containerSize>
+                <variable identifier="ContainV2"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ContainV3">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <customOperator type="EQ" functionName="LINECONTAINS" object="@" exemplar="Eq(s,216/6)"
+                                simplify="False"/>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ContainV3Count">
+            <containerSize>
+                <variable identifier="ContainV3"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="Contain36">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="36" simplify="False"/>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="Contain36Count">
+            <containerSize>
+                <variable identifier="Contain36"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="obj1">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <or>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(6*s+5,221)"
+                                    simplify="True"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(6*s,216)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((6))*s,216)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(6*s,221-5)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(6*((s)),221-5)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(6*((s)),216)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="((221-5))/6"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="((221-5)/6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="(((221-5))/6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="216/6" simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(216/6,36)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(216/s,6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq((221-5)/s,6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((216)/s),6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((221-5))/s,6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(216/6,s)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(s,((216)/6))"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((216)/6),36)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="((216)/6)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((221-5))/6,36)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((221-5))/6,s)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((221-5)/6),36)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(((221-5)/6),s)"
+                                    simplify="False"/>
+                    <customOperator type="EQ" functionName="ISEQUIVALENT" object="@" exemplar="Eq(s,(((221-5))/6))"
+                                    simplify="False"/>
+                </or>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="obj1Count">
+            <containerSize>
+                <variable identifier="obj1"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="line">
+            <index n="1">
+                <variable identifier="PP_RESPONSE"/>
+            </index>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="numEqs1">
+            <customOperator type="EQ" functionName="GETEQUATIONSCOUNT" object="line"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="emptyline">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <customOperator type="EQ" functionName="ISEMPTY" object="@"/>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="emptylineCount">
+            <containerSize>
+                <variable identifier="emptyline"/>
+            </containerSize>
+        </setOutcomeValue>
+        <responseCondition>
+            <responseIf>
+                <and>
+                    <or>
+                        <equal>
+                            <variable identifier="obj2Count"/>
+                            <baseValue baseType="float">1</baseValue>
+                        </equal>
+                        <and>
+                            <equal>
+                                <variable identifier="numEqs"/>
+                                <baseValue baseType="float">2</baseValue>
+                            </equal>
+                            <or>
+                                <and>
+                                    <equal>
+                                        <variable identifier="ContainV1Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                    <equal>
+                                        <variable identifier="ContainV2Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                </and>
+                                <and>
+                                    <equal>
+                                        <variable identifier="ContainV2Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                    <equal>
+                                        <variable identifier="ContainV3Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                </and>
+                                <and>
+                                    <equal>
+                                        <variable identifier="ContainV1Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                    <equal>
+                                        <variable identifier="ContainV3Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                </and>
+                            </or>
+                        </and>
+                        <equal>
+                            <variable identifier="obj2Count"/>
+                            <baseValue baseType="float">2</baseValue>
+                        </equal>
+                        <and>
+                            <equal>
+                                <variable identifier="obj2Count"/>
+                                <baseValue baseType="float">0</baseValue>
+                            </equal>
+                            <or>
+                                <equal>
+                                    <variable identifier="ContainV2Count"/>
+                                    <baseValue baseType="float">2</baseValue>
+                                </equal>
+                                <and>
+                                    <equal>
+                                        <variable identifier="ContainV2Count"/>
+                                        <baseValue baseType="float">1</baseValue>
+                                    </equal>
+                                    <or>
+                                        <gt>
+                                            <variable identifier="ContainV1Count"/>
+                                            <baseValue baseType="float">0</baseValue>
+                                        </gt>
+                                        <gt>
+                                            <variable identifier="Contain36Count"/>
+                                            <baseValue baseType="float">0</baseValue>
+                                        </gt>
+                                    </or>
+                                </and>
+                            </or>
+                        </and>
+                        <and>
+                            <equal>
+                                <variable identifier="obj1Count"/>
+                                <baseValue baseType="float">2</baseValue>
+                            </equal>
+                            <equal>
+                                <variable identifier="obj2Count"/>
+                                <baseValue baseType="float">0</baseValue>
+                            </equal>
+                            <gt>
+                                <variable identifier="ContainV2Count"/>
+                                <baseValue baseType="float">0</baseValue>
+                            </gt>
+                        </and>
+                    </or>
+                    <and>
+                        <gte>
+                            <variable identifier="obj1Count"/>
+                            <baseValue baseType="float">1</baseValue>
+                        </gte>
+                        <lte>
+                            <variable identifier="numEqs1"/>
+                            <baseValue baseType="float">1</baseValue>
+                        </lte>
+                        <or>
+                            <equal>
+                                <variable identifier="obj2Count"/>
+                                <baseValue baseType="float">0</baseValue>
+                            </equal>
+                            <and>
+                                <equal>
+                                    <variable identifier="obj2Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <or>
+                                    <gt>
+                                        <variable identifier="ContainV2Count"/>
+                                        <baseValue baseType="float">0</baseValue>
+                                    </gt>
+                                    <gt>
+                                        <variable identifier="ContainV2Count"/>
+                                        <baseValue baseType="float">0</baseValue>
+                                    </gt>
+                                </or>
+                            </and>
+                            <and>
+                                <equal>
+                                    <variable identifier="obj2Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <gt>
+                                    <variable identifier="Contain36Count"/>
+                                    <baseValue baseType="float">0</baseValue>
+                                </gt>
+                            </and>
+                            <and>
+                                <equal>
+                                    <variable identifier="obj2Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <equal>
+                                    <variable identifier="obj1Count"/>
+                                    <baseValue baseType="float">2</baseValue>
+                                </equal>
+                                <equal>
+                                    <variable identifier="ContainV1Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                            </and>
+                        </or>
+                    </and>
+                    <equal>
+                        <variable identifier="emptylineCount"/>
+                        <baseValue baseType="float">0</baseValue>
+                    </equal>
+                </and>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="integer">2</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <and>
+                    <gte>
+                        <variable identifier="obj1Count"/>
+                        <baseValue baseType="float">1</baseValue>
+                    </gte>
+                    <lte>
+                        <variable identifier="numEqs1"/>
+                        <baseValue baseType="float">1</baseValue>
+                    </lte>
+                    <or>
+                        <equal>
+                            <variable identifier="obj2Count"/>
+                            <baseValue baseType="float">0</baseValue>
+                        </equal>
+                        <and>
+                            <equal>
+                                <variable identifier="obj2Count"/>
+                                <baseValue baseType="float">1</baseValue>
+                            </equal>
+                            <or>
+                                <gt>
+                                    <variable identifier="ContainV2Count"/>
+                                    <baseValue baseType="float">0</baseValue>
+                                </gt>
+                                <gt>
+                                    <variable identifier="ContainV2Count"/>
+                                    <baseValue baseType="float">0</baseValue>
+                                </gt>
+                            </or>
+                        </and>
+                        <and>
+                            <equal>
+                                <variable identifier="obj2Count"/>
+                                <baseValue baseType="float">1</baseValue>
+                            </equal>
+                            <gt>
+                                <variable identifier="Contain36Count"/>
+                                <baseValue baseType="float">0</baseValue>
+                            </gt>
+                        </and>
+                        <and>
+                            <equal>
+                                <variable identifier="obj2Count"/>
+                                <baseValue baseType="float">1</baseValue>
+                            </equal>
+                            <equal>
+                                <variable identifier="obj1Count"/>
+                                <baseValue baseType="float">2</baseValue>
+                            </equal>
+                            <equal>
+                                <variable identifier="ContainV1Count"/>
+                                <baseValue baseType="float">1</baseValue>
+                            </equal>
+                        </and>
+                    </or>
+                </and>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="integer">1</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElseIf>
+                <or>
+                    <equal>
+                        <variable identifier="obj2Count"/>
+                        <baseValue baseType="float">1</baseValue>
+                    </equal>
+                    <and>
+                        <equal>
+                            <variable identifier="numEqs"/>
+                            <baseValue baseType="float">2</baseValue>
+                        </equal>
+                        <or>
+                            <and>
+                                <equal>
+                                    <variable identifier="ContainV1Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <equal>
+                                    <variable identifier="ContainV2Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                            </and>
+                            <and>
+                                <equal>
+                                    <variable identifier="ContainV2Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <equal>
+                                    <variable identifier="ContainV3Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                            </and>
+                            <and>
+                                <equal>
+                                    <variable identifier="ContainV1Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <equal>
+                                    <variable identifier="ContainV3Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                            </and>
+                        </or>
+                    </and>
+                    <equal>
+                        <variable identifier="obj2Count"/>
+                        <baseValue baseType="float">2</baseValue>
+                    </equal>
+                    <and>
+                        <equal>
+                            <variable identifier="obj2Count"/>
+                            <baseValue baseType="float">0</baseValue>
+                        </equal>
+                        <or>
+                            <equal>
+                                <variable identifier="ContainV2Count"/>
+                                <baseValue baseType="float">2</baseValue>
+                            </equal>
+                            <and>
+                                <equal>
+                                    <variable identifier="ContainV2Count"/>
+                                    <baseValue baseType="float">1</baseValue>
+                                </equal>
+                                <or>
+                                    <gt>
+                                        <variable identifier="ContainV1Count"/>
+                                        <baseValue baseType="float">0</baseValue>
+                                    </gt>
+                                    <gt>
+                                        <variable identifier="Contain36Count"/>
+                                        <baseValue baseType="float">0</baseValue>
+                                    </gt>
+                                </or>
+                            </and>
+                        </or>
+                    </and>
+                    <and>
+                        <equal>
+                            <variable identifier="obj1Count"/>
+                            <baseValue baseType="float">2</baseValue>
+                        </equal>
+                        <equal>
+                            <variable identifier="obj2Count"/>
+                            <baseValue baseType="float">0</baseValue>
+                        </equal>
+                        <gt>
+                            <variable identifier="ContainV2Count"/>
+                            <baseValue baseType="float">0</baseValue>
+                        </gt>
+                    </and>
+                </or>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="integer">1</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+        </responseCondition>
+    </responseProcessing>
+</assessmentItem>

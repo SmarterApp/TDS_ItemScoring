@@ -1,0 +1,291 @@
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" identifier="" title="" timeDependent="false">
+    <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE"/>
+    <outcomeDeclaration baseType="integer" cardinality="single" identifier="SCORE">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="string" cardinality="ordered" identifier="PP_RESPONSE"/>
+    <outcomeDeclaration identifier="B1R1" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B1R1Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B1R2" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B1R2Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B1R3" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B1R3Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B2R1" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B2R1Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B2R2" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B2R2Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B2R3" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B2R3Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B3R1" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B3R1Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B3R2" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B3R2Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B3R3" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B3R3Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B4R1" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B4R1Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B4R2" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B4R2Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="B4R3" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="B4R3Count" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="AllReg" baseType="integer" cardinality="single"/>
+    <outcomeDeclaration identifier="Par" baseType="string" cardinality="ordered"/>
+    <outcomeDeclaration identifier="ParCount" baseType="integer" cardinality="single"/>
+    <responseProcessing>
+        <setOutcomeValue identifier="PP_RESPONSE">
+            <customOperator type="GRAPHIC" functionName="PREPROCESSRESPONSE" response="RESPONSE"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B1R1">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">2</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                    <inside shape="rect" coords="265,235,285,213">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B1R1Count">
+            <containerSize>
+                <variable identifier="B1R1"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B1R2">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="284,235,307,215">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">1</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B1R2Count">
+            <containerSize>
+                <variable identifier="B1R2"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B1R3">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="303,237,322,213">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">1</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B1R3Count">
+            <containerSize>
+                <variable identifier="B1R3"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B2R1">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">2</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                    <inside shape="rect" coords="265,197,285,176">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B2R1Count">
+            <containerSize>
+                <variable identifier="B2R1"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B2R2">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="285,196,305,174">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">3</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B2R2Count">
+            <containerSize>
+                <variable identifier="B2R2"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B2R3">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">1</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                    <inside shape="rect" coords="303,199,322,178">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B2R3Count">
+            <containerSize>
+                <variable identifier="B2R3"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B3R1">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="269,155,288,136">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">2</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B3R1Count">
+            <containerSize>
+                <variable identifier="B3R1"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B3R2">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="288,159,305,131">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">5</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B3R2Count">
+            <containerSize>
+                <variable identifier="B3R2"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B3R3">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="303,157,326,133">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">1</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B3R3Count">
+            <containerSize>
+                <variable identifier="B3R3"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B4R1">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="267,116,289,95">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">2</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B4R1Count">
+            <containerSize>
+                <variable identifier="B4R1"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B4R2">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="288,116,308,96">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">7</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B4R2Count">
+            <containerSize>
+                <variable identifier="B4R2"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B4R3">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <and>
+                    <inside shape="rect" coords="305,117,326,95">
+                        <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                    </inside>
+                    <stringMatch caseSensitive="True">
+                        <baseValue baseType="string">1</baseValue>
+                        <customOperator type="GRAPHIC" functionName="GETNAME" object="@"/>
+                    </stringMatch>
+                </and>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="B4R3Count">
+            <containerSize>
+                <variable identifier="B4R3"/>
+            </containerSize>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="AllReg">
+            <customOperator type="CTRL" functionName="COUNTDOUBLEINRANGE"
+                            list="$B1R1Count,$B1R2Count,$B1R3Count,$B2R1Count,$B2R2Count,$B2R3Count,$B3R1Count,$B3R2Count,$B3R3Count,$B4R1Count,$B4R2Count,$B4R3Count"
+                            min="1" max="1"/>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="Par">
+            <customOperator type="CTRL" functionName="mapExpression" container="PP_RESPONSE">
+                <inside shape="rect" coords="259,238,339,85">
+                    <customOperator type="GRAPHIC" functionName="GETPOINT" object="@"/>
+                </inside>
+            </customOperator>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ParCount">
+            <containerSize>
+                <variable identifier="Par"/>
+            </containerSize>
+        </setOutcomeValue>
+        <responseCondition>
+            <responseIf>
+                <and>
+                    <equal>
+                        <variable identifier="AllReg"/>
+                        <baseValue baseType="float">12</baseValue>
+                    </equal>
+                    <equal>
+                        <variable identifier="ParCount"/>
+                        <baseValue baseType="float">12</baseValue>
+                    </equal>
+                </and>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="integer">1</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+        </responseCondition>
+    </responseProcessing>
+</assessmentItem>
