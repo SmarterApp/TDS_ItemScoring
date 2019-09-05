@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Educational Online Test Delivery System 
  * Copyright (c) 2014 American Institutes for Research
- *     
+ *
  * Distributed under the AIR Open Source License, Version 1.0 
  * See accompanying file AIR-License-1_0.txt or at
- * 
+ *
  * http://www.smarterapp.org/documents/American_Institutes_for_Research_Open_Source_Software_License.pdf
  ******************************************************************************/
 package tinyequationscoringengine;
@@ -62,8 +62,14 @@ public class MathScoringService
   }
 
   void initialize (URI eqScoringServer, int maxRetries, int timeoutInMillis) {
-    proxy = new WebProxy (eqScoringServer, maxRetries, timeoutInMillis);
+    if(proxy == null) proxy = new WebProxy(eqScoringServer, maxRetries, timeoutInMillis);
   }
+
+
+  public void initialize (final WebProxy webProxy) {
+    if(proxy == null) proxy = webProxy;
+  }
+
 
   public boolean lineContainsEquivalent (MathExpression mathexp, String rubric, boolean allowSimplify, boolean trig, boolean log, boolean force) throws QTIScoringException {
     // if (!IsInitialized()) throw new Exception("Not initialized");

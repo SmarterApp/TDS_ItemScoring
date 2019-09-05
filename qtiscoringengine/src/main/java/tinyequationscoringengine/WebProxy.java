@@ -35,7 +35,7 @@ import AIR.Common.Utilities.TDSStringUtils;
 import AIR.Common.Web.HttpWebHelper;
 import AIR.Common.Web.UrlHelper;
 
-class WebProxy {
+public class WebProxy {
   private static final Logger        _logger       = LoggerFactory.getLogger (WebProxy.class);
   private static final HttpWebHelper HttpWebHelper = new HttpWebHelper ();
   private int                        _maxRetries;

@@ -261,62 +261,6 @@
                             </gt>
                         </and>
                     </or>
-                    <and>
-                        <gte>
-                            <variable identifier="obj1Count"/>
-                            <baseValue baseType="float">1</baseValue>
-                        </gte>
-                        <lte>
-                            <variable identifier="numEqs1"/>
-                            <baseValue baseType="float">1</baseValue>
-                        </lte>
-                        <or>
-                            <equal>
-                                <variable identifier="obj2Count"/>
-                                <baseValue baseType="float">0</baseValue>
-                            </equal>
-                            <and>
-                                <equal>
-                                    <variable identifier="obj2Count"/>
-                                    <baseValue baseType="float">1</baseValue>
-                                </equal>
-                                <or>
-                                    <gt>
-                                        <variable identifier="ContainV2Count"/>
-                                        <baseValue baseType="float">0</baseValue>
-                                    </gt>
-                                    <gt>
-                                        <variable identifier="ContainV2Count"/>
-                                        <baseValue baseType="float">0</baseValue>
-                                    </gt>
-                                </or>
-                            </and>
-                            <and>
-                                <equal>
-                                    <variable identifier="obj2Count"/>
-                                    <baseValue baseType="float">1</baseValue>
-                                </equal>
-                                <gt>
-                                    <variable identifier="Contain36Count"/>
-                                    <baseValue baseType="float">0</baseValue>
-                                </gt>
-                            </and>
-                            <and>
-                                <equal>
-                                    <variable identifier="obj2Count"/>
-                                    <baseValue baseType="float">1</baseValue>
-                                </equal>
-                                <equal>
-                                    <variable identifier="obj1Count"/>
-                                    <baseValue baseType="float">2</baseValue>
-                                </equal>
-                                <equal>
-                                    <variable identifier="ContainV1Count"/>
-                                    <baseValue baseType="float">1</baseValue>
-                                </equal>
-                            </and>
-                        </or>
-                    </and>
                     <equal>
                         <variable identifier="emptylineCount"/>
                         <baseValue baseType="float">0</baseValue>
