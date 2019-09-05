@@ -1,0 +1,86 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!-- Thie example adapted from the PET Handbook, copyright University of Cambridge ESOL Examinations -->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+                identifier="item_209049" title="Item 209049" adaptive="false" timeDependent="false"
+                xmlns:apip="http://www.imsglobal.org/xsd/apip/apipv1p0/imsapip_qtiv1p0">
+
+    <responseDeclaration identifier="1" cardinality="ordered" baseType="identifier"/>
+
+    <outcomeDeclaration identifier="SCORE" baseType="float" cardinality="single"/>
+
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+
+    <itemBody/>
+
+    <responseProcessing>
+
+        <responseCondition>
+
+            <responseIf>
+
+                <match>
+
+                    <variable identifier="1"/>
+
+                    <ordered>
+
+                        <baseValue baseType="identifier">2</baseValue>
+
+                        <baseValue baseType="identifier">1</baseValue>
+
+                        <baseValue baseType="identifier">5</baseValue>
+
+                        <baseValue baseType="identifier">4</baseValue>
+
+                        <baseValue baseType="identifier">3</baseValue>
+
+                        <baseValue baseType="identifier">0</baseValue>
+
+                    </ordered>
+
+                </match>
+
+                <setOutcomeValue identifier="SCORE">
+
+                    <baseValue baseType="float">1</baseValue>
+
+                </setOutcomeValue>
+
+            </responseIf>
+
+            <responseElse>
+
+                <setOutcomeValue identifier="SCORE">
+
+                    <baseValue baseType="float">0</baseValue>
+
+                </setOutcomeValue>
+
+            </responseElse>
+
+        </responseCondition>
+
+    </responseProcessing>
+
+    <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="solution">
+
+        <p id="Item209049_cb534cf8-90dd-3e3e-b52d-75a73ce4c71f">T2: <p>red</p></p>
+
+        <p id="Item209049_72942cf6-8608-3a28-ba2f-57c168b669f6">T1: <p>orange</p></p>
+
+        <p id="Item209049_16d279a1-e281-3fff-b776-fc98908dbf7b">T5: <p>yellow</p></p>
+
+        <p id="Item209049_500e156a-0f75-3ea7-b8aa-41eeab01e2a2">T4: <p>green</p></p>
+
+        <p id="Item209049_dd8b2ec1-d9a0-32bd-8230-3670ceec6789">T3: <p>purple</p></p>
+
+        <p id="Item209049_05157453-b580-3088-9861-1b0bb26902bb">T0: <p>blue</p></p>
+
+    </modalFeedback>
+
+    <apip:apipAccessibility/>
+
+</assessmentItem>
+

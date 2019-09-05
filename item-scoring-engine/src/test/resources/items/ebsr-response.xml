@@ -1,0 +1,9 @@
+<itemResponse>
+    <response id="EBSR1">
+        <value>A</value>
+    </response>
+    <response id="EBSR2">
+        <value>A</value>
+        <value>C</value>
+    </response>
+</itemResponse>
