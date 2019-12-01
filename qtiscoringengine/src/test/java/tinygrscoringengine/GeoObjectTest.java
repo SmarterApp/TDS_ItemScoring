@@ -75,50 +75,40 @@ public class GeoObjectTest {
          10-|        +____|_______/
             |          i     h
             |__________________________________________________
-             |     |      |      |       |
-             20   30     45      60      90
+                      |     |      |      |       |
+                     20   30     45      60      90
          **/
 
         final String jai = "<Object><PointVector></PointVector>" +
-            "<EdgeVector>{ {(30,10),(20,50)} {(20,10),(20,50)} {(30,10),(20,10)}}</EdgeVector>" +
-            "</Object>";
-
+            "<EdgeVector>{ {(30,10),(20,50)} {(20,10),(20,50)} {(30,10),(20,10)}}</EdgeVector></Object>";
         // response is counter clock wise
         assertEquals(TinyGR.getVector(jai, 0), "<Vector>{(20,50),(20,10)}</Vector>"); // reversed a
-        assertEquals(TinyGR.getVector(jai, 1), "<Vector>{(20,10),(30,10)}</Vector>"); // i
-        assertEquals(TinyGR.getVector(jai, 2), "<Vector>{(20,50),(30,10)}</Vector>"); // reversed j - why ?
+        assertEquals(TinyGR.getVector(jai, 1), "<Vector>{(20,10),(30,10)}</Vector>"); // reversed i
+        assertEquals(TinyGR.getVector(jai, 2), "<Vector>{(20,50),(30,10)}</Vector>"); // reversed j
 
         final String dgf = "<Object><PointVector></PointVector>" +
-            "<EdgeVector>{ {(45,80),(60,80)} {(60,80),(45,10)} {(45,80),(45,10)}}</EdgeVector>" +
-            "</Object>";
-
+            "<EdgeVector>{ {(45,80),(60,80)} {(60,80),(45,10)} {(45,80),(45,10)}}</EdgeVector></Object>";
         // response is counter clock wise
         assertEquals(TinyGR.getVector(dgf, 0), "<Vector>{(45,80),(45,10)}</Vector>"); // f
         assertEquals(TinyGR.getVector(dgf, 1), "<Vector>{(45,10),(60,80)}</Vector>"); // reversed g
         assertEquals(TinyGR.getVector(dgf, 2), "<Vector>{(45,80),(60,80)}</Vector>"); // d
 
         final String klg = "<Object><PointVector></PointVector>" +
-            "<EdgeVector>{ {(60,80),(90,80)} {(90,80),(45,10)} {(60,80),(45,10)}}</EdgeVector>" +
-            "</Object>";
-
-        // response is clock wise
+            "<EdgeVector>{ {(60,80),(90,80)} {(90,80),(45,10)} {(60,80),(45,10)}}</EdgeVector></Object>";
+        // response is counter clock wise
         assertEquals(TinyGR.getVector(klg, 0), "<Vector>{(45,10),(60,80)}</Vector>"); // reversed g
         assertEquals(TinyGR.getVector(klg, 1), "<Vector>{(45,10),(90,80)}</Vector>"); // reversed l
-        assertEquals(TinyGR.getVector(klg, 2), "<Vector>{(60,80),(90,80)}</Vector>"); // reversed k
+        assertEquals(TinyGR.getVector(klg, 2), "<Vector>{(60,80),(90,80)}</Vector>"); // k
 
         final String cef = "<Object><PointVector></PointVector>" +
-            "<EdgeVector>{ {(30,80),(45,80)} {(30,80),(45,10)} {(45,80),(45,10)}}</EdgeVector>" +
-            "</Object>";
-
+            "<EdgeVector>{ {(30,80),(45,80)} {(30,80),(45,10)} {(45,80),(45,10)}}</EdgeVector></Object>";
         // response is clock wise
         assertEquals(TinyGR.getVector(cef, 0), "<Vector>{(30,80),(45,80)}</Vector>"); //c
         assertEquals(TinyGR.getVector(cef, 1), "<Vector>{(45,80),(45,10)}</Vector>"); //f
         assertEquals(TinyGR.getVector(cef, 2), "<Vector>{(30,80),(45,10)}</Vector>"); //e
 
         final String jhbcf = "<Object><PointVector></PointVector>" +
-            "<EdgeVector>{ {(30,10),(20,50)} {(45,10),(30,10)} {(20,50),(30,80)} {(30,80),(45,80)} {(45,80),(45,10)}}</EdgeVector>" +
-            "</Object>";
-
+            "<EdgeVector>{ {(30,10),(20,50)} {(45,10),(30,10)} {(20,50),(30,80)} {(30,80),(45,80)} {(45,80),(45,10)}}</EdgeVector></Object>";
         // response is counter clock wise
         assertEquals(TinyGR.getVector(jhbcf, 0), "<Vector>{(20,50),(30,80)}</Vector>"); // b
         assertEquals(TinyGR.getVector(jhbcf, 1), "<Vector>{(20,50),(30,10)}</Vector>"); // reversed j
