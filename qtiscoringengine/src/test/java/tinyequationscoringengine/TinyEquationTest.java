@@ -146,6 +146,7 @@ public class TinyEquationTest {
     public void itShouldTestIsEquivalentWithNoSimplifyAndExpression() throws QTIScoringException {
         final List<TestData> testData = new ArrayList();
 
+        testData.add(new TestData("2x", "2*x", false));
         testData.add(new TestData("x**((0.5))", "x**0.5", true));
         testData.add(new TestData("x**(1/2)", "x**0.5", false));
         testData.add(new TestData("(((x*y))*12+((2*x+2*y))*z))*1.25", "2.5*(6*x*y+x*z+y*z)", false));
@@ -155,6 +156,8 @@ public class TinyEquationTest {
 
         // the same as above with simplification
         testData.clear();
+
+        testData.add(new TestData("2x", "2*x", true));
         testData.add(new TestData("x**((0.5))", "x**0.5", true));
         testData.add(new TestData("x**(1/2)", "x**0.5", true));
 //        testData.add(new TestData("(((x*y))*12+((2*x+2*y))*z))*1.25", "2.5*(6*x*y+x*z+y*z)", true)); fails with an exception
