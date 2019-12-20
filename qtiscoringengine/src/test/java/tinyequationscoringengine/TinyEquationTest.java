@@ -388,4 +388,16 @@ public class TinyEquationTest {
             this.result = result;
         }
     }
+
+
+    @Test
+    public void testLineContains() throws QTIScoringException {
+        final boolean simplify = false;
+        assertEquals(TinyEquation
+            .lineContainsEquivalent(String.format("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                    "<MathExpressionInfo><SympyResponse><string>%s</string><string>%s</string></SympyResponse></MathExpressionInfo>",
+                "Eq(8+8+8,24-2)", "Eq(24-2,22)"),
+                "Eq(24-2,22)", simplify, false, false, false), true);
+    }
+
 }
