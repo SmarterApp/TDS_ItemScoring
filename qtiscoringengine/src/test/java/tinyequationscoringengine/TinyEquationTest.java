@@ -357,6 +357,7 @@ public class TinyEquationTest {
         testsData.add(new TestsNumberForExpressionData("5 something", NaN));
         testsData.add(new TestsNumberForExpressionData("x=5+y", NaN));
         testsData.add(new TestsNumberForExpressionData("[5]", NaN));
+        testsData.add(new TestsNumberForExpressionData("1+1", NaN));
 
         testsData.add(new TestsNumberForExpressionData("0.21e+1", 2.1f));
         testsData.add(new TestsNumberForExpressionData(".5", 0.5f));
