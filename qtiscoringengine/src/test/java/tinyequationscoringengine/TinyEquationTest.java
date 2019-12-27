@@ -30,12 +30,22 @@ public class TinyEquationTest {
         testsEquivalentData.add(new TestsEquivalentData("1", "1", true));
         testsEquivalentData.add(new TestsEquivalentData("2", "1", false));
         testsEquivalentData.add(new TestsEquivalentData("2", "1+1", false));
+        testsEquivalentData.add(new TestsEquivalentData("5/6", "5*1/6", false));
         testsEquivalentData.add(new TestsEquivalentData("2.1", "0.21e+1", false));
-        testsEquivalentData.add(new TestsEquivalentData("1/3", "2/6", false));
+        testsEquivalentData.add(new TestsEquivalentData("5-3", "5+-3", true));
+        testsEquivalentData.add(new TestsEquivalentData("5-x", "5+-x", true));
+        testsEquivalentData.add(new TestsEquivalentData("5/6", "5*(1/6)", false));
         testsEquivalentData.add(new TestsEquivalentData("1/3", "0.333", false));
         testsEquivalentData.add(new TestsEquivalentData("1", "1.0", false));
         testsEquivalentData.add(new TestsEquivalentData("-1/5", "-(1)/5", true));
         testsEquivalentData.add(new TestsEquivalentData("5+4", "4   + 5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4", "4+5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+(4+7)", "4+(7+5)", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7", "4+7+5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7+9+10+11", "4+11+10+7+5+9", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7+(9+10)+11", "(4+11)+10+7+5+9", false));
+        testsEquivalentData.add(new TestsEquivalentData("5*4", "4*5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4", "9", false));
         testsEquivalentData.add(new TestsEquivalentData(".5", "0.5", false));
         testsEquivalentData
             .add(new TestsEquivalentData("(box*box*box*box*box*box*box*box*box*box*box*box*box*.0)", "0", false));
@@ -83,6 +93,7 @@ public class TinyEquationTest {
 
         // relational equivalence with numbers
         testsEquivalentData.add(new TestsEquivalentData("Ge(2,1)", "Ge(2,1)", true));
+        testsEquivalentData.add(new TestsEquivalentData("Ge(((2)),1)", "Ge(2,1)", true));
         testsEquivalentData.add(new TestsEquivalentData("Le(1,2)", "Ge(2,1)", true));
         testsEquivalentData.add(new TestsEquivalentData("Ne(2,1)", "Ne(2,1)", true));
         testsEquivalentData.add(new TestsEquivalentData("Ne(2,1)", "Ne(1,2)", true));
@@ -150,6 +161,7 @@ public class TinyEquationTest {
     public void itShouldTestIsEquivalentWithNoSimplifyAndExpression() throws QTIScoringException {
         final List<TestsEquivalentData> testsEquivalentData = new ArrayList();
 
+        testsEquivalentData.add(new TestsEquivalentData("2+x", "x+2", true));
         testsEquivalentData.add(new TestsEquivalentData("2x", "2*x", false));
         testsEquivalentData.add(new TestsEquivalentData("x**((0.5))", "x**0.5", true));
         testsEquivalentData.add(new TestsEquivalentData("x**(1/2)", "x**0.5", false));
