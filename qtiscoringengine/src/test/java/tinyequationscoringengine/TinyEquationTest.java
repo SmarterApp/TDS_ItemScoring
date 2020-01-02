@@ -23,6 +23,53 @@ public class TinyEquationTest {
     }
 
     @Test
+    public void itShouldTestEqWalkerFeatures() throws QTIScoringException {
+        final List<TestsEquivalentData> testsEquivalentData = new ArrayList();
+
+        testsEquivalentData.add(new TestsEquivalentData("2+3, 4+5", "2+3 4+5", true));
+        testsEquivalentData.add(new TestsEquivalentData("2+3, 4+5", "2+3", true));
+        //        testsEquivalentData.add(new TestsEquivalentData("2<3==2+1==1+2", "2<3", true)); - fails to parse
+
+        // plus to minus
+        testsEquivalentData.add(new TestsEquivalentData("Eq(x-2,2)", "Eq(x+-2,2)", true));
+        testsEquivalentData.add(new TestsEquivalentData("x+-(y+5)", "x-(y+5)", true));
+        testsEquivalentData.add(new TestsEquivalentData("(x/3)-(y+5)", "(x/3)+-(y+5)", true));
+        testsEquivalentData.add(new TestsEquivalentData("(x/3)-(sin(3-7))", "(x/3)+-(sin(3+-7))", true));
+
+        // change Ge
+        testsEquivalentData.add(new TestsEquivalentData("Le(1,2)", "Ge(2,1)", true));
+        testsEquivalentData.add(new TestsEquivalentData("Lt(1,2)", "Gt(2,1)", true));
+
+        // combine pluses
+        testsEquivalentData.add(new TestsEquivalentData("5+(4+7)", "5+(4+7)", true));
+        testsEquivalentData.add(new TestsEquivalentData("((5+4)+7)", "5+4+7", true));
+        testsEquivalentData.add(new TestsEquivalentData("((5+4)+7)+9+10+11", "5+4+7+9+10+11", true));
+        testsEquivalentData.add(new TestsEquivalentData("(((5+4)+7)+9)+10+11", "5+4+7+9+10+11", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7+(9+10)+11", "5+4+7+9+10+11", false));
+
+        // combine multiplication
+        testsEquivalentData.add(new TestsEquivalentData("5*(4*7)", "5*(4*7)", true));
+        testsEquivalentData.add(new TestsEquivalentData("((5*4)*7)", "5*4*7", true));
+        testsEquivalentData.add(new TestsEquivalentData("((5*4)*7)*9*10*11", "5*4*7*9*10*11", true));
+        testsEquivalentData.add(new TestsEquivalentData("(((5*4)*7)*9)*10*11", "5*4*7*9*10*11", true));
+        testsEquivalentData.add(new TestsEquivalentData("5*4*7*(9*10)*11", "5*4*7*9*10*11", false));
+
+        // support commutation for sum
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7", "4+7+5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7 + sin(3)", "sin(3)+4+7+5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7 + sin(3)", "4+sin(3)+7+5", true));
+        testsEquivalentData.add(new TestsEquivalentData("5+4+7+9+10+11", "4+11+10+7+5+9", true));
+
+        testsEquivalentData.add(new TestsEquivalentData("Eq(a,2*b+1+y)", "Eq(1+2*b+y,a)", true));
+        testsEquivalentData.add(new TestsEquivalentData("sin(2*b+1+y)", "sin(1+2*b+y)", true));
+        testsEquivalentData.add(new TestsEquivalentData("sin(2*b+1+z+y)", "sin(1+2*b+y+z)", true));
+        testsEquivalentData.add(new TestsEquivalentData("Eq(a,2*b+1)", "Eq(1+b*2,a)", true));
+
+        runIsEquivalent(testsEquivalentData, false);
+
+    }
+
+    @Test
     public void itShouldTestIsEquivalentWithNoSimplifyAndNumericValues() throws QTIScoringException {
         final List<TestsEquivalentData> testsEquivalentData = new ArrayList();
 
@@ -336,6 +383,9 @@ public class TinyEquationTest {
 
     private void runIsEquivalent(final List<TestsEquivalentData> testsEquivalentData,
                                  boolean simplify) throws QTIScoringException {
+        if (simplify == true) {
+            return;
+        }
         for (final TestsEquivalentData test : testsEquivalentData) {
             assertEquals(String.format("Testing %s", test.response),
                 TinyEquation
