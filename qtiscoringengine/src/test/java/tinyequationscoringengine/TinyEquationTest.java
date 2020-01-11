@@ -227,6 +227,7 @@ public class TinyEquationTest {
         //        testData.add(new TestData("(((x*y))*12+((2*x+2*y))*z))*1.25", "2.5*(6*x*y+x*z+y*z)", true)); fails with an exception
         testsEquivalentData.add(new TestsEquivalentData("a*(a+b)", "a**2+a*b", true));
         testsEquivalentData.add(new TestsEquivalentData("a*(a+b)", "a**2.0+a*b", true));
+        testsEquivalentData.add(new TestsEquivalentData("(1+1/2)**1/2", "sqrt(1+1/2)", false));
         runIsEquivalent(testsEquivalentData, true);
     }
 
